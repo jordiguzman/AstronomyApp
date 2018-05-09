@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">AstronomyApp</string>
+    <string name="apod">APOD</string>
+    <string name="apod_title">APOD (Astronomy Photography of Day)</string>
+    <string name="planets">Planets</string>
+</resources>
