@@ -18,10 +18,11 @@ import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
-import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClient;
-import appkite.jordiguzman.com.astronomyapp.apod.service.ApiInteface;
+import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
+import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
-import appkite.jordiguzman.com.astronomyapp.planets.MainActivityPlanets;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.MainActivityPlanets;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +32,7 @@ public class MainActivityApp extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivityApp.class.getSimpleName();
     private LocalDate today, dateOld;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MainActivityApp extends AppCompatActivity {
         today = LocalDate.now();
         datesToShow();
         getData(this);
+
     }
 
 
@@ -63,21 +66,30 @@ public class MainActivityApp extends AppCompatActivity {
                 Intent intent1 = new Intent(this, MainActivityPlanets.class);
                 startActivity(intent1);
                 break;
+            case R.id.btn_iss:
+                Intent intent2 = new Intent(this, MapsActivity.class);
+                startActivity(intent2);
+                break;
         }
 
     }
 
     public void getData(final Context context){
-        final ApiInteface mApiInteface = ApiClient.getClient().create(ApiInteface.class);
-        Call<List<Apod>> call = mApiInteface.getData(ApiClient.API_KEY, String.valueOf(dateOld), String.valueOf(today));
+        final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
+        Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
+        Log.i(LOG_TAG, call.toString());
         call.enqueue(new Callback<List<Apod>>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
                 switch (response.code()){
                     case 200:
                         mApodData = (ArrayList<Apod>) response.body();
-                        assert mApodData != null;
-                        Collections.reverse(mApodData);
+                        if (mApodData != null){
+                            if (!mApodData.get(0).getDate().equals(today.toString()))today.minusDays(1);
+                            Collections.reverse(mApodData);
+                            Log.i("Response", response.toString());
+                        }
                         break;
                     default:
                         Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
@@ -90,4 +102,9 @@ public class MainActivityApp extends AppCompatActivity {
             }
         });
     }
+
+
+
+
+
 }

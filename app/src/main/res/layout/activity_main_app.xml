@@ -22,11 +22,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="1dp"
-        android:text="@string/planets"
         android:onClick="clickButtons"
+        android:text="@string/planets"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_apod"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="1dp" />
+
+    <Button
+        android:id="@+id/btn_iss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="clickButtons"
+        android:layout_marginTop="47dp"
+        android:text="@string/iss"
+        app:layout_constraintStart_toStartOf="@+id/btn_planets"
+        app:layout_constraintTop_toBottomOf="@+id/btn_planets" />
 
 </android.support.constraint.ConstraintLayout>

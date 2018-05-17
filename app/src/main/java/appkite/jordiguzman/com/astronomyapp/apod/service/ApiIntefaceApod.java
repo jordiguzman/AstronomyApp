@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 
 
 
-public interface ApiInteface {
+public interface ApiIntefaceApod {
 
     @GET("apod")
     Call<List<Apod>> getData(

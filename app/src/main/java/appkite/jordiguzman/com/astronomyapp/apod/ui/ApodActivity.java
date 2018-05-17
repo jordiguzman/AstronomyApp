@@ -1,6 +1,10 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +18,10 @@ import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 public class ApodActivity extends AppCompatActivity {
 
     public static ArrayList<Apod> mApodData = new ArrayList<>();
+    private  RecyclerView mRecyclerView;
+    private AdapterApod mAdapterApod;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,15 +30,30 @@ public class ApodActivity extends AppCompatActivity {
 
 
 
-        RecyclerView mRecyclerView = findViewById(R.id.rv_apod);
+        mRecyclerView= findViewById(R.id.rv_apod);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-
-
-        AdapterApod mAdapterApod = new AdapterApod(mApodData,  this);
-        mRecyclerView.setAdapter(mAdapterApod);
-        mRecyclerView.setHasFixedSize(true);
+        mAdapterApod = new AdapterApod(mApodData,  this);
+        new AsynTask().execute("");
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    class AsynTask extends AsyncTask<String, Void, String> {
+
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            mRecyclerView.setAdapter(mAdapterApod);
+            mRecyclerView.setHasFixedSize(true);
+            return null;
+        }
+
+
+    }
+
+
 
 
 }

@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 
-public class ApiClient {
+public class ApiClientApod {
     private static final String BASE_URL = "https://api.nasa.gov/planetary/";
     private static Retrofit retrofit = null;
     public static final String API_KEY = "TuB6OluEaUTVzK0LcUNIBJEYyAgGjRAi2JgsbT0o";
