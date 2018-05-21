@@ -60,3 +60,35 @@ public void getDataWiki() {
             });
 
         }
+
+         public  void getDataISSS(){
+                final ApiInterface mApiInterface = ApiClient.getRetrofit().create(ApiInterface.class);
+                Call<ModelISS> call = mApiInterface.getDataIss();
+                call.enqueue(new Callback<ModelISS>() {
+                    @Override
+                    public void onResponse(Call<ModelISS> call, Response<ModelISS> response) {
+                        mDataISS = response.body();
+                        arrayDataIss.add(mDataISS);
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<ModelISS> call, Throwable t) {
+                        Log.i("ERROR: ", t.getMessage());
+                    }
+                });
+
+
+
+            }
+
+            /*iss = mMap.addMarker(new MarkerOptions()
+                            .position(issPos)
+                            .title("ISSPosition")
+                            .snippet("International Space Station")
+                            .icon(BitmapDescriptorFactory
+                                    .fromResource(R.drawable.ic_iss)));
+
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(issPos, 2));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(2), 2000, null);*/

@@ -28,10 +28,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
+
 public class MainActivityApp extends AppCompatActivity {
 
     private final String LOG_TAG = MainActivityApp.class.getSimpleName();
     private LocalDate today, dateOld;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -42,7 +44,8 @@ public class MainActivityApp extends AppCompatActivity {
 
         today = LocalDate.now();
         datesToShow();
-        getData(this);
+        getDataApod(this);
+
 
     }
 
@@ -74,7 +77,7 @@ public class MainActivityApp extends AppCompatActivity {
 
     }
 
-    public void getData(final Context context){
+    public void getDataApod(final Context context){
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
         Log.i(LOG_TAG, call.toString());
@@ -102,6 +105,7 @@ public class MainActivityApp extends AppCompatActivity {
             }
         });
     }
+
 
 
 

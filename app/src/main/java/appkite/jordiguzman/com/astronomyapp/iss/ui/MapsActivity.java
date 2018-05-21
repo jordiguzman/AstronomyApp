@@ -1,11 +1,16 @@
 package appkite.jordiguzman.com.astronomyapp.iss.ui;
 
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,93 +20,128 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONObject;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.iss.util.ISSActual;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    LocationManager locationManager;
+
 
     private GoogleMap mMap;
-    private Location mCurrentLocation;
+
+    private Timer mTimer;
+    private Double latitude, longitude;
+    public static Marker iss;
+    private MarkerOptions mMarkerOptions;
+    private RequestQueue mRequestQueue;
+    @BindView(R.id.tv_latitude)
+    TextView tv_latitude;
+    @BindView(R.id.tv_longitude)
+    TextView tv_longitude;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        ButterKnife.bind(this);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        ISSActual();
+
+        mRequestQueue = Volley.newRequestQueue(this);
+
+
+
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        mMap = googleMap;
+        mMap.setMapType(2);
+
+        if (mTimer == null){
+            mTimer = new Timer();
+        }
+
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getDataISS();
+
+            }
+        }, 0, 1000);
+
+        mMarkerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_iss));
+        mMarkerOptions.anchor(0.5f, 0.5f);
+        mMarkerOptions.flat(true);
     }
 
 
-    public void ISSActual() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.open-notify.org")
-                .build();
-        ISSService service = retrofit.create(ISSService.class);
-        service.listObjects("iss-now.json", new Callback<ISSActual>() {
+    public void getDataISS(){
+
+        final String URL = "https://api.wheretheiss.at/v1/satellites/25544";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL,
+                null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(Call<ISSActual> call, Response<ISSActual> response) {
-                setPositionOnMap(mCurrentLocation.getLongitude(), mCurrentLocation.getLatitude());
+            public void onResponse(JSONObject response) {
+                try {
+                    latitude = Double.parseDouble(response.getString("latitude"));
+                    longitude = Double.parseDouble(response.getString("longitude"));
+                    final LatLng ISS = new LatLng(latitude, longitude);
+
+                    MapsActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
+                            mMap.getUiSettings().setScrollGesturesEnabled(true);
+                            if (iss != null){
+                                iss.remove();
+                            }
+                            mMarkerOptions.position(ISS);
+                            iss = mMap.addMarker(mMarkerOptions);
+                            tv_latitude.setText(String.valueOf(latitude));
+                            tv_longitude.setText(String.valueOf(longitude));
+                        }
+                    });
+                } catch (Exception e) {
+                   Log.e("ERROR: ", e.getMessage());
+                }
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public void onFailure(Call<ISSActual> call, Throwable t) {
-
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("ERROR VOLLEY: ", volleyError.getMessage());
             }
         });
 
+        mRequestQueue.add(jsonObjectRequest);
     }
 
-    public void setPositionOnMap(double lat, double longi) {
-        LatLng latLng = new LatLng(lat, longi);
-        if (mCurrentLocation != null) {
-            LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            Marker user = mMap.addMarker(
-                    new MarkerOptions().position(currentLatLng)
-                            .title("Me"));
-        }
-        Marker iss = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("ISS")
-                .snippet("International Space Station")
-                .icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.ic_iss)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 2));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(2), 2000, null);
-    }
 
-    public interface ISSService {
-        @GET("/{directory}")
-        void listObjects(@Path("directory") String directory, Callback<ISSActual> issCallback);
-    }
-    LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            // Called when a new location is found by the network location provider.
-            mCurrentLocation = location;
-            ISSActual();
-        }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
+    /*@Override
+    protected void onResume() {
+        super.onResume();
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
 
-        public void onProviderEnabled(String provider) {}
+                //getDataISS();
 
-        public void onProviderDisabled(String provider) {}
-    };
-
+            }
+        }, 0, 1000);
+    }*/
 }
