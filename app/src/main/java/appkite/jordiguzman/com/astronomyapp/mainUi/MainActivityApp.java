@@ -1,17 +1,27 @@
 package appkite.jordiguzman.com.astronomyapp.mainUi;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,18 +31,33 @@ import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
-import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
-import appkite.jordiguzman.com.astronomyapp.planets.ui.MainActivityPlanets;
+import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
+import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
+import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
+import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
+import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
 
-public class MainActivityApp extends AppCompatActivity {
+public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
 
-    private final String LOG_TAG = MainActivityApp.class.getSimpleName();
-    private LocalDate today, dateOld;
+
+    private static LocalDate today;
+    private static LocalDate dateOld;
+    @BindView(R.id.iv_main)
+    ImageView iv_main;
+    @BindView(R.id.collapsing_main)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.coordinator_list_activity)
+    CoordinatorLayout mCoordinatorLayout;
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -40,18 +65,51 @@ public class MainActivityApp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_app);
+        ButterKnife.bind(this);
 
 
-        today = LocalDate.now();
+        snackBar();
+
+
+        RecyclerView mRecyclerView = findViewById(R.id.rv_main);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        AdapterMain mAdapterMain = new AdapterMain(this, MainActivityApp.this);
+        mRecyclerView.setAdapter(mAdapterMain);
+        mRecyclerView.setHasFixedSize(true);
+
+        Glide.with(this)
+                .load(Splash.URL)
+                .into(iv_main);
+
+        imageCollapsingToolBar();
+        today = LocalDate.now(ZoneId.of("US/Eastern"));
         datesToShow();
-        getDataApod(this);
+        MainActivityApp.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getDataApod(getApplicationContext());
+                getDataEarth();
+
+            }
+        });
+
+    }
+
+    public void snackBar(){
+
+        Snackbar snackbar = Snackbar
+                .make(mCoordinatorLayout, "Loading...", 4000)
+                .setActionTextColor(Color.RED);
+
+        snackbar.show();
 
 
     }
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void datesToShow(){
+    public static void datesToShow(){
 
         for (int i = 0; i < 15; i++) {
             dateOld = today.minusDays(i);
@@ -59,28 +117,18 @@ public class MainActivityApp extends AppCompatActivity {
         }
     }
 
-    public void clickButtons(View view){
-        switch (view.getId()){
-            case R.id.btn_apod:
-                Intent intent = new Intent(this, ApodActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.btn_planets:
-                Intent intent1 = new Intent(this, MainActivityPlanets.class);
-                startActivity(intent1);
-                break;
-            case R.id.btn_iss:
-                Intent intent2 = new Intent(this, MapsActivity.class);
-                startActivity(intent2);
-                break;
-        }
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
 
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
 
-    public void getDataApod(final Context context){
+
+
+    public static void getDataApod(final Context context){
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
-        Log.i(LOG_TAG, call.toString());
         call.enqueue(new Callback<List<Apod>>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -89,26 +137,58 @@ public class MainActivityApp extends AppCompatActivity {
                     case 200:
                         mApodData = (ArrayList<Apod>) response.body();
                         if (mApodData != null){
-                            if (!mApodData.get(0).getDate().equals(today.toString()))today.minusDays(1);
                             Collections.reverse(mApodData);
-                            Log.i("Response", response.toString());
                         }
                         break;
+
                     default:
                         Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
-                        Log.e("Error API", response.toString());
+
                 }
             }
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
-                Log.e(LOG_TAG, t.getMessage());
+                Log.e("OnFailure", t.getMessage());
+            }
+        });
+    }
+
+    public static void getDataEarth() {
+        final ApiInterfaceEarth mApiInterfaceEarth = ApiClientEarth.getClientEarth().create(ApiInterfaceEarth.class);
+        Call<List<Earth>> call = mApiInterfaceEarth.getDataEarth();
+        call.enqueue(new Callback<List<Earth>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Earth>> call, @NonNull retrofit2.Response<List<Earth>> response) {
+                switch (response.code()) {
+                    case 200:
+                        earthArrayList = (ArrayList<Earth>) response.body();
+
+                        break;
+                    default:
+                        Log.e("Error API", response.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Earth>> call, @NonNull Throwable t) {
+                Log.e("On Failure", t.getMessage());
             }
         });
     }
 
 
-
-
-
+    @Override
+    public void onClickItem(int position) {
+        switch (position){
+            case 0:
+                Intent intent = new Intent(this, ApodActivity.class);
+                startActivity(intent);
+                break;
+            case 1:
+                Intent intent1 = new Intent(this, EarthActivity.class);
+                startActivity(intent1);
+                break;
+        }
+    }
 
 }

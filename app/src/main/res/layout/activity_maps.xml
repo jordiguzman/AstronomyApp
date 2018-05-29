@@ -19,25 +19,25 @@
         tools:context="appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity" />
 
     <TextView
-        android:id="@+id/tv_longitude"
+        android:id="@+id/tv_data_iss_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:textColor="@android:color/white"
-        map:layout_constraintStart_toStartOf="@+id/map"
-        map:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="8dp" />
-
-    <TextView
-        android:id="@+id/tv_latitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textColor="@android:color/white"
+        map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toBottomOf="@+id/tv_longitude"
-        android:layout_marginLeft="8dp" />
+        map:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_data_iss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="52dp"
+        android:textColor="@android:color/white"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="16dp" />
+
 
 </android.support.constraint.ConstraintLayout>

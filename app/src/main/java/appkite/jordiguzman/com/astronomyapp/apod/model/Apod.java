@@ -52,6 +52,10 @@ public class Apod implements Parcelable{
         return dateToShow;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     private Apod(Parcel in) {
         copyright = in.readString();
         date = in.readString();

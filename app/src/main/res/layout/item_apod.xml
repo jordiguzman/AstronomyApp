@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="@dimen/elevation"
-    tools:targetApi="lollipop">
+    android:layout_marginLeft="@dimen/model_margin_cardview"
+    android:layout_marginRight="@dimen/model_margin_cardview"
+    android:layout_marginTop="@dimen/model_margin_cardview"
+    android:layout_marginBottom="@dimen/model_margin_cardview"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@android:color/white"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_apod"
@@ -18,12 +24,20 @@
             android:layout_margin="@dimen/model_margin"
             android:contentDescription="@string/app_name"
             android:scaleType="centerCrop" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/model_margin"
+            android:orientation="vertical">
         <TextView
             android:id="@+id/tv_title"
+            android:fontFamily="@font/alfa_slab_one"
             style="@style/TextViewApod" />
         <TextView
             android:id="@+id/tv_date"
+            android:textStyle="italic"
             style="@style/TextViewApod"/>
+        </LinearLayout>
 
 
     </LinearLayout>

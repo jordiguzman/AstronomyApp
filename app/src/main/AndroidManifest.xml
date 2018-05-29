@@ -3,40 +3,60 @@
     package="appkite.jordiguzman.com.astronomyapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logo_nasa"
+        android:icon="@drawable/ic_galaxy"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo_nasa"
+        android:roundIcon="@drawable/ic_galaxy"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBil6N0vhX3-uJRzwPZD2D7Pn3H5Ee-MuI" />
-        <activity android:name=".mainUi.MainActivityApp">
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".mainUi.MainActivityApp"
+            android:launchMode="singleTask">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity
+            android:name=".apod.ui.ApodActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".mainUi.MainActivityApp" />
+        <activity
+            android:name=".planets.ui.MainActivityPlanets"
+            android:parentActivityName=".mainUi.MainActivityApp" />
+        <activity android:name=".iss.ui.ActivityIss" />
+        <activity
+            android:name=".iss.ui.MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".earth.ui.EarthActivity" />
+        <activity android:name=".hubble.ui.HubbleActivity" />
+        <activity
+            android:name=".mainUi.Splash"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".apod.ui.ApodActivity"
-            android:parentActivityName=".mainUi.MainActivityApp" />
-        <activity
-            android:name=".planets.ui.MainActivityPlanets"
-            android:parentActivityName=".mainUi.MainActivityApp" />
-
-
-
-        <activity android:name=".iss.ui.ActivityIss" />
-        <activity
-            android:name=".iss.ui.MapsActivity"
-            android:label="@string/title_activity_maps"/>
+        <activity android:name=".apod.ui.ApodDetailActivity"></activity>
     </application>
 
 </manifest>

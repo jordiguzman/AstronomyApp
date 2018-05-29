@@ -2,4 +2,16 @@
 <resources>
     <dimen name="elevation">4dp</dimen>
     <dimen name="model_margin">12dp</dimen>
+    <dimen name="model_margin_8">8dp</dimen>
+    <dimen name="logo_nasa_dim">75dp</dimen>
+
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="fab_press_translation_z">6dp</dimen>
+    <dimen name="fab_margin">24dp</dimen>
+    <dimen name="app_bar_height">250dp</dimen>
+    <dimen name="height_image_detail">325dp</dimen>
+    <dimen name="width_height_floating">56dp</dimen>
+    <dimen name="list_toolbar_side_margin">0dp</dimen>
+    <dimen name="list_side_margin">4dp</dimen>
+    <dimen name="model_margin_cardview">4dp</dimen>
 </resources>

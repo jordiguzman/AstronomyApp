@@ -1,11 +1,32 @@
 <resources>
     <string name="app_name">AstronomyApp</string>
-    <string name="apod">APOD</string>
+
     <string name="apod_title">APOD (Astronomy Picture of the Day)</string>
-    <string name="planets">Planets</string>
+
     <string name="no_results">No results</string>
+    <string name="app_name_splash">Astronomy\nApp</string>
 
 
     <string name="title_activity_maps">Map</string>
+
+    <string name="latitude">Latitude:&#160;</string>
+    <string name="longitude">Longitude:&#160;</string>
+    <string name="altitude">Altitude:&#160;</string>
+    <string name="velocity">Velocity:&#160;</string>
+    <string name="time">Time:&#160;</string>
+    <string name="visibility">Visibility:&#160;</string>
+
+    <!--         MAIN               -->
+    <string name="apod">APOD</string>
+    <string name="apod_sub">Astronomy Picture of the Day</string>
+    <string name="planets">System Solar</string>
+    <string name="planets_sub">All the planets</string>
+    <string name="earth">Earth</string>
+    <string name="earth_sub">Images of Earth</string>
+    <string name="hubble">Hubble</string>
+    <string name="hubble_sub">Daily images of the space telescope</string>
     <string name="iss">ISS</string>
+    <string name="iss_sub">Tracking the International Space Station</string>
+    <string name="loading">Loading...</string>
+    <!--                           -->
 </resources>
