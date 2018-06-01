@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -15,7 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -50,12 +54,15 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     private static LocalDate today;
     private static LocalDate dateOld;
+    public static int datesToShow;
     @BindView(R.id.iv_main)
     ImageView iv_main;
     @BindView(R.id.collapsing_main)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.pb_main)
+    ProgressBar pb_main;
 
 
 
@@ -67,8 +74,9 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         setContentView(R.layout.activity_main_app);
         ButterKnife.bind(this);
 
-
+        progresBar();
         snackBar();
+        datesToShow= 15;
 
 
         RecyclerView mRecyclerView = findViewById(R.id.rv_main);
@@ -76,6 +84,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         AdapterMain mAdapterMain = new AdapterMain(this, MainActivityApp.this);
         mRecyclerView.setAdapter(mAdapterMain);
         mRecyclerView.setHasFixedSize(true);
+        mAdapterMain.notifyDataSetChanged();
+
 
         Glide.with(this)
                 .load(Splash.URL)
@@ -90,15 +100,35 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 getDataApod(getApplicationContext());
                 getDataEarth();
 
+
             }
         });
 
     }
 
+    public void progresBar(){
+        pb_main.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        CountDownTimer countDownTimer = new CountDownTimer(6000, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                pb_main.setVisibility(View.INVISIBLE);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }
+        };
+        countDownTimer.start();
+
+    }
     public void snackBar(){
 
         Snackbar snackbar = Snackbar
-                .make(mCoordinatorLayout, "Loading...", 4000)
+                .make(mCoordinatorLayout, "Loading...", 5000)
                 .setActionTextColor(Color.RED);
 
         snackbar.show();
@@ -111,7 +141,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void datesToShow(){
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < datesToShow; i++) {
             dateOld = today.minusDays(i);
 
         }
@@ -131,6 +161,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
         call.enqueue(new Callback<List<Apod>>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
+
             @Override
             public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
                 switch (response.code()){
@@ -138,6 +169,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                         mApodData = (ArrayList<Apod>) response.body();
                         if (mApodData != null){
                             Collections.reverse(mApodData);
+                            Log.i("Copyright", " is: " + mApodData.get(1).getCopyright());
                         }
                         break;
 
@@ -150,6 +182,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
             }
+
+
         });
     }
 
@@ -181,6 +215,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     public void onClickItem(int position) {
         switch (position){
             case 0:
+                if (mApodData==null){
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
                 Intent intent = new Intent(this, ApodActivity.class);
                 startActivity(intent);
                 break;

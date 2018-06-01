@@ -7,14 +7,7 @@
     <string name="app_name_splash">Astronomy\nApp</string>
 
 
-    <string name="title_activity_maps">Map</string>
 
-    <string name="latitude">Latitude:&#160;</string>
-    <string name="longitude">Longitude:&#160;</string>
-    <string name="altitude">Altitude:&#160;</string>
-    <string name="velocity">Velocity:&#160;</string>
-    <string name="time">Time:&#160;</string>
-    <string name="visibility">Visibility:&#160;</string>
 
     <!--         MAIN               -->
     <string name="apod">APOD</string>
@@ -27,6 +20,24 @@
     <string name="hubble_sub">Daily images of the space telescope</string>
     <string name="iss">ISS</string>
     <string name="iss_sub">Tracking the International Space Station</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <!--                           -->
+
+    <!--         APOD              -->
+    <string name="up">Up</string>
+    <string name="copy"><![CDATA[Image Credit & Copyright:]]></string>
+
+
+
+
+    <!--          MAPS            -->
+    <string name="title_activity_maps">Map</string>
+    <string name="latitude">Latitude:&#160;</string>
+    <string name="longitude">Longitude:&#160;</string>
+    <string name="altitude">Altitude:&#160;</string>
+    <string name="velocity">Velocity:&#160;</string>
+    <string name="time">Time:&#160;</string>
+    <string name="visibility">Visibility:&#160;</string>
+    <string name="no_data">No Data</string>
+
 </resources>

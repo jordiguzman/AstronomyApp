@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="elevation">4dp</dimen>
-    <dimen name="model_margin">12dp</dimen>
     <dimen name="model_margin_8">8dp</dimen>
+    <dimen name="model_margin_14">12dp</dimen>
+    <dimen name="model_margin_16">16dp</dimen>
     <dimen name="logo_nasa_dim">75dp</dimen>
 
     <dimen name="fab_elevation">6dp</dimen>

@@ -15,6 +15,7 @@
         tools:targetApi="lollipop">
 
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_apod"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -33,6 +34,7 @@
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="@dimen/list_toolbar_side_margin"
                 android:elevation="4dp"
+                android:background="@color/colorPrimaryLightTrans"
                 android:layout_marginRight="@dimen/list_toolbar_side_margin"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 tools:targetApi="lollipop">
@@ -64,7 +66,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:background="@drawable/add_fab_background"
         android:contentDescription="@string/app_name"
         android:elevation="@dimen/fab_elevation"
         android:src="@drawable/ic_settings_black_24dp"
