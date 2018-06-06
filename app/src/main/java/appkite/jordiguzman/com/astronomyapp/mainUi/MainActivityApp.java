@@ -40,6 +40,7 @@ import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.MainActivitySolarSystem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -169,7 +170,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                         mApodData = (ArrayList<Apod>) response.body();
                         if (mApodData != null){
                             Collections.reverse(mApodData);
-                            Log.i("Copyright", " is: " + mApodData.get(1).getCopyright());
+                            preLoadImages(context);
                         }
                         break;
 
@@ -185,6 +186,14 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
 
         });
+    }
+
+    private static void preLoadImages(Context context) {
+        for (int i = 0; i< mApodData.size(); i++){
+            Glide.with(context)
+                    .load(mApodData.get(i).getUrl())
+                    .preload();
+        }
     }
 
     public static void getDataEarth() {
@@ -226,6 +235,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             case 1:
                 Intent intent1 = new Intent(this, EarthActivity.class);
                 startActivity(intent1);
+                break;
+
+            case 2:
+                Intent intent2 = new Intent(this, MainActivitySolarSystem.class);
+                startActivity(intent2);
                 break;
         }
     }

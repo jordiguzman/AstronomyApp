@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/main_title"
-            style="@style/TextAppearance.AppCompat.Subhead"
+            style="@style/TextViewModelTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/alfa_slab_one"
@@ -40,7 +40,7 @@
 
         <TextView
             android:id="@+id/main_subtitle"
-            style="@style/TextAppearance.AppCompat.Body1"
+            style="@style/TextViewModelSubTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"

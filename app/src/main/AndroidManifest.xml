@@ -39,7 +39,7 @@
             android:launchMode="singleTask"
             android:parentActivityName=".mainUi.MainActivityApp" />
         <activity
-            android:name=".planets.ui.MainActivityPlanets"
+            android:name=".planets.ui.MainActivitySolarSystem"
             android:parentActivityName=".mainUi.MainActivityApp" />
         <activity android:name=".iss.ui.ActivityIss" />
         <activity
@@ -56,7 +56,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".apod.ui.ApodDetailActivity"></activity>
+        <activity android:name=".apod.ui.ApodDetailActivity" />
+        <activity android:name=".apod.ui.ImageApodActivity"/>
+        <provider
+            android:authorities="appkite.jordiguzman.com.astronomyapp"
+            android:name=".apod.data.ApodContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

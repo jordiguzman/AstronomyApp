@@ -28,7 +28,7 @@ public class Splash extends AppCompatActivity {
         preDownloadMainImages();
 
 
-        CountDownTimer countDownTimer = new CountDownTimer(3000, 100) {
+        CountDownTimer countDownTimer = new CountDownTimer(1000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 

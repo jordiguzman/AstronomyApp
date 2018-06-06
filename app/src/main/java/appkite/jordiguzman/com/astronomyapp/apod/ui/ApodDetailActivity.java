@@ -22,11 +22,11 @@ public class ApodDetailActivity extends FragmentActivity {
         }
         setContentView(R.layout.activity_apod_detail);
 
+
         if (savedInstanceState == null){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             ApodDetailFragment fragment = new ApodDetailFragment();
             transaction.replace(R.id.content_fragment, fragment);
-
             transaction.commit();
         }
 

@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemClickListenerApod{
 
     public static ArrayList<Apod> mApodData = new ArrayList<>();
+
     private  RecyclerView mRecyclerView;
     private AdapterApod mAdapterApod;
     public static int itemPosition;
@@ -49,10 +50,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         iv_apod = findViewById(R.id.iv_apod);
         imageCollapsingToolBar();
 
-
-
-
-
         mRecyclerView= findViewById(R.id.rv_apod);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mAdapterApod = new AdapterApod(mApodData,  this, this);
@@ -63,9 +60,10 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     }
 
-    public static void populateImage(Context context){
+    public  void populateImage(Context context){
         String url_base_youtube_video= "http://img.youtube.com/vi/";
         String url_base_embed = "https://www.youtube.com/embed/";
+
         String url = mApodData.get(0).getUrl();
         int length = url.length();
         String result = url.substring(length-3, length);
@@ -96,13 +94,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         Intent intent = new Intent(this, ApodDetailActivity.class);
         startActivity(intent);
 
-
-
-
     }
-
-
-
-
 
 }

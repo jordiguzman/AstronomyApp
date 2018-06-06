@@ -11,19 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_settings"
+        android:id="@+id/fb_favorites"
         android:layout_width="@dimen/width_height_floating"
         android:layout_height="@dimen/width_height_floating"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
         android:contentDescription="@string/app_name"
         android:elevation="@dimen/fab_elevation"
-        android:src="@drawable/ic_settings_black_24dp"
+        android:src="@drawable/ic_favorite_black_24dp"
         android:stateListAnimator="@animator/fab_state_list_anim"
-        tools:targetApi="lollipop"
-        android:layout_marginRight="@dimen/fab_margin" />
+        tools:targetApi="lollipop" />
 
 
 </FrameLayout>

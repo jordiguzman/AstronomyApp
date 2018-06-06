@@ -7,8 +7,6 @@
     <string name="app_name_splash">Astronomy\nApp</string>
 
 
-
-
     <!--         MAIN               -->
     <string name="apod">APOD</string>
     <string name="apod_sub">Astronomy Picture of the Day</string>
@@ -26,8 +24,7 @@
     <!--         APOD              -->
     <string name="up">Up</string>
     <string name="copy"><![CDATA[Image Credit & Copyright:]]></string>
-
-
+    <string name="failed_insert_row">Failed to insert row into: </string>
 
 
     <!--          MAPS            -->
@@ -39,5 +36,7 @@
     <string name="time">Time:&#160;</string>
     <string name="visibility">Visibility:&#160;</string>
     <string name="no_data">No Data</string>
+    <string name="unkow_uri">Unknow uri:</string>
+    <string name="solar_system">Solar System</string>
 
 </resources>

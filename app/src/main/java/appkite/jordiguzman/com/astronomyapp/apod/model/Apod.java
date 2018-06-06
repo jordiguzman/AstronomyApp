@@ -4,7 +4,8 @@ package appkite.jordiguzman.com.astronomyapp.apod.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Apod implements Parcelable{
+public class Apod  implements Parcelable{
+
 
     private String copyright;
     private String date;
@@ -15,6 +16,9 @@ public class Apod implements Parcelable{
     private String title;
     private String url;
     private String dateToShow;
+
+
+
 
     public String getCopyright() {
         return copyright;
@@ -52,8 +56,12 @@ public class Apod implements Parcelable{
         return dateToShow;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setCopyright(String copyright) {
+        this.copyright = copyright;
+    }
+
+    public void setHdurl(String hdurl) {
+        this.hdurl = hdurl;
     }
 
     private Apod(Parcel in) {
@@ -97,4 +105,5 @@ public class Apod implements Parcelable{
         dest.writeString(url);
         dest.writeString(dateToShow);
     }
+
 }

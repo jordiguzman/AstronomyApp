@@ -10,7 +10,7 @@
     </style>
 
     <style name="Widget.Design.CoordinatorLayoutCustom" parent="@style/Widget.Support.CoordinatorLayout">
-    <item name="statusBarBackground">@android:color/white</item>
+        <item name="statusBarBackground">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -23,11 +23,19 @@
     </style>
 
 
-
-    <style name="TextViewApod">
+    <style name="TextViewModelTitle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/primary_text</item>
-        <item name="android:layout_margin">@dimen/model_margin_14</item>
+        <item name="android:layout_margin">@dimen/model_margin_14</item>7
+        <item name="android:fontFamily">@font/alfa_slab_one</item>
+    </style>
+
+    <style name="TextViewModelSubTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:layout_margin">@dimen/model_margin_14</item>7
+
     </style>
 </resources>
