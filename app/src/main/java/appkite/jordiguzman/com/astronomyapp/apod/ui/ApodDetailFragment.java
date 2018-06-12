@@ -32,7 +32,7 @@ import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDat
 
 public class ApodDetailFragment extends Fragment implements View.OnClickListener {
 
-    private Context context;
+    private Context mContext;
 
 
     @Override
@@ -45,7 +45,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         assert container != null;
-        context = container.getContext();
+        mContext = container.getContext();
         return inflater.inflate(R.layout.fragment_apod_detail, container, false);
     }
 
@@ -84,16 +84,19 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         public Object instantiateItem(@NonNull ViewGroup container, final int position) {
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            View view = inflater.inflate(R.layout.pager_item, container, false);
+            View view = inflater.inflate(R.layout.pager_item_apod, container, false);
             container.addView(view);
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
-            Typeface typeface = ResourcesCompat.getFont(context, R.font.alfa_slab_one);
+            Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_item.setTypeface(typeface);
             tv_title_pager_item.setText(mApodData.get(position).getTitle());
+
             TextView tv_date_pager_item = view.findViewById(R.id.tv_date_pager_item);
             tv_date_pager_item.setText(String.format("%s\n", mApodData.get(position).getDate()));
+
             TextView tv_explanation_pager_item = view.findViewById(R.id.tv_explanation_pager_item);
             tv_explanation_pager_item.setText(mApodData.get(position).getExplanation());
+
             TextView tv_copyright_pager_item = view.findViewById(R.id.tv_copyright_pager_item);
             if (mApodData.get(position).getCopyright() == null) {
                 tv_copyright_pager_item.setText(String.format("%s\n", getString(R.string.no_data)));
@@ -111,10 +114,10 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 iv_photo_apod_detail.setImageUrl(urlResult,
-                        ImageLoaderHelper.getInstance(context).getImageLoader());
+                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
             } else {
                 iv_photo_apod_detail.setImageUrl(mApodData.get(position).getUrl(),
-                        ImageLoaderHelper.getInstance(context).getImageLoader());
+                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
             }
 
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
@@ -151,9 +154,9 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             mApodData.get(itemPosition).setHdurl("No data");
         }
         contentValues.put(ApodContract.ApodEntry.COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
-        ContentResolver resolver = context.getContentResolver();
+        ContentResolver resolver = mContext.getContentResolver();
         resolver.insert(ApodContract.ApodEntry.CONTENT_URI, contentValues);
-        Toast.makeText(context, "Data saved", Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Data saved", Toast.LENGTH_LONG).show();
 
     }
 

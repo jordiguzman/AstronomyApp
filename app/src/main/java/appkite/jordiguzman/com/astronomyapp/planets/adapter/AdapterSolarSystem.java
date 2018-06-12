@@ -10,20 +10,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.bumptech.glide.Glide;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 
-import static appkite.jordiguzman.com.astronomyapp.planets.ui.MainActivitySolarSystem.PLANETS;
+import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
+import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 
 public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.AdapterSystemViewHolder>{
 
     private Context mContext;
-    private ArrayList<String> dataText;
+    private ItemClickListenerSystem mItemClickListenerSystem;
 
-    public AdapterSolarSystem(ArrayList<String> arrayList, Context context){
-        this.dataText = arrayList;
+    public AdapterSolarSystem( Context context, ItemClickListenerSystem itemClickListenerSystem){
         this.mContext = context;
+        this.mItemClickListenerSystem = itemClickListenerSystem;
+
     }
 
     @NonNull
@@ -38,6 +40,9 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
     @Override
     public void onBindViewHolder(@NonNull AdapterSystemViewHolder holder, int position) {
         holder.tv_title.setText(PLANETS[position]);
+        Glide.with(mContext)
+                .load(URL_PLANETS[position])
+                .into(holder.iv_system);
     }
 
     @Override
@@ -46,15 +51,28 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
     }
 
 
-    class AdapterSystemViewHolder extends RecyclerView.ViewHolder{
+
+    public interface ItemClickListenerSystem{
+        void onClickItem(int position);
+    }
+
+    class AdapterSystemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         final TextView tv_title;
         final ImageView iv_system;
 
-        public AdapterSystemViewHolder(View itemView) {
+        AdapterSystemViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             tv_title = itemView.findViewById(R.id.tv_title_system);
             iv_system = itemView.findViewById(R.id.iv_system_item);
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            int clickPosition = getAdapterPosition();
+            mItemClickListenerSystem.onClickItem(clickPosition);
         }
     }
 

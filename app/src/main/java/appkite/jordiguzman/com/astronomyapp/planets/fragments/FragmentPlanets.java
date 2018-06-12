@@ -8,15 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.planets.model.WikiPlanets;
 
 
 public class FragmentPlanets extends Fragment {
 
-    public static ArrayList<WikiPlanets> mWikiData = new ArrayList<>();
+
 
 
     @Nullable

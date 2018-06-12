@@ -1,11 +1,13 @@
 package appkite.jordiguzman.com.astronomyapp.planets.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -30,23 +32,22 @@ import appkite.jordiguzman.com.astronomyapp.planets.adapter.AdapterSolarSystem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivitySolarSystem extends AppCompatActivity {
+import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.BASE_URL_EXTRACT;
+import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS_API;
+
+public class SolarSystemActivity extends AppCompatActivity implements AdapterSolarSystem.ItemClickListenerSystem {
 
 
 
-    public static final String[] PLANETS = {"Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"};
-    public static ArrayList<String> wikiPlanets = new ArrayList<>();
-    private static final String BASE_URL = "https://en.wikipedia.org/w/api.php?format=json&action=query" +
-            "&prop=extracts&explaintext=&titles=";
-    private static final String BASE_URL_EXTRACT = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=";
-    private static final String BASE_URL_IMAGES = "https://en.wikipedia.org/w/api.php?action=query&titles=Earth&prop=pageimages&format=json&pithumbsize=400";
+
+    public static ArrayList<String> wikiPlanetsText = new ArrayList<>();
+
     @BindView(R.id.iv_system)
     ImageView iv_system;
     @BindView(R.id.rv_system)
     RecyclerView mRecyclerView;
-    private StringBuilder title;
-    private AdapterSolarSystem adapterSolarSystem;
 
+    public static int itemPositionSolar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,26 +58,29 @@ public class MainActivitySolarSystem extends AppCompatActivity {
                 .load(AdapterMain.URL_MAIN[2])
                 .into(iv_system);
 
+        setupRecyclerView();
+        wikiApiText(BASE_URL_EXTRACT);
+
+
+
+
+
+
+    }
+    public void setupRecyclerView(){
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapterSolarSystem = new AdapterSolarSystem(wikiPlanets, this);
+        AdapterSolarSystem adapterSolarSystem = new AdapterSolarSystem(this, this);
         mRecyclerView.setAdapter(adapterSolarSystem);
         mRecyclerView.setHasFixedSize(true);
-
-
-        wikiApiText();
-        wikiApiImages();
-        setTitle("");
-
     }
 
-    private void wikiApiText(){
-        for (String aTITLE : PLANETS) {
-            new HttpAsyncTaskText().execute(BASE_URL + aTITLE);
+
+    private void wikiApiText(String type){
+        for (String aTITLE : PLANETS_API) {
+            new HttpAsyncTaskText().execute(type + aTITLE);
         }
     }
-    private void wikiApiImages(){
-            new HttpAsyntaskImages().execute(BASE_URL_IMAGES);
-    }
+
 
     public static String GETText(String url){
         InputStream inputStream;
@@ -106,55 +110,19 @@ public class MainActivitySolarSystem extends AppCompatActivity {
         return result.toString();
     }
 
-    public static String GETImages(String url){
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            Log.i("ERROR GET", e.getMessage());
-        }
-        return result;
+    @Override
+    public void onClickItem(int position) {
+        itemPositionSolar = position;
+        Intent intent = new Intent(this, SolarSystemDetailActivity.class);
+        startActivity(intent);
+
     }
 
 
 
 
     @SuppressLint("StaticFieldLeak")
-    private class HttpAsyntaskImages extends AsyncTask<String, Void, String>{
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return GETImages(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //String source, title;
-            try {
-                JSONObject jsonObject = new JSONObject(result);
-                JSONObject query = jsonObject.getJSONObject("query");
-                JSONObject title = query.getJSONObject("title");
-                String [] strings = title.toString().substring(0,20).split(":");
-                String string = strings[0];
-                Log.i("Data", string);
-
-            }catch (JSONException e){
-                Log.i("ERROR", e.getMessage());
-
-            }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class HttpAsyncTaskText extends AsyncTask<String, Void, String>{
+    static class HttpAsyncTaskText extends AsyncTask<String, Void, String>{
 
 
         @Override
@@ -178,8 +146,7 @@ public class MainActivitySolarSystem extends AppCompatActivity {
 
                 JSONObject page = pages.getJSONObject(pageid);
                 textWiki = new StringBuilder((String) page.get("extract"));
-                title = new StringBuilder((String)page.get("title"));
-                setTitle(title);
+
                 String[] strings1 = textWiki.toString().split("=");
 
                 textWiki = new StringBuilder();
@@ -190,8 +157,8 @@ public class MainActivitySolarSystem extends AppCompatActivity {
                 }
 
                 if (textWiki.length() > 0){
-                    //textView.setText(Html.fromHtml(textWiki.toString()));
-                    wikiPlanets.add(textWiki.toString());
+                    String textHtml = String.valueOf(Html.fromHtml(textWiki.toString()));
+                    wikiPlanetsText.add(textHtml);
                 }else {
                     Log.e("Error", "");
                 }
@@ -201,5 +168,6 @@ public class MainActivitySolarSystem extends AppCompatActivity {
             }
         }
     }
+
 
 }

@@ -21,47 +21,27 @@
 
 
         <appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView
-            android:id="@+id/photo_apod_detail"
+            android:id="@+id/photo_solar_system_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/photo_placeholder"
             android:scaleType="centerCrop" />
 
-
-
-
-
                 <TextView
-                    android:id="@+id/tv_title_pager_item"
+                    android:id="@+id/tv_title_pager_solar_system_item"
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textStyle="bold" />
                 <TextView
-                    android:id="@+id/tv_date_pager_item"
+                    android:id="@+id/tv_explanation_pager_solar_system_item"
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:layout_marginEnd="@dimen/model_margin_8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/tv_copyright_pager_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="italic" />
-
-
-                <TextView
-                    android:id="@+id/tv_explanation_pager_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/model_margin_16"/>
-
-
-
 
             </LinearLayout>
         </ScrollView>

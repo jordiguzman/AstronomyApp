@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,8 +31,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     private AdapterApod mAdapterApod;
     public static int itemPosition;
     private static ImageView iv_apod;
-    @BindView(R.id.fab_settings)
-    FloatingActionButton mFloatingActionButton;
+
     @BindView(R.id.collapsing_apod)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.coordinator_list_activity)
@@ -57,7 +55,21 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         mRecyclerView.setHasFixedSize(true);
         populateImage(this);
 
+        ApodActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                preLoadHdurl();
+            }
+        });
 
+    }
+
+    private void preLoadHdurl() {
+        for (int i=0; i< mApodData.size();i++){
+            Glide.with(this)
+                    .load(mApodData.get(i).getHdurl())
+                    .preload();
+        }
     }
 
     public  void populateImage(Context context){

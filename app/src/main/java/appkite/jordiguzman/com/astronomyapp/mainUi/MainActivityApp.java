@@ -39,8 +39,10 @@ import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
-import appkite.jordiguzman.com.astronomyapp.planets.ui.MainActivitySolarSystem;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -49,6 +51,7 @@ import retrofit2.Response;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
+import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
 
@@ -77,7 +80,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
         progresBar();
         snackBar();
-        datesToShow= 15;
+        datesToShow= 30;
 
 
         RecyclerView mRecyclerView = findViewById(R.id.rv_main);
@@ -86,6 +89,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         mRecyclerView.setAdapter(mAdapterMain);
         mRecyclerView.setHasFixedSize(true);
         mAdapterMain.notifyDataSetChanged();
+
 
 
         Glide.with(this)
@@ -104,6 +108,16 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
             }
         });
+        preLoadImagesSystem();
+
+    }
+
+    private void preLoadImagesSystem() {
+        for (String URL_PLANET : URL_PLANETS) {
+            Glide.with(this)
+                    .load(URL_PLANET)
+                    .preload();
+        }
 
     }
 
@@ -238,8 +252,16 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 break;
 
             case 2:
-                Intent intent2 = new Intent(this, MainActivitySolarSystem.class);
+                Intent intent2 = new Intent(this, SolarSystemActivity.class);
                 startActivity(intent2);
+                break;
+            case 3:
+                Intent intent3 = new Intent(this, MapsActivity.class);
+                startActivity(intent3);
+                break;
+            case 4:
+                Intent intent4 = new Intent(this, HubbleActivity.class);
+                startActivity(intent4);
                 break;
         }
     }
