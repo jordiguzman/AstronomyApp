@@ -79,13 +79,14 @@ public class SolarSystemDetailFragment extends Fragment{
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_solar_system, container, false);
             container.addView(view);
+
             TextView tv_title_solar_system_item = view.findViewById(R.id.tv_title_pager_solar_system_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_solar_system_item.setTypeface(typeface);
             tv_title_solar_system_item.setText(PLANETS[position]);
 
             TextView tv_explanation_solar_system_item = view.findViewById(R.id.tv_explanation_pager_solar_system_item);
-            if (wikiPlanetsText != null){
+            if (wikiPlanetsText.get(position) != null){
                 tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
             }else {
                 snackBar();

@@ -4,16 +4,34 @@ package appkite.jordiguzman.com.astronomyapp.earth.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Earth implements Parcelable{
 
-    private String caption;
-    private String image;
-    private String date;
+    @SerializedName ("caption") private String caption;
+    @SerializedName("image") private String image;
+    @SerializedName("date") private String date;
+    //@SerializedName("dscovr_j2000_position") private ArrayList<PositionEarth> positionEarths;
 
-    private Earth(Parcel in) {
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+
+
+    protected Earth(Parcel in) {
         caption = in.readString();
         image = in.readString();
         date = in.readString();
+
     }
 
     public static final Creator<Earth> CREATOR = new Creator<Earth>() {
@@ -28,18 +46,6 @@ public class Earth implements Parcelable{
         }
     };
 
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -50,5 +56,6 @@ public class Earth implements Parcelable{
         dest.writeString(caption);
         dest.writeString(image);
         dest.writeString(date);
+        ;
     }
 }

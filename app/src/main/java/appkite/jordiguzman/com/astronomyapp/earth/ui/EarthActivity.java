@@ -1,31 +1,30 @@
 package appkite.jordiguzman.com.astronomyapp.earth.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.earth.adapter.AdapterEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
+import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EarthActivity extends AppCompatActivity {
+public class EarthActivity extends AppCompatActivity implements AdapterEarth.ItemClickListenerEarth {
 
 
-    private final String URL = "https://epic.gsfc.nasa.gov/epic-archive/jpg/";
-
-    private String caption, image, date;
     public static ArrayList<Earth> earthArrayList = new ArrayList<>();
-    @BindView(R.id.tv_data_earth)
-    TextView tv_data_earth;
-    @BindView(R.id.iv_data_earth)
-    ImageView iv_data_earth;
+    public static int itemPositionEarth;
+    @BindView(R.id.iv_earth)
+    ImageView iv_earth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,23 +32,32 @@ public class EarthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_earth);
         ButterKnife.bind(this);
 
-        image = earthArrayList.get(0).getImage();
-        tv_data_earth.setText(image);
-
-        String url= URL + image + ".jpg";
-        Log.i("Url: ", url);
         Glide.with(this)
-                .load(url)
-                .into(iv_data_earth);
+                .load(AdapterMain.URL_MAIN[1])
+                .into(iv_earth);
 
+        RecyclerView mRecyclerView = findViewById(R.id.rv_earth);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        AdapterEarth adapterEarth = new AdapterEarth(this, earthArrayList, this);
+        mRecyclerView.setAdapter(adapterEarth);
+        mRecyclerView.setHasFixedSize(true);
 
+        preloadPictures();
+    }
 
-
-
+    private void preloadPictures() {
+        for (int i=0; i< earthArrayList.size(); i++){
+            Glide.with(this)
+                    .load(earthArrayList.get(i).getImage())
+                    .preload();
+        }
     }
 
 
-
-
-
+    @Override
+    public void onClickItem(int position) {
+        itemPositionEarth = position;
+        Intent intent = new Intent(this, EarthDetailActivity.class);
+        startActivity(intent);
+    }
 }

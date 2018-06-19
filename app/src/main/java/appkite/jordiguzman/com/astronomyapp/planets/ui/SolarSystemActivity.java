@@ -37,16 +37,12 @@ import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS_API
 
 public class SolarSystemActivity extends AppCompatActivity implements AdapterSolarSystem.ItemClickListenerSystem {
 
-
-
-
     public static ArrayList<String> wikiPlanetsText = new ArrayList<>();
 
     @BindView(R.id.iv_system)
     ImageView iv_system;
     @BindView(R.id.rv_system)
     RecyclerView mRecyclerView;
-
     public static int itemPositionSolar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

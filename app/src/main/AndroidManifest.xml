@@ -7,11 +7,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_galaxy"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@drawable/ic_galaxy"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -64,7 +66,22 @@
             android:authorities="appkite.jordiguzman.com.astronomyapp"
             android:exported="false" />
 
-        <activity android:name=".planets.ui.SolarSystemDetailActivity"></activity>
+        <activity android:name=".planets.ui.SolarSystemDetailActivity" />
+        <activity android:name=".hubble.ui.HubbleDetailActivity" />
+
+        <receiver android:name=".widget.WidgetAstronomyApp">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_astronomy_app_info" />
+        </receiver>
+
+        <activity android:name=".widget.WidgetActivity" />
+        <activity android:name=".earth.ui.EarthDetailActivity" />
+        <activity android:name=".apod.ui.FavoritesApodActivity"></activity>
     </application>
 
 </manifest>

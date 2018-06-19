@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -7,6 +7,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayoutCustom</item>
         <item name="cardViewStyle">@style/Base.CardView</item>
+
+
     </style>
 
     <style name="Widget.Design.CoordinatorLayoutCustom" parent="@style/Widget.Support.CoordinatorLayout">
@@ -27,7 +29,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/primary_text</item>
-        <item name="android:layout_margin">@dimen/model_margin_14</item>7
+        <item name="android:layout_margin">@dimen/model_margin_8</item>7
         <item name="android:fontFamily">@font/alfa_slab_one</item>
     </style>
 
@@ -35,7 +37,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/secondary_text</item>
-        <item name="android:layout_margin">@dimen/model_margin_14</item>7
+        <item name="android:layout_margin">@dimen/model_margin_8</item>7
 
     </style>
 </resources>

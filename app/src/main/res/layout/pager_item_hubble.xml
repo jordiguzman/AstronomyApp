@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?selectableItemBackground">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/model_margin_8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView
+                android:id="@+id/photo_hubble_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/photo_placeholder"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/tv_title_pager_hubble_item"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_marginEnd="@dimen/model_margin_8"
+                android:layout_marginStart="@dimen/model_margin_8" />
+
+            <TextView
+                android:id="@+id/tv_date_hubble_item"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/model_margin_8"
+                android:layout_marginStart="@dimen/model_margin_8" />
+
+            <TextView
+                android:id="@+id/tv_creditt_hubble_item"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/model_margin_8"
+                android:layout_marginStart="@dimen/model_margin_8" />
+
+            <TextView
+                android:id="@+id/tv_abstract_hubble_item"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/model_margin_8"
+                android:layout_marginStart="@dimen/model_margin_8" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</android.support.v7.widget.CardView>

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -19,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
@@ -56,6 +56,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         mViewPager.setCurrentItem(ApodActivity.itemPosition);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
         mFloatingActionButton.setOnClickListener(this);
+
     }
 
     @Override
@@ -156,9 +157,15 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         contentValues.put(ApodContract.ApodEntry.COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
         ContentResolver resolver = mContext.getContentResolver();
         resolver.insert(ApodContract.ApodEntry.CONTENT_URI, contentValues);
-        Toast.makeText(mContext, "Data saved", Toast.LENGTH_LONG).show();
+        //Toast.makeText(mContext, "Data saved", Toast.LENGTH_LONG).show();
+        showSnackBar();
 
     }
+    public void showSnackBar(){
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), "Data saved", Snackbar.LENGTH_LONG );
+        snackbar.show();
+    }
+
 
 
 }

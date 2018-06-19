@@ -19,7 +19,7 @@ public class ApodContract {
         static final String TABLE_NAME = "apod";
         public static final String COLUMN_COPYRIGHT = "copyright";
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_DATE = " date";
+        public static final String COLUMN_DATE = "date";
         public static final String COLUMN_EXPLANATION = "explanation";
         public static final String COLUMN_URL = "url";
         public static final String COLUMN_HURL = "hurl";

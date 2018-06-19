@@ -1,5 +1,6 @@
 package appkite.jordiguzman.com.astronomyapp.mainUi;
 
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,7 +42,8 @@ public class Splash extends AppCompatActivity {
                 finish();
             }
         };
-        countDownTimer.start();    }
+        countDownTimer.start();
+    }
 
 
         public void preDownloadMainImages(){
@@ -54,6 +56,7 @@ public class Splash extends AppCompatActivity {
                     load(URL)
                     .preload(768, 512);
         }
+
 
         public void toMain(){
             Intent intent = new Intent(getApplicationContext(), MainActivityApp.class);

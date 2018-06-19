@@ -1,39 +1,39 @@
 package appkite.jordiguzman.com.astronomyapp.mainUi;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
-import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
-import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
 import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
@@ -47,27 +47,30 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.abstractData;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.credits;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.date;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.name;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.urlImage;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.urlThumbnail;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
 
 
-    private static LocalDate today;
-    private static LocalDate dateOld;
-    public static int datesToShow;
+
+
     @BindView(R.id.iv_main)
     ImageView iv_main;
     @BindView(R.id.collapsing_main)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.pb_main)
-    ProgressBar pb_main;
 
+    @SuppressLint("StaticFieldLeak")
+    private static ProgressBar pb_main;
 
 
 
@@ -77,11 +80,6 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_app);
         ButterKnife.bind(this);
-
-        progresBar();
-        snackBar();
-        datesToShow= 30;
-
 
         RecyclerView mRecyclerView = findViewById(R.id.rv_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
@@ -97,20 +95,36 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 .into(iv_main);
 
         imageCollapsingToolBar();
-        today = LocalDate.now(ZoneId.of("US/Eastern"));
-        datesToShow();
+
+
         MainActivityApp.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getDataApod(getApplicationContext());
-                getDataEarth();
 
+                /*getDataEarth();
+                try {
+                    populateArray();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
 
             }
+
         });
-        preLoadImagesSystem();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                preLoadImagesSystem();
+            }
+        });
+
+
 
     }
+
 
     private void preLoadImagesSystem() {
         for (String URL_PLANET : URL_PLANETS) {
@@ -121,46 +135,12 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     }
 
-    public void progresBar(){
-        pb_main.setVisibility(View.VISIBLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        CountDownTimer countDownTimer = new CountDownTimer(6000, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                pb_main.setVisibility(View.INVISIBLE);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            }
-        };
-        countDownTimer.start();
-
-    }
-    public void snackBar(){
-
-        Snackbar snackbar = Snackbar
-                .make(mCoordinatorLayout, "Loading...", 5000)
-                .setActionTextColor(Color.RED);
-
-        snackbar.show();
-
-
-    }
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static void datesToShow(){
 
-        for (int i = 0; i < datesToShow; i++) {
-            dateOld = today.minusDays(i);
 
-        }
-    }
+
 
     @SuppressLint("ResourceAsColor")
     public void imageCollapsingToolBar(){
@@ -169,9 +149,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
 
-
-
-    public static void getDataApod(final Context context){
+    /**
+     * *******************************APOD *************************************
+     *
+     */
+    /*public static void getDataApod(final Context context){
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
         call.enqueue(new Callback<List<Apod>>() {
@@ -184,7 +166,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                         mApodData = (ArrayList<Apod>) response.body();
                         if (mApodData != null){
                             Collections.reverse(mApodData);
-                            preLoadImages(context);
+
                         }
                         break;
 
@@ -200,16 +182,13 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
 
         });
-    }
+    }*/
 
-    private static void preLoadImages(Context context) {
-        for (int i = 0; i< mApodData.size(); i++){
-            Glide.with(context)
-                    .load(mApodData.get(i).getUrl())
-                    .preload();
-        }
-    }
 
+    /**
+     * *******************************EARTH *************************************
+     *
+     */
     public static void getDataEarth() {
         final ApiInterfaceEarth mApiInterfaceEarth = ApiClientEarth.getClientEarth().create(ApiInterfaceEarth.class);
         Call<List<Earth>> call = mApiInterfaceEarth.getDataEarth();
@@ -220,6 +199,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                     case 200:
                         earthArrayList = (ArrayList<Earth>) response.body();
 
+
                         break;
                     default:
                         Log.e("Error API", response.toString());
@@ -229,8 +209,81 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             @Override
             public void onFailure(@NonNull Call<List<Earth>> call, @NonNull Throwable t) {
                 Log.e("On Failure", t.getMessage());
+
             }
         });
+    }
+
+    /**
+     * *******************************HUBBLE *************************************
+     *
+     */
+    public void populateArray() throws ExecutionException, InterruptedException {
+        for (int i= 1; i< 27; i++){
+            new HttpAsyncTaskDataHubble().execute(HubbleActivity.BASE_URL + i).get();
+        }
+
+    }
+
+    public static String GETDataHubble(String url){
+        InputStream inputStream;
+        String result = "";
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
+            inputStream = httpResponse.getEntity().getContent();
+            if (inputStream != null){
+                result = converInputStreamToString(inputStream);
+            }else {
+                result = "Error";
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return  result;
+    }
+    private static String converInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        StringBuilder result = new StringBuilder();
+        while ((line = bufferedReader.readLine()) != null)result.append(line);
+
+        inputStream.close();
+        return result.toString();
+    }
+
+    static class HttpAsyncTaskDataHubble extends AsyncTask<String, Void, String > {
+
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return GETDataHubble(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                if (result != null){
+                    JSONObject jsonObject = new JSONObject(result);
+                    String nameResult = jsonObject.getString("name");
+                    String urlThumb = jsonObject.getString("thumbnail");
+                    String urlImageResult = jsonObject.getString("keystone_image_2x");
+                    String dateResult = jsonObject.getString("publication");
+                    String abstractDate = jsonObject.getString("abstract");
+                    String creditsResult = jsonObject.getString("credits");
+                    name.add(nameResult);
+                    urlThumbnail.add(urlThumb);
+                    urlImage.add(urlImageResult);
+                    date.add(dateResult);
+                    abstractData.add(abstractDate);
+                    credits.add(creditsResult);
+                }
+            }catch (JSONException e){
+                e.getMessage();
+            }
+
+        }
     }
 
 
@@ -238,11 +291,6 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     public void onClickItem(int position) {
         switch (position){
             case 0:
-                if (mApodData==null){
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
-                }
                 Intent intent = new Intent(this, ApodActivity.class);
                 startActivity(intent);
                 break;
