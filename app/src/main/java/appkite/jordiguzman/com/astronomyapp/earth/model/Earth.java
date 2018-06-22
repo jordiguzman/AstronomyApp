@@ -11,27 +11,15 @@ public class Earth implements Parcelable{
     @SerializedName ("caption") private String caption;
     @SerializedName("image") private String image;
     @SerializedName("date") private String date;
-    //@SerializedName("dscovr_j2000_position") private ArrayList<PositionEarth> positionEarths;
+    @SerializedName("dscovr_j2000_position") private DistanceToEarth distanceToEarth;
+    @SerializedName("sun_j2000_position") private DistanceToSun distanceToSun;
 
-    public String getCaption() {
-        return caption;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-
-
-    protected Earth(Parcel in) {
+    private Earth(Parcel in) {
         caption = in.readString();
         image = in.readString();
         date = in.readString();
-
+        distanceToEarth = in.readParcelable(DistanceToEarth.class.getClassLoader());
+        distanceToSun = in.readParcelable(DistanceToSun.class.getClassLoader());
     }
 
     public static final Creator<Earth> CREATOR = new Creator<Earth>() {
@@ -46,6 +34,26 @@ public class Earth implements Parcelable{
         }
     };
 
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public DistanceToEarth getDistanceToEarth() {
+        return distanceToEarth;
+    }
+
+    public DistanceToSun getDistanceToSun() {
+        return distanceToSun;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -56,6 +64,7 @@ public class Earth implements Parcelable{
         dest.writeString(caption);
         dest.writeString(image);
         dest.writeString(date);
-        ;
+        dest.writeParcelable(distanceToEarth, flags);
+        dest.writeParcelable(distanceToSun, flags);
     }
 }

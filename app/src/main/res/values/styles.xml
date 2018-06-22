@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -7,10 +7,14 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayoutCustom</item>
         <item name="cardViewStyle">@style/Base.CardView</item>
-
-
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
     </style>
 
+    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:popupBackground">@color/colorPrimary</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="Widget.Design.CoordinatorLayoutCustom" parent="@style/Widget.Support.CoordinatorLayout">
         <item name="statusBarBackground">@android:color/white</item>
     </style>

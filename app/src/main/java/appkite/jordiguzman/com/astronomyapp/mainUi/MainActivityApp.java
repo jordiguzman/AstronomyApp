@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 
@@ -29,15 +26,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
-import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
-import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
-import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
 import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
 import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
@@ -45,10 +37,7 @@ import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
 import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
 
-import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.abstractData;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.credits;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.date;
@@ -69,8 +58,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
 
-    @SuppressLint("StaticFieldLeak")
-    private static ProgressBar pb_main;
+
 
 
 
@@ -101,8 +89,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             @Override
             public void run() {
 
-                /*getDataEarth();
-                try {
+
+                /*try {
                     populateArray();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -149,70 +137,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
 
-    /**
-     * *******************************APOD *************************************
-     *
-     */
-    /*public static void getDataApod(final Context context){
-        final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
-        Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
-        call.enqueue(new Callback<List<Apod>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-
-            @Override
-            public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
-                switch (response.code()){
-                    case 200:
-                        mApodData = (ArrayList<Apod>) response.body();
-                        if (mApodData != null){
-                            Collections.reverse(mApodData);
-
-                        }
-                        break;
-
-                    default:
-                        Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
-
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
-                Log.e("OnFailure", t.getMessage());
-            }
 
 
-        });
-    }*/
 
 
-    /**
-     * *******************************EARTH *************************************
-     *
-     */
-    public static void getDataEarth() {
-        final ApiInterfaceEarth mApiInterfaceEarth = ApiClientEarth.getClientEarth().create(ApiInterfaceEarth.class);
-        Call<List<Earth>> call = mApiInterfaceEarth.getDataEarth();
-        call.enqueue(new Callback<List<Earth>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Earth>> call, @NonNull retrofit2.Response<List<Earth>> response) {
-                switch (response.code()) {
-                    case 200:
-                        earthArrayList = (ArrayList<Earth>) response.body();
 
-
-                        break;
-                    default:
-                        Log.e("Error API", response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Earth>> call, @NonNull Throwable t) {
-                Log.e("On Failure", t.getMessage());
-
-            }
-        });
-    }
 
     /**
      * *******************************HUBBLE *************************************

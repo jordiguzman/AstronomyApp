@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClientEarth {
 
     private static final String BASE_URL =
-            "https://epic.gsfc.nasa.gov/api/images.php/";
+            "https://epic.gsfc.nasa.gov/api/natural/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClientEarth(){

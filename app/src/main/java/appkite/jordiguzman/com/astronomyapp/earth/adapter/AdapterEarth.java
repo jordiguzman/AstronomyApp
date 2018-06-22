@@ -11,18 +11,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
-import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+
+import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
+import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthDetailActivity.dateApi;
 
 public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarthViewHolder> {
 
     private Context mContext;
     private ArrayList<Earth> mEarthData;
     private ItemClickListenerEarth mItemClickListenerEarth;
+
+
 
     public AdapterEarth(Context mContext, ArrayList<Earth> mEarthData, ItemClickListenerEarth itemClickListenerEarth) {
         this.mContext = mContext;
@@ -40,9 +45,18 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterEarthViewHolder holder, int position) {
-        String URL = "https://epic.gsfc.nasa.gov/epic-archive/jpg/";
-        String url= URL + mEarthData.get(position).getImage() + ".jpg";
+    public void onBindViewHolder(@NonNull final AdapterEarthViewHolder holder, int position) {
+        String URL = "https://epic.gsfc.nasa.gov/archive/natural/";
+        String  url = URL + dateApi+ "png/" + earthArrayList.get(position).getImage() +
+                ".png";
+
+        Glide.with(mContext)
+                .load(url)
+                .error(Glide.with(mContext)
+                .load(url))
+                .preload(600,600);
+        Glide.get(mContext)
+                .setMemoryCategory(MemoryCategory.HIGH);
         Glide.with(mContext)
                 .load(url)
                 .into(holder.iv_earth);
@@ -53,7 +67,7 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
 
     @Override
     public int getItemCount() {
-        return EarthActivity.earthArrayList.size();
+        return mEarthData.size();
     }
 
     public interface ItemClickListenerEarth{

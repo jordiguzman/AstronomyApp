@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,8 +83,15 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         datesToShow();
 
         preLoadHdurl();
-        pb_apod_activity.setVisibility(View.VISIBLE);
-        new AsynctTaskApod().execute();
+
+
+        if (!mApodData.isEmpty()){
+            populateImage(this);
+        }else {
+            pb_apod_activity.setVisibility(View.VISIBLE);
+            new AsynctTaskApod().execute();
+        }
+
 
 
     }
@@ -183,16 +191,17 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     }
 
     public void clickMenu(View view){
-        PopupMenu popupMenu = new PopupMenu(this, view);
-
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popupMenu = new PopupMenu(wrapper, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_solar_system, popupMenu.getMenu());
+        inflater.inflate(R.menu.menu_apod, popupMenu.getMenu());
+
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.menu_extract:
+                    case R.id.menu_favorites:
                         goToFavoritesApod();
                         break;
                 }
@@ -256,4 +265,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         super.onBackPressed();
         //deleteCache(this);
     }
+
+
 }

@@ -31,7 +31,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.AdapterViewHol
      private final int [] STRINGS_MAIN= {R.string.apod, R.string.earth, R.string.planets
      ,R.string.iss, R.string.hubble};
      private final int[] STRINGS_MAIN_SUB = {R.string.apod_sub, R.string.earth_sub, R.string.planets_sub,
-     R.string.iss_sub, R.string.hubble_sub};
+     R.string.iss, R.string.hubble_sub};
      private ItemClickListener mItemClickListener = null;
 
     public AdapterMain(Context mContext, ItemClickListener itemClickListener) {

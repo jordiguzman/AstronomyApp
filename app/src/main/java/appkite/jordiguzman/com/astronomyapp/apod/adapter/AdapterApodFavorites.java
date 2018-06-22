@@ -20,14 +20,20 @@ import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.apodArrayList;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoaded;
+
 public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavorites.AdapterApodFavoritesViewHolder> {
 
     private Context mContext;
-    private ArrayList<String> mApodDataFavorites;
+    private ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
 
-    public AdapterApodFavorites(ArrayList<String> arrayList, Context context){
-        this.mApodDataFavorites = arrayList;
+
+    public AdapterApodFavorites(ArrayList<String[]> arrayList, Context context,
+                                ItemClickListenerApodFavorites itemClickListenerApodFavorites ){
+        apodArrayList = arrayList;
         this.mContext = context;
+        this.mItemClickListenerApodFavorites = itemClickListenerApodFavorites;
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
@@ -42,9 +48,9 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
     public void onBindViewHolder(@NonNull AdapterApodFavoritesViewHolder holder, int position) {
         String url_base_youtube_video = "http://img.youtube.com/vi/";
         String url_base_embed = "https://www.youtube.com/embed/";
-        holder.tv_title.setText(mApodDataFavorites.get(position));
-        holder.tv_date.setText(mApodDataFavorites.get(position));
-        String url = mApodDataFavorites.get(position);
+        holder.tv_title.setText(dataLoaded[position][0]);
+        holder.tv_date.setText(dataLoaded[position][1]);
+        String url = dataLoaded[position][4];
         int length = url.length();
         String result = url.substring(length - 3, length);
         if (!result.equals("jpg")) {
@@ -58,7 +64,7 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
                     .into(holder.iv_apod);
         } else {
             Glide.with(mContext)
-                    .load(mApodDataFavorites.get(position))
+                    .load(dataLoaded[position][4])
                     .apply(new RequestOptions().transform(new RoundedCorners(15))
                             .error(R.drawable.ic_galaxy)
                             .placeholder(R.drawable.ic_galaxy))
@@ -68,10 +74,14 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
 
     @Override
     public int getItemCount() {
-        return mApodDataFavorites.size();
+        return apodArrayList.size();
     }
 
-    class AdapterApodFavoritesViewHolder extends RecyclerView.ViewHolder{
+    public interface ItemClickListenerApodFavorites{
+        void onClickItem(int position);
+    }
+
+    class AdapterApodFavoritesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         final TextView tv_title, tv_date;
         final ImageView iv_apod;
@@ -79,10 +89,17 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterApodFavoritesViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_date = itemView.findViewById(R.id.tv_date);
             iv_apod = itemView.findViewById(R.id.iv_apod);
             iv_apod.setClipToOutline(true);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int clickPosition = getAdapterPosition();
+            mItemClickListenerApodFavorites.onClickItem(clickPosition);
         }
     }
 }

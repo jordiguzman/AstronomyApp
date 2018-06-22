@@ -10,14 +10,13 @@
     <!--         MAIN               -->
     <string name="apod">APOD</string>
     <string name="apod_sub">Astronomy Picture of the Day</string>
-    <string name="planets">System Solar</string>
+    <string name="planets">Solar System</string>
     <string name="planets_sub">All the planets</string>
     <string name="earth">Earth</string>
-    <string name="earth_sub">Earth Pictures</string>
+    <string name="earth_sub">Earth pictures</string>
     <string name="hubble">Hubble</string>
     <string name="hubble_sub">Daily pictures of the space telescope</string>
     <string name="iss">ISS</string>
-    <string name="iss_sub">Tracking the International Space Station</string>
     <string name="loading">Loading…</string>
     <!--                           -->
 
@@ -37,8 +36,8 @@
     <string name="velocity">Velocity:&#160;</string>
     <string name="time">Time:&#160;</string>
     <string name="visibility">Visibility:&#160;</string>
-    <string name="no_data">No Data</string>
-    <string name="unkow_uri">Unknow uri:</string>
+    <string name="no_data">No data</string>
+    <string name="unkow_uri">Unknow URI:</string>
     <string name="solar_system">Solar System</string>
     <string name="extract">Extract</string>
     <string name="complete_text">Complete text</string>
@@ -47,11 +46,19 @@
     <string name="hubble_news">Hubble News</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <string name="no_image">No image</string>
+    <string name="no_image">No picture</string>
     <string name="distance_to_earth">Distance to Earth:</string>
     <string name="distance_to_sun">Distance to Sun:</string>
     <string name="menu_button">Menu Button</string>
     <string name="logo">Logo</string>
     <string name="trans_photo_apod">Trans_Photo_Apod</string>
     <string name="favorites">Favorites</string>
+    <string name="button_for_share_image">Button to share image</string>
+    <string name="view_favorites">View favorites</string>
+    <string name="no_favorites_yet">No favorites yet</string>
+    <string name="data_saved">Favorite added</string>
+    <string name="data_deleted">Favorite removed</string>
+    <string name="step_forward">Step Forward</string>
+    <string name="fast_forward">Fast Forward</string>
+    <string name="picture_of_earth">Picture of Earth</string>
 </resources>

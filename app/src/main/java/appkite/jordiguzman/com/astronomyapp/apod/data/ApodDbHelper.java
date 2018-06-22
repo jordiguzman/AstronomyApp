@@ -10,7 +10,7 @@ public class ApodDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "apodDb.db";
     private static final int VERSION = 1;
 
-    public ApodDbHelper(Context context) {
+    ApodDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 

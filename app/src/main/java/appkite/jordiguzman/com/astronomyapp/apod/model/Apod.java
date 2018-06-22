@@ -17,7 +17,7 @@ public class Apod  implements Parcelable{
     private String url;
     private String dateToShow;
 
-
+    public Apod(){}
 
 
     public String getCopyright() {
@@ -62,6 +62,22 @@ public class Apod  implements Parcelable{
 
     public void setHdurl(String hdurl) {
         this.hdurl = hdurl;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     private Apod(Parcel in) {
