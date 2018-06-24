@@ -1,21 +1,27 @@
 package appkite.jordiguzman.com.astronomyapp.iss.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.icu.text.SimpleDateFormat;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -24,17 +30,32 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.iss.model.Astronaut;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static appkite.jordiguzman.com.astronomyapp.iss.ui.AstronautsActivity.spaceAstronauts;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback  {
 
@@ -43,6 +64,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
 
     private Timer mTimer;
+    private Timer mPolyTimer;
     private Double latitude, longitude, altitude, velocity;
     private String visibility, latitudeInf, longitudeInf;
     public static Marker iss;
@@ -52,10 +74,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView tv_data_iss_position;
     @BindView(R.id.tv_data_iss)
     TextView tv_data_iss;
+    @BindView(R.id.ib_iss)
+    ImageButton ib_iss;
     private DecimalFormat decimalFormat;
     private  LatLng ISS;
-
-
+    private int mPolyCounter;
+    private int mPoly;
+    private boolean mThreadManager;
+    private int mProgress;
+    private Polyline mPolyLine;
+    private int mCurrentColor;
+    private int mCurrentWidth;
+    private Polyline[] mPolyArray;
+    private LatLng mLast;
+    private Date currentDate;
+    String url= "http://www.howmanypeopleareinspacerightnow.com/peopleinspace.json";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +100,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         mRequestQueue = Volley.newRequestQueue(this);
-
-
-
+        mPolyArray = new Polyline[200];
+        mCurrentColor = Color.WHITE;
+        mCurrentWidth = 5;
+        new HttpAsyntaskDataAstronauts().execute(url);
 
     }
 
@@ -82,6 +116,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mTimer == null){
             mTimer = new Timer();
         }
+        if (mPolyTimer == null) {
+            mPolyTimer = new Timer();
+            TimerTask hourlyTask = new TimerTask() {
+                @Override
+                public void run() {
+                    asyncTaskPolyline();
+                }
+            };
+            mPolyTimer.schedule(hourlyTask, 0L, 5400000);
+        }
+
 
         mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -96,6 +141,115 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private void asyncTaskPolyline() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMap.clear();
+                getDataISS();
+                mPoly = 0;
+                mPolyCounter = 0;
+            }
+        });
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mThreadManager = true;
+                     currentDate = new Date();
+                    mProgress = 0;
+                    for (int i = 0; i < 20; ++i) {
+                        int mLastPatience = 0;
+                        while (i > 0 && mLastPatience < 10 && mProgress < i) {
+                            Thread.sleep(300);
+                            ++mLastPatience;
+                        }
+
+                        updatePolyline(currentDate);
+                        Thread.sleep(1000);
+                    }
+                    mThreadManager = false;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    private void updatePolyline(Date currentDate) {
+        long currentLong = currentDate.getTime() / 1000;
+        final long[] futureTen = new long[10];
+
+        for (int i = 0; i < futureTen.length; ++i) {
+            futureTen[i] = currentLong + (30 * mPoly++);
+        }
+
+        final StringBuilder urlBuilder = new StringBuilder();
+        for (long aFutureTen : futureTen) {
+            urlBuilder.append(aFutureTen).append(",");
+        }
+        urlBuilder.setLength(urlBuilder.length() - 1);
+        final String units = "miles";
+        final String url = "https://api.wheretheiss.at/v1/satellites/25544/positions?timestamps=" +
+                urlBuilder.toString() +
+                "&units=" +
+                units;
+
+        final int finalStart = mPoly;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    final LatLng[] latLngs = new LatLng[10];
+
+                    for (int i = 0; i < response.length(); ++i) {
+                        latLngs[i] = new LatLng(response.getJSONObject(i).getDouble("latitude"),
+                                response.getJSONObject(i).getDouble("longitude"));
+                    }
+
+                    MapsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (finalStart == 10) {
+                                for (int i = 0; i < futureTen.length - 1; ++i) {
+                                    mPolyLine = mMap.addPolyline(new PolylineOptions()
+                                            .add(latLngs[i], latLngs[i + 1])
+                                            .width(mCurrentWidth)
+                                            .color(mCurrentColor));
+                                    mPolyArray[mPolyCounter++] = mPolyLine;
+                                }
+                                mLast = latLngs[latLngs.length - 1];
+                                ++mProgress;
+                            } else {
+                                mPolyArray[mPolyCounter++] = mMap.addPolyline(new PolylineOptions()
+                                        .add(mLast, latLngs[0])
+                                        .width(mCurrentWidth)
+                                        .color(mCurrentColor));
+                                for (int i = 0; i < futureTen.length - 1; ++i) {
+                                    mPolyArray[mPolyCounter++] = mMap.addPolyline(new PolylineOptions()
+                                            .add(latLngs[i], latLngs[i + 1])
+                                            .width(mCurrentWidth)
+                                            .color(mCurrentColor));
+                                }
+                                mLast = latLngs[latLngs.length - 1];
+                                ++mProgress;
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    if (mLast == null) {
+                        e.printStackTrace();
+                    }
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError e) {
+
+            }
+        });
+        mRequestQueue.add(jsonArrayRequest);
+    }
 
     public void getDataISS(){
 
@@ -168,19 +322,92 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mRequestQueue.add(jsonObjectRequest);
     }
+    private String getDataAstronaut(String url){
+
+
+        InputStream inputStream;
+        String result = "";
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
+            inputStream = httpResponse.getEntity().getContent();
+            if (inputStream != null){
+                result = converInputStreamToString(inputStream);
+            }else {
+                result = "Error";
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return  result;
+    }
+    private static String converInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        StringBuilder result = new StringBuilder();
+        while ((line = bufferedReader.readLine()) != null)result.append(line);
+
+        inputStream.close();
+        return result.toString();
+    }
+
+
+    public void toAstronauts(View view){
+        Intent intent = new Intent(this, AstronautsActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null){
+            mTimer.cancel();
+        }
+    }
+    @SuppressLint("StaticFieldLeak")
+    class HttpAsyntaskDataAstronauts extends AsyncTask<String, Void, String>{
 
 
 
+        @Override
+        protected String doInBackground(String... strings) {
+            return getDataAstronaut(strings[0]);
+        }
 
-    /*@Override
+        @Override
+        protected void onPostExecute(String result) {
+
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray people = jsonObject.getJSONArray("people");
+
+                for (int i=0; i< people.length(); i++){
+                    JSONObject oneAstronaut = people.getJSONObject(i);
+                    String name= oneAstronaut.getString("name");
+                    String bioPhoto =oneAstronaut.getString("biophoto");
+                    String flag = oneAstronaut.getString("countryflag");
+                    String launchDate = oneAstronaut.getString("launchdate");
+                    String role = oneAstronaut.getString("title");
+                    String location = oneAstronaut.getString("location");
+                    String bio = oneAstronaut.getString("bio");
+                    String bioWiki = oneAstronaut.getString("biolink");
+                    String twitter = oneAstronaut.getString("twitter");
+                    Astronaut astronaut = new Astronaut(name, bioPhoto, flag, launchDate, role, location, bio, bioWiki, twitter);
+                    spaceAstronauts.add(astronaut);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+/*@Override
     protected void onResume() {
         super.onResume();
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-
-                //getDataISS();
+                getDataISS();
 
             }
         }, 0, 1000);

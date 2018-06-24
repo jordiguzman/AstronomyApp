@@ -10,6 +10,14 @@
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
     </style>
 
+    <style name="AppThemeActionBar" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayoutCustom</item>
+        <item name="cardViewStyle">@style/Base.CardView</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+    </style>
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@color/colorPrimary</item>
         <item name="android:textColor">@color/primary_text</item>

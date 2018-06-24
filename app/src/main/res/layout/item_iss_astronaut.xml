@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/model_margin_cardview"
+    android:layout_marginRight="@dimen/model_margin_cardview"
+    android:layout_marginTop="@dimen/model_margin_cardview"
+    android:layout_marginBottom="@dimen/model_margin_cardview"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:foreground="?selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_light"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_astronaut"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="@dimen/model_margin_8"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/round_image_view"
+            android:contentDescription="@string/app_name"
+            android:transitionName="@string/trans_photo_apod"
+            android:scaleType="centerCrop"
+            tools:targetApi="lollipop" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/model_margin_8"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/iv_flag"
+                android:layout_margin="@dimen/model_margin_8"
+                android:layout_width="@dimen/width_flag"
+                android:layout_height="@dimen/height_flag"
+                android:layout_gravity="end"
+                android:contentDescription="@string/flag_from_astronaut" />
+        <TextView
+            android:id="@+id/tv_name_astronaut"
+            android:fontFamily="@font/alfa_slab_one"
+            style="@style/TextViewModelTitle" />
+
+        <TextView
+            android:id="@+id/tv_title_astronaut"
+            android:textStyle="italic"
+            style="@style/TextViewModelSubTitle"/>
+            <TextView
+                android:id="@+id/tv_bio"
+                style="@style/TextViewModelSubTitle" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
+

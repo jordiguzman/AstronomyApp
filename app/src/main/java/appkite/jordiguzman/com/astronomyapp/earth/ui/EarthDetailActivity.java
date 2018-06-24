@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.text.DecimalFormat;
 
@@ -21,7 +23,6 @@ import butterknife.ButterKnife;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.itemPositionEarth;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.ImageActivityEarth.indexEarth;
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class EarthDetailActivity extends AppCompatActivity  {
 
@@ -56,11 +57,7 @@ public class EarthDetailActivity extends AppCompatActivity  {
         tv_caption.setText(earthArrayList.get(index).getCaption());
 
 
-        for (int i=0; i <earthArrayList.size(); i++){
-            Glide.with(this)
-                    .load(setPicture(index))
-                    .preload(600,600);
-        }
+
         Glide.get(this)
                 .setMemoryCategory(MemoryCategory.HIGH);
         Glide.with(this)
@@ -90,10 +87,12 @@ public class EarthDetailActivity extends AppCompatActivity  {
         if (index> earthArrayList.size()-1)index=0;
         tv_distance_earth.setText(convertDoubleEarth(index));
         tv_distance_sun.setText(convertDoubleSun(index));
-        Glide.get(this)
-                .setMemoryCategory(MemoryCategory.HIGH);
+
+
         Glide.with(this)
                 .load(setPicture(index))
+                .apply(new RequestOptions()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(iv_detail_earth);
     }
     public void fastForward(View view){
@@ -123,11 +122,11 @@ public class EarthDetailActivity extends AppCompatActivity  {
                                 if (index > earthArrayList.size() - 1) index = 0;
                                 tv_distance_earth.setText(convertDoubleEarth(index));
                                 tv_distance_sun.setText(convertDoubleSun(index));
-                                Glide.get(getApplicationContext())
-                                        .setMemoryCategory(MemoryCategory.HIGH);
+
                                 Glide.with(getApplicationContext())
                                         .load(setPicture(index))
-                                        .transition(withCrossFade(400))
+                                        .apply(new RequestOptions()
+                                                .diskCacheStrategy(DiskCacheStrategy.ALL))
                                         .into(iv_detail_earth);
 
                             }

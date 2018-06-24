@@ -113,7 +113,7 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         for (int i=0; i< earthArrayList.size(); i++){
             Glide.with(this)
                     .load(earthArrayList.get(i).getImage())
-                    .preload();
+                    .preload(300,300);
         }
     }
 

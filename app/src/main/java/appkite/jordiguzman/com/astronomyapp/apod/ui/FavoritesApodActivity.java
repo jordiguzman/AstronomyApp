@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -84,6 +85,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     public void loadData(){
         apodArrayList.clear();
         dataLoaded=null;
+        Log.i("Data", String.valueOf(ApodContract.ApodEntry.CONTENT_URI));
         Cursor mCursor = getContentResolver().query(ApodContract.ApodEntry.CONTENT_URI, null
         ,null, null,
                 ApodContract.ApodEntry._ID);

@@ -15,7 +15,11 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -28,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
+import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthDetailActivity.dateApi;
 
 public class ImageActivityEarth extends AppCompatActivity {
 
@@ -43,16 +48,25 @@ public class ImageActivityEarth extends AppCompatActivity {
         setContentView(R.layout.activity_image_earth);
         ButterKnife.bind(this);
 
-
         Glide.with(this)
                 .load(setPicture(indexEarth))
+                .error(Glide.with(this)
+                        .load(setPicture(indexEarth)))
+                .preload(600,600);
+        Glide.get(this)
+                .setMemoryCategory(MemoryCategory.HIGH);
+        Glide.with(this)
+                .load(setPicture(indexEarth))
+                .apply(new RequestOptions().override(900,900)
+                .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(iv_image_earth);
+
+
         ib_image_earth.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 shareImageEarth(getApplicationContext());
-
 
             }
         });
@@ -61,7 +75,7 @@ public class ImageActivityEarth extends AppCompatActivity {
 
     public static String setPicture(int index){
         String url = "https://epic.gsfc.nasa.gov/archive/natural/";
-        return url + "2018/06/21/" + "png/" + earthArrayList.get(index).getImage() +
+        return url + dateApi + "png/" + earthArrayList.get(index).getImage() +
                 ".png";
     }
 
@@ -70,8 +84,11 @@ public class ImageActivityEarth extends AppCompatActivity {
     static public void shareImageEarth(final Context context){
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
+
         Picasso.get()
                 .load(setPicture(indexEarth))
+                .priority(Picasso.Priority.HIGH)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -83,7 +100,9 @@ public class ImageActivityEarth extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {}
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        e.getMessage();
+                    }
                     @Override
                     public void onPrepareLoad(Drawable placeHolderDrawable) {}
                 });

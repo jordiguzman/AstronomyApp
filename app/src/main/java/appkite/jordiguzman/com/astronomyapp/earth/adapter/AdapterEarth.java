@@ -54,7 +54,7 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
                 .load(url)
                 .error(Glide.with(mContext)
                 .load(url))
-                .preload(600,600);
+                .preload(300,300);
         Glide.get(mContext)
                 .setMemoryCategory(MemoryCategory.HIGH);
         Glide.with(mContext)

@@ -137,6 +137,9 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
+                if (mApodData.isEmpty()){
+                    new AsynctTaskApod().execute();
+                }
             }
 
 
