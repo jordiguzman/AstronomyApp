@@ -62,4 +62,9 @@
     <string name="fast_forward">Fast Forward</string>
     <string name="picture_of_earth">Picture of Earth</string>
     <string name="flag_from_astronaut">Flag From Astronaut</string>
+    <string name="logo_twitter">Logo Twitter</string>
+    <string name="logo_wikipedia">Logo Wikipedia</string>
+    <string name="astronauts_in_space">Astronauts in space</string>
+    <string name="webcam_from_iss">Webcam from ISS</string>
+    <string name="problems_with_webcam">Problems with Webcam</string>
 </resources>

@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/model_margin_cardview"
     android:layout_marginLeft="@dimen/model_margin_cardview"
     android:layout_marginRight="@dimen/model_margin_cardview"
     android:layout_marginTop="@dimen/model_margin_cardview"
-    android:layout_marginBottom="@dimen/model_margin_cardview"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    android:orientation="vertical">
 
-    <LinearLayout
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary_light"
@@ -20,44 +24,112 @@
 
         <ImageView
             android:id="@+id/iv_astronaut"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:layout_margin="@dimen/model_margin_8"
             android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/model_margin_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/round_image_view"
             android:contentDescription="@string/app_name"
-            android:transitionName="@string/trans_photo_apod"
             android:scaleType="centerCrop"
-            tools:targetApi="lollipop" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:transitionName="@string/trans_photo_apod"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="lollipop"
+            android:layout_marginLeft="8dp" />
+
+
+        <ImageView
+            android:id="@+id/iv_twitter"
+            android:layout_width="@dimen/twitter_wiki_side"
+            android:layout_height="@dimen/twitter_wiki_side"
+            android:layout_gravity="end"
             android:layout_margin="@dimen/model_margin_8"
-            android:orientation="vertical">
-            <ImageView
-                android:id="@+id/iv_flag"
-                android:layout_margin="@dimen/model_margin_8"
-                android:layout_width="@dimen/width_flag"
-                android:layout_height="@dimen/height_flag"
-                android:layout_gravity="end"
-                android:contentDescription="@string/flag_from_astronaut" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/logo_twitter"
+            android:src="@drawable/twitter"
+            app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_astronaut"
+            android:layout_marginLeft="8dp" />
+
+        <ImageView
+            android:id="@+id/iv_wikipedia"
+            android:layout_width="@dimen/twitter_wiki_side"
+            android:layout_height="@dimen/twitter_wiki_side"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/model_margin_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/logo_wikipedia"
+            android:src="@drawable/wiki"
+            app:layout_constraintStart_toEndOf="@+id/iv_twitter"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_astronaut"
+            android:layout_marginLeft="8dp" />
+
+        <ImageView
+            android:id="@+id/iv_flag"
+            android:layout_width="@dimen/width_flag"
+            android:layout_height="@dimen/height_flag"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/model_margin_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/flag_from_astronaut"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="8dp" />
+
         <TextView
             android:id="@+id/tv_name_astronaut"
+            style="@style/TextViewModelTitle"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/alfa_slab_one"
-            style="@style/TextViewModelTitle" />
+
+            app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp" />
 
         <TextView
             android:id="@+id/tv_title_astronaut"
+            style="@style/TextViewModelSubTitle"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+
             android:textStyle="italic"
-            style="@style/TextViewModelSubTitle"/>
-            <TextView
-                android:id="@+id/tv_bio"
-                style="@style/TextViewModelSubTitle" />
+            app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name_astronaut"
+            android:layout_marginLeft="8dp" />
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_bio"
+            style="@style/TextViewModelSubTitle"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_astronaut"
+            android:layout_marginLeft="8dp" />
+
+        <TextView
+            android:id="@+id/tv_time_in_space"
+            style="@style/TextViewModelSubTitle"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bio" />
 
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
 
 
 </android.support.v7.widget.CardView>

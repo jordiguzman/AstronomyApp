@@ -20,18 +20,17 @@
 
     <ImageButton
         android:id="@+id/ib_iss"
-        style="@android:style/Widget.Holo.ImageButton"
+        style="@android:style/Widget.Holo.Light.ImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        android:onClick="toAstronauts"
-        android:background="@color/transparent"
+        android:onClick="clickMenuIss"
+        android:contentDescription="@string/menu_button"
         android:src="@drawable/ic_menu_black_24dp"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="16dp"
-        android:contentDescription="@string/menu_button" />
+        android:layout_marginRight="16dp" />
 
     <TextView
         android:id="@+id/tv_data_iss_position"

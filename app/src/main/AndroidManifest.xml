@@ -11,14 +11,16 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@drawable/ic_galaxy"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@drawable/ic_galaxy"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="true">
-        <!--<provider
+        android:theme="@style/AppTheme">
+
+        <!--
+        <provider
             android:authorities="appkite.jordiguzman.com.astronomyapp"
             android:name="android.support.v4.content.FileProvider"
             android:exported="false"
@@ -26,13 +28,14 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider"/>
-        </provider>-->
+        </provider>
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBil6N0vhX3-uJRzwPZD2D7Pn3H5Ee-MuI" />
-        <meta-data android:name="com.google.android.gms.maps.API_OPTIONS"
-            android:value="B3H9HE845CFHYG"/>
-
+        <meta-data
+            android:name="com.google.android.gms.maps.API_OPTIONS"
+            android:value="B3H9HE845CFHYG" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -58,8 +61,9 @@
         <activity
             android:name=".planets.ui.SolarSystemActivity"
             android:parentActivityName=".mainUi.MainActivityApp" />
-        <activity android:name=".iss.ui.AstronautsActivity"
-            android:theme="@style/AppThemeActionBar"/>
+        <activity
+            android:name=".iss.ui.AstronautsActivity"
+            android:theme="@style/AppThemeActionBar" />
         <activity
             android:name=".iss.ui.MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -99,8 +103,8 @@
         <activity android:name=".earth.ui.EarthDetailActivity" />
         <activity android:name=".apod.ui.FavoritesApodActivity" />
         <activity android:name=".apod.ui.FavoritesApodDetailActivity" />
-        <activity android:name=".earth.ui.ImageActivityEarth"
-            />
+        <activity android:name=".earth.ui.ImageActivityEarth" />
+        <activity android:name=".iss.ui.WebCamActivity"></activity>
     </application>
 
 </manifest>

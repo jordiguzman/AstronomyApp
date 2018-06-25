@@ -93,7 +93,8 @@
         android:onClick="stepForward"
         android:src="@drawable/ic_play_arrow_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="89dp" />
 
     <ImageButton
         android:id="@+id/btn_animation"
@@ -106,5 +107,6 @@
         android:onClick="fastForward"
         android:src="@drawable/ic_fast_forward_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="70dp" />
 </android.support.constraint.ConstraintLayout>

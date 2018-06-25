@@ -26,7 +26,6 @@
         android:id="@+id/layout_image_apod"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
         tools:context="appkite.jordiguzman.com.astronomyapp.apod.ui.ImageApodActivity">
 
 

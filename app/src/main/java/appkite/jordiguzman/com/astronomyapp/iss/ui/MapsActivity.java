@@ -1,6 +1,7 @@
 package appkite.jordiguzman.com.astronomyapp.iss.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
@@ -11,8 +12,12 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -105,6 +110,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mCurrentWidth = 5;
         new HttpAsyntaskDataAstronauts().execute(url);
 
+    }
+
+    public void clickMenuIss(View view){
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popupMenu = new PopupMenu(wrapper, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_iss, popupMenu.getMenu());
+
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menu_astronauts:
+                        Intent intent = new Intent(getApplicationContext(), AstronautsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.menu_cam:
+                        Intent intent1 = new Intent(getApplicationContext(), WebCamActivity.class);
+                        startActivity(intent1);
+                        break;
+                }
+                return true;
+            }
+
+        });
     }
 
     @Override
@@ -316,7 +347,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Log.e("ERROR VOLLEY: ", volleyError.getMessage());
+                Log.e("ERROR VOLLEY: ", "is" + volleyError.getMessage());
             }
         });
 
@@ -352,10 +383,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    public void toAstronauts(View view){
-        Intent intent = new Intent(this, AstronautsActivity.class);
-        startActivity(intent);
-    }
+
 
     @Override
     protected void onDestroy() {
