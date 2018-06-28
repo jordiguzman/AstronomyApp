@@ -67,4 +67,9 @@
     <string name="astronauts_in_space">Astronauts in space</string>
     <string name="webcam_from_iss">Webcam from ISS</string>
     <string name="problems_with_webcam">Problems with Webcam</string>
+    <string name="astronaut_picture">Astronaut Picture</string>
+    <string name="is_favorited">This item is already in Favorites!</string>
+    <string name="no_network">No network connection!</string>
+    <string name="retry">RETRY</string>
+
 </resources>

@@ -39,7 +39,7 @@
                 android:layout_marginStart="@dimen/model_margin_8" />
 
             <TextView
-                android:id="@+id/tv_date_hubble_item"
+                android:id="@+id/tv_description_hubble_item"
                 style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,14 +56,7 @@
                 android:layout_marginEnd="@dimen/model_margin_8"
                 android:layout_marginStart="@dimen/model_margin_8" />
 
-            <TextView
-                android:id="@+id/tv_abstract_hubble_item"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/model_margin_8"
-                android:layout_marginStart="@dimen/model_margin_8" />
+
 
 
         </LinearLayout>

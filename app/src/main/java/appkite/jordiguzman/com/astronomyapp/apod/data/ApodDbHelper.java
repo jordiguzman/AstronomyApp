@@ -18,6 +18,7 @@ public class ApodDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String CREATE_TABLE = "CREATE TABLE " + ApodContract.ApodEntry.TABLE_NAME + " (" +
                 ApodContract.ApodEntry._ID + " INTEGER PRIMARY KEY, " +
+                ApodContract.ApodEntry.COLUMN_ID + " TEXT NOT NULL, " +
                 ApodContract.ApodEntry.COLUMN_COPYRIGHT + " TEXT NOT NULL, " +
                 ApodContract.ApodEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 ApodContract.ApodEntry.COLUMN_DATE + " TEXT NOT NULL, " +

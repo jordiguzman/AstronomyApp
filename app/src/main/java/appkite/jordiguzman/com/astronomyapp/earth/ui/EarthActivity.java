@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,8 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
     public static int itemPositionEarth;
     @BindView(R.id.iv_earth)
     ImageView iv_earth;
+    @BindView(R.id.collapsing_earth)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @SuppressLint("StaticFieldLeak")
     private static RecyclerView mRecyclerView;
 
@@ -47,6 +50,8 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
 
 
         mRecyclerView= findViewById(R.id.rv_earth);
+        imageCollapsingToolBar();
+
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[1])
                 .into(iv_earth);
@@ -58,12 +63,6 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
             populateData();
             convertDate();
         }
-
-
-
-
-
-
 
     }
     public void convertDate(){
@@ -85,6 +84,12 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
                          if (earthArrayList != null){
                              populateData();
                              convertDate();
+                             EarthActivity.this.runOnUiThread(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     preloadPictures();
+                                 }
+                             });
                          }
 
                         break;
@@ -113,11 +118,16 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         for (int i=0; i< earthArrayList.size(); i++){
             Glide.with(this)
                     .load(earthArrayList.get(i).getImage())
-                    .preload(300,300);
+                    .preload();
         }
     }
 
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
 
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
+    }
     @Override
     public void onClickItem(int position) {
         itemPositionEarth = position;

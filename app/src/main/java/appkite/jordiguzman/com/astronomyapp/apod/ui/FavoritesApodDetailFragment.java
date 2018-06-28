@@ -65,10 +65,15 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
         uri = uri.buildUpon().appendPath(FavoritesApodActivity.dataLoaded[itemPositionFavorites][6]).build();
         contentResolver.delete(uri, null, null);
         snackBarDelete();
+
     }
 
     private void snackBarDelete() {
         Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_deleted, Snackbar.LENGTH_LONG );
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
         snackbar.show();
     }
 

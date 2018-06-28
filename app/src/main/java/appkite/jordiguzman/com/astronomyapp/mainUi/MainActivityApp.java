@@ -2,31 +2,22 @@ package appkite.jordiguzman.com.astronomyapp.mainUi;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
@@ -34,16 +25,11 @@ import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
 import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
 import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.CheckOnLine;
 import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.abstractData;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.credits;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.date;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.name;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.urlImage;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.urlThumbnail;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
@@ -57,10 +43,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
-
-
-
-
+    private CheckOnLine checkOnLIne;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -68,6 +51,12 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_app);
         ButterKnife.bind(this);
+
+         checkOnLIne = new CheckOnLine(this);
+        if (!checkOnLIne.isOnline()){
+            showSnackbar();
+            return;
+        }
 
         RecyclerView mRecyclerView = findViewById(R.id.rv_main);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
@@ -85,32 +74,37 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         imageCollapsingToolBar();
 
 
-        MainActivityApp.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
-
-                /*try {
-                    populateArray();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
-
-            }
-
-        });
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 preLoadImagesSystem();
             }
         });
 
+    }
 
+    private void showSnackbar() {
+        Snackbar mSnackbar = Snackbar
+                .make(mCoordinatorLayout, getResources().getString(R.string.no_network), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!checkOnLIne.isOnline()) {
+                            showSnackbar();
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), Splash.class);
+                            startActivity(intent);
+                            finish();
+                        }
 
+                    }
+                });
+        mSnackbar.setActionTextColor(Color.RED);
+        View sbView = mSnackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+        mSnackbar.show();
     }
 
 
@@ -123,98 +117,12 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     }
 
-
-
-
-
-
-
-
     @SuppressLint("ResourceAsColor")
     public void imageCollapsingToolBar(){
 
         mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
         mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
-
-
-
-
-
-
-
-    /**
-     * *******************************HUBBLE *************************************
-     *
-     */
-    public void populateArray() throws ExecutionException, InterruptedException {
-        for (int i= 1; i< 27; i++){
-            new HttpAsyncTaskDataHubble().execute(HubbleActivity.BASE_URL + i).get();
-        }
-
-    }
-
-    public static String GETDataHubble(String url){
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-        return  result;
-    }
-    private static String converInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        StringBuilder result = new StringBuilder();
-        while ((line = bufferedReader.readLine()) != null)result.append(line);
-
-        inputStream.close();
-        return result.toString();
-    }
-
-    static class HttpAsyncTaskDataHubble extends AsyncTask<String, Void, String > {
-
-
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return GETDataHubble(strings[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try {
-                if (result != null){
-                    JSONObject jsonObject = new JSONObject(result);
-                    String nameResult = jsonObject.getString("name");
-                    String urlThumb = jsonObject.getString("thumbnail");
-                    String urlImageResult = jsonObject.getString("keystone_image_2x");
-                    String dateResult = jsonObject.getString("publication");
-                    String abstractDate = jsonObject.getString("abstract");
-                    String creditsResult = jsonObject.getString("credits");
-                    name.add(nameResult);
-                    urlThumbnail.add(urlThumb);
-                    urlImage.add(urlImageResult);
-                    date.add(dateResult);
-                    abstractData.add(abstractDate);
-                    credits.add(creditsResult);
-                }
-            }catch (JSONException e){
-                e.getMessage();
-            }
-
-        }
-    }
-
 
     @Override
     public void onClickItem(int position) {
@@ -239,6 +147,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             case 4:
                 Intent intent4 = new Intent(this, HubbleActivity.class);
                 startActivity(intent4);
+
                 break;
         }
     }

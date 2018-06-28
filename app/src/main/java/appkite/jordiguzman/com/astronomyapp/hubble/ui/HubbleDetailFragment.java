@@ -20,7 +20,7 @@ import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.name;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.dataImagesDetail;
 
 public class HubbleDetailFragment  extends Fragment{
 
@@ -52,7 +52,7 @@ public class HubbleDetailFragment  extends Fragment{
 
         @Override
         public int getCount() {
-            return name.size();
+            return dataImagesDetail.size();
         }
 
         @Override
@@ -70,22 +70,19 @@ public class HubbleDetailFragment  extends Fragment{
             TextView tv_title_pager_hubble_item = view.findViewById(R.id.tv_title_pager_hubble_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_hubble_item.setTypeface(typeface);
-            tv_title_pager_hubble_item.setText(HubbleActivity.name.get(position));
+            tv_title_pager_hubble_item.setText(dataImagesDetail.get(position).getName());
 
-            TextView tv_date_hubble_item = view.findViewById(R.id.tv_date_hubble_item);
-            String dateTemp = HubbleActivity.date.get(position).substring(0, 10);
-            tv_date_hubble_item.setText(dateTemp);
+            TextView tv_description_hubble_item = view.findViewById(R.id.tv_description_hubble_item);
+            tv_description_hubble_item.setText(Html.fromHtml(dataImagesDetail.get(position).getDescrption()));
 
             TextView tv_creditt_hubble_item = view.findViewById(R.id.tv_creditt_hubble_item);
-            String creditTemp = String.valueOf(Html.fromHtml(HubbleActivity.credits.get(position)));
+            String creditTemp = String.valueOf(Html.fromHtml(dataImagesDetail.get(position).getCredits()));
             tv_creditt_hubble_item.setText(creditTemp);
 
-            TextView tv_abstract_hubble_item = view.findViewById(R.id.tv_abstract_hubble_item);
-            String abstractTemp = String.valueOf(Html.fromHtml(HubbleActivity.abstractData.get(position)));
-            tv_abstract_hubble_item.setText(abstractTemp);
+
 
             DynamicHeightNetworkImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
-            photo_hubble_detail.setImageUrl(HubbleActivity.urlImage.get(position),
+            photo_hubble_detail.setImageUrl(dataImagesDetail.get(position).getImage(),
                     ImageLoaderHelper.getInstance(mContext).getImageLoader());
 
             return view;

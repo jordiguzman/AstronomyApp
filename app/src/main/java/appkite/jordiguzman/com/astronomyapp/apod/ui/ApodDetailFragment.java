@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -32,11 +34,12 @@ import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDat
 public class ApodDetailFragment extends Fragment implements View.OnClickListener {
 
     private Context mContext;
-
+    private int caseSnackBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
     }
 
@@ -53,18 +56,57 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
         mViewPager.setAdapter(new ApodPageAdapter());
         mViewPager.setCurrentItem(ApodActivity.itemPosition);
-        FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
-        mFloatingActionButton.setOnClickListener(this);
+        FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites);
+        fb_favorites.setOnClickListener(this);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                itemPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
+    private boolean isFavorited(){
+        Cursor cursor = mContext.getContentResolver().query(ApodContract.ApodEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                ApodContract.ApodEntry.COLUMN_ID);
 
+        if (cursor != null){
+            while (cursor.moveToNext()){
+                String idApod = cursor.getString(1);
+                String idApodActual = mApodData.get(itemPosition).getDate();
+
+                if (idApod.equals(idApodActual)){
+                    return false;
+                }
+            }
+        }
+        cursor.close();
+        return true;
+    }
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fb_favorites:
-               saveApodData();
-
-                break;
+        switch (v.getId()){
+           case R.id.fb_favorites:
+                if (isFavorited()){
+                    saveApodData();
+                }else {
+                    caseSnackBar=1;
+                    showSnackBar();
+                }
         }
     }
 
@@ -83,10 +125,11 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-            itemPosition = position;
+
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_apod, container, false);
             container.addView(view);
+
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_item.setTypeface(typeface);
@@ -132,8 +175,10 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             });
 
 
+
             return view;
         }
+
 
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
@@ -143,27 +188,46 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     public void saveApodData() {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ApodContract.ApodEntry.COLUMN_TITLE, mApodData.get(itemPosition-1).getTitle());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_DATE, mApodData.get(itemPosition-1).getDate());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_EXPLANATION, mApodData.get(itemPosition-1).getExplanation());
-        if (mApodData.get(itemPosition-1).getCopyright()==null){
-            mApodData.get(itemPosition-1).setCopyright("No data");
+        contentValues.put(ApodContract.ApodEntry.COLUMN_ID, mApodData.get(itemPosition).getDate());
+        contentValues.put(ApodContract.ApodEntry.COLUMN_TITLE, mApodData.get(itemPosition).getTitle());
+        contentValues.put(ApodContract.ApodEntry.COLUMN_DATE, mApodData.get(itemPosition).getDate());
+        contentValues.put(ApodContract.ApodEntry.COLUMN_EXPLANATION, mApodData.get(itemPosition).getExplanation());
+        if (mApodData.get(itemPosition).getCopyright()==null){
+            mApodData.get(itemPosition).setCopyright("No data");
         }
-        contentValues.put(ApodContract.ApodEntry.COLUMN_COPYRIGHT,mApodData.get(itemPosition-1).getCopyright());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_URL, mApodData.get(itemPosition-1).getUrl());
-        if (mApodData.get(itemPosition-1).getHdurl()==null){
-            mApodData.get(itemPosition-1).setHdurl("No data");
+        contentValues.put(ApodContract.ApodEntry.COLUMN_COPYRIGHT,mApodData.get(itemPosition).getCopyright());
+        contentValues.put(ApodContract.ApodEntry.COLUMN_URL, mApodData.get(itemPosition).getUrl());
+        if (mApodData.get(itemPosition).getHdurl()==null){
+            mApodData.get(itemPosition).setHdurl("No data");
         }
-        contentValues.put(ApodContract.ApodEntry.COLUMN_HURL, mApodData.get(itemPosition-1).getHdurl());
+        contentValues.put(ApodContract.ApodEntry.COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
         ContentResolver resolver = mContext.getContentResolver();
         resolver.insert(ApodContract.ApodEntry.CONTENT_URI, contentValues);
-        //Toast.makeText(mContext, "Data saved", Toast.LENGTH_LONG).show();
+        caseSnackBar=0;
         showSnackBar();
 
     }
     public void showSnackBar(){
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_LONG );
-        snackbar.show();
+        Snackbar snackbar;
+        switch (caseSnackBar){
+            case 0:
+                 snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_LONG );
+                 View snackbarView = snackbar.getView();
+                 int snackbarTextId = android.support.design.R.id.snackbar_text;
+                 TextView textView = snackbarView.findViewById(snackbarTextId);
+                 textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
+                 snackbar.show();
+                 break;
+            case 1:
+                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_LONG );
+                View snackbarView1 = snackbar.getView();
+                int snackbarTextId1 = android.support.design.R.id.snackbar_text;
+                TextView textView1 = snackbarView1.findViewById(snackbarTextId1);
+                textView1.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
+                snackbar.show();
+        }
+
+
     }
 
 

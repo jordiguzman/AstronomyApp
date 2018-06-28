@@ -14,7 +14,8 @@ public class Astronaut   {
     private String bioWiki;
     private String twitter;
 
-    public Astronaut(String name, String bioPhoto, String flag, String launchDate, String role, String location, String bio, String bioWiki, String twitter) {
+    public Astronaut(String name, String bioPhoto, String flag, String launchDate,
+                     String role, String location, String bio, String bioWiki, String twitter) {
         this.name = name;
         this.bioPhoto = bioPhoto;
         this.flag = flag;

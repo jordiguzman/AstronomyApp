@@ -11,22 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.urlThumbnail;
+import appkite.jordiguzman.com.astronomyapp.hubble.model.ImagesDetail;
 
 public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHubbleViewHolder>{
 
     private Context mContext;
-    private ArrayList<String> nameAdapter;
+    private ArrayList<ImagesDetail> mDataImagesDetail;
     private ItemClickListenerHubble mItemClickListenerHubble;
 
-    public AdapterHubble(Context context, ArrayList<String> name, ItemClickListenerHubble itemClickListenerHubble){
+    public AdapterHubble(Context context, ArrayList<ImagesDetail> dataImagesDetail, ItemClickListenerHubble itemClickListenerHubble){
         mContext = context;
-        nameAdapter = name;
+        mDataImagesDetail = dataImagesDetail;
         mItemClickListenerHubble = itemClickListenerHubble;
     }
 
@@ -45,15 +45,17 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
     @Override
     public void onBindViewHolder(@NonNull AdapterHubbleViewHolder holder, int position) {
 
+        Glide.get(mContext)
+                .setMemoryCategory(MemoryCategory.HIGH);
         Glide.with(mContext)
-                .load(urlThumbnail.get(position))
+                .load(mDataImagesDetail.get(position).getImage())
                 .into(holder.iv_hubble);
-        holder.tv_hubble.setText(nameAdapter.get(position));
+        holder.tv_hubble.setText(mDataImagesDetail.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return nameAdapter.size();
+        return mDataImagesDetail.size();
     }
 
     public interface ItemClickListenerHubble{

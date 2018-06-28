@@ -46,26 +46,17 @@
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccentLigth"
+                    android:layout_marginTop="@dimen/model_margin_8"
+                    android:layout_marginBottom="@dimen/model_margin_16"
                     android:gravity="center"
                     android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/tv_date_pager_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/model_margin_8"
-                    android:layout_marginStart="@dimen/model_margin_8"
-                    android:textStyle="italic" />
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/model_margin_8"
                     android:layout_marginStart="@dimen/model_margin_8"
-                    android:layout_marginBottom="@dimen/model_margin_8"
                     android:orientation="horizontal">
 
                     <TextView
@@ -79,9 +70,18 @@
                         android:id="@+id/tv_copyright_pager_item"
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:textStyle="italic" />
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_date_pager_item"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="@dimen/model_margin_8"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/model_margin_8"
                 android:layout_marginStart="@dimen/model_margin_8"
-                android:layout_marginTop="@dimen/model_margin_16"
+                android:layout_marginTop="@dimen/model_margin_8"
                 android:orientation="vertical">
 
 
@@ -100,8 +100,6 @@
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorLink="@android:color/holo_orange_dark"
-                    android:autoLink="all"
                     android:linksClickable="true"
                     android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item" />
 

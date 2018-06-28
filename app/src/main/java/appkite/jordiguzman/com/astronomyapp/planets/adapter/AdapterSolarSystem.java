@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 
@@ -42,6 +44,7 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
         holder.tv_title.setText(PLANETS[position]);
         Glide.with(mContext)
                 .load(URL_PLANETS[position])
+                .apply(new RequestOptions().transform(new RoundedCorners(15)))
                 .into(holder.iv_system);
     }
 

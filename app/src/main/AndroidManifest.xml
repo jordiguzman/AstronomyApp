@@ -3,6 +3,7 @@
     package="appkite.jordiguzman.com.astronomyapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -18,18 +19,6 @@
         android:roundIcon="@drawable/ic_galaxy"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!--
-        <provider
-            android:authorities="appkite.jordiguzman.com.astronomyapp"
-            android:name="android.support.v4.content.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileprovider"/>
-        </provider>
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBil6N0vhX3-uJRzwPZD2D7Pn3H5Ee-MuI" />
@@ -46,13 +35,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
         </activity>
         <activity
             android:name=".apod.ui.ApodActivity"
@@ -62,8 +44,7 @@
             android:name=".planets.ui.SolarSystemActivity"
             android:parentActivityName=".mainUi.MainActivityApp" />
         <activity
-            android:name=".iss.ui.AstronautsActivity"
-            android:theme="@style/AppThemeActionBar" />
+            android:name=".iss.ui.AstronautsActivity"/>
         <activity
             android:name=".iss.ui.MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -78,7 +59,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".apod.ui.ApodDetailActivity" />
+        <activity android:name=".apod.ui.ApodDetailActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".apod.ui.ImageApodActivity" />
 
         <provider
@@ -104,7 +86,7 @@
         <activity android:name=".apod.ui.FavoritesApodActivity" />
         <activity android:name=".apod.ui.FavoritesApodDetailActivity" />
         <activity android:name=".earth.ui.ImageActivityEarth" />
-        <activity android:name=".iss.ui.WebCamActivity"></activity>
+        <activity android:name=".iss.ui.WebCamActivity"/>
     </application>
 
 </manifest>

@@ -3,7 +3,9 @@ package appkite.jordiguzman.com.astronomyapp.iss.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +53,9 @@ public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.Adap
 
         Glide.with(mContext)
                 .load(mAstronautData.get(position).getBioPhoto())
+                .apply(new RequestOptions().transform(new RoundedCorners(15))
+                .error(R.drawable.ic_galaxy)
+                .placeholder(R.drawable.ic_galaxy))
                 .into(holder.iv_astronaut);
         Glide.with(mContext)
                 .load(mAstronautData.get(position).getFlag())
@@ -105,6 +112,7 @@ public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.Adap
         ImageView iv_astronaut, iv_flag, iv_twitter, iv_wikipedia;
         TextView tv_name_astronaut, tv_title_astronaut, tv_bio, tv_time_in_space;
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterAstronautViewHolder(View itemView) {
             super(itemView);
             iv_astronaut = itemView.findViewById(R.id.iv_astronaut);
@@ -117,6 +125,7 @@ public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.Adap
             tv_title_astronaut = itemView.findViewById(R.id.tv_title_astronaut);
             tv_bio = itemView.findViewById(R.id.tv_bio);
             tv_time_in_space = itemView.findViewById(R.id.tv_time_in_space);
+            iv_astronaut.setClipToOutline(true);
         }
 
         @Override

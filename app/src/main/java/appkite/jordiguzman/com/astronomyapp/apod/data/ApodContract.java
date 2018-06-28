@@ -17,6 +17,7 @@ public class ApodContract {
                 .appendPath(PATH_APOD)
                 .build();
         static final String TABLE_NAME = "apod";
+        public static final  String COLUMN_ID = "id";
         public static final String COLUMN_COPYRIGHT = "copyright";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DATE = "date";
