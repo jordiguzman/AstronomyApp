@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,16 +18,27 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_COPYRIGHT;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_DATE;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_EXPLANATION;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_HURL;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_ID;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_TITLE;
+import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_URL;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.itemPosition;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
 
@@ -35,10 +47,13 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
     private Context mContext;
     private int caseSnackBar;
+    private int mMutedColor;
+    private View linearLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
 
     }
@@ -57,6 +72,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         mViewPager.setAdapter(new ApodPageAdapter());
         mViewPager.setCurrentItem(ApodActivity.itemPosition);
         FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites);
+
         fb_favorites.setOnClickListener(this);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -82,7 +98,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 null,
                 null,
                 null,
-                ApodContract.ApodEntry.COLUMN_ID);
+                COLUMN_ID);
 
         if (cursor != null){
             while (cursor.moveToNext()){
@@ -107,6 +123,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                     caseSnackBar=1;
                     showSnackBar();
                 }
+                break;
         }
     }
 
@@ -124,7 +141,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
         @NonNull
         @Override
-        public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_apod, container, false);
@@ -147,7 +164,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             } else {
                 tv_copyright_pager_item.setText(String.format("%s\n", mApodData.get(position).getCopyright()));
             }
-
+            linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
             DynamicHeightNetworkImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
@@ -159,9 +176,12 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                setColorLinearlayout(urlResult);
+
             } else {
                 iv_photo_apod_detail.setImageUrl(mApodData.get(position).getUrl(),
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                 setColorLinearlayout(mApodData.get(position).getUrl());
             }
 
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +198,25 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
             return view;
         }
+        private void setColorLinearlayout(String url){
+            ImageLoaderHelper.getInstance(mContext).getImageLoader()
+                    .get(url, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            Bitmap bitmap = imageContainer.getBitmap();
+                            if (bitmap !=null){
+                                Palette p = Palette.from(bitmap).generate();
+                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                linearLayout.setBackgroundColor(mMutedColor);
+                            }
+                        }
+
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+
+                        }
+                    });
+        }
 
 
         @Override
@@ -188,19 +227,19 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     public void saveApodData() {
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ApodContract.ApodEntry.COLUMN_ID, mApodData.get(itemPosition).getDate());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_TITLE, mApodData.get(itemPosition).getTitle());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_DATE, mApodData.get(itemPosition).getDate());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_EXPLANATION, mApodData.get(itemPosition).getExplanation());
+        contentValues.put(COLUMN_ID, mApodData.get(itemPosition).getDate());
+        contentValues.put(COLUMN_TITLE, mApodData.get(itemPosition).getTitle());
+        contentValues.put(COLUMN_DATE, mApodData.get(itemPosition).getDate());
+        contentValues.put(COLUMN_EXPLANATION, mApodData.get(itemPosition).getExplanation());
         if (mApodData.get(itemPosition).getCopyright()==null){
             mApodData.get(itemPosition).setCopyright("No data");
         }
-        contentValues.put(ApodContract.ApodEntry.COLUMN_COPYRIGHT,mApodData.get(itemPosition).getCopyright());
-        contentValues.put(ApodContract.ApodEntry.COLUMN_URL, mApodData.get(itemPosition).getUrl());
+        contentValues.put(COLUMN_COPYRIGHT,mApodData.get(itemPosition).getCopyright());
+        contentValues.put(COLUMN_URL, mApodData.get(itemPosition).getUrl());
         if (mApodData.get(itemPosition).getHdurl()==null){
             mApodData.get(itemPosition).setHdurl("No data");
         }
-        contentValues.put(ApodContract.ApodEntry.COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
+        contentValues.put(COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
         ContentResolver resolver = mContext.getContentResolver();
         resolver.insert(ApodContract.ApodEntry.CONTENT_URI, contentValues);
         caseSnackBar=0;
@@ -225,6 +264,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 TextView textView1 = snackbarView1.findViewById(snackbarTextId1);
                 textView1.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
                 snackbar.show();
+                break;
         }
 
 

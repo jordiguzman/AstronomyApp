@@ -25,7 +25,7 @@
             android:orientation="vertical">
 
 
-            <appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView
+            <appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView
                 android:id="@+id/photo_apod_detail"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -34,7 +34,14 @@
                 android:scaleType="centerCrop"
                 tools:targetApi="lollipop" />
 
+            <appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:maxWidth="1000dp">
             <LinearLayout
+                android:id="@+id/linearLayout_apod_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
@@ -43,7 +50,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_pager_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
+                    style="?android:attr/textAppearanceLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccentLigth"
@@ -60,27 +67,31 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/TextAppearance.AppCompat.Subhead"
+                        style="?android:attr/textAppearanceSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/copyright"
+                        android:textColor="@android:color/white"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_copyright_pager_item"
-                        style="@style/TextAppearance.AppCompat.Subhead"
+                        style="?android:attr/textAppearanceSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textStyle="italic" />
+                        android:layout_height="match_parent"
+                        android:textStyle="italic"
+                        android:textColor="@color/colorAccent"/>
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_date_pager_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
+                    style="?android:attr/textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
                     android:layout_marginEnd="@dimen/model_margin_8"
                     android:layout_marginStart="@dimen/model_margin_8"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
                     android:textStyle="italic" />
 
             </LinearLayout>
@@ -105,7 +116,7 @@
 
 
             </LinearLayout>
-
+            </appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout>
         </LinearLayout>
     </ScrollView>
 

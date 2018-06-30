@@ -1,4 +1,4 @@
-package appkite.jordiguzman.com.astronomyapp.apod.ui.utils;
+package appkite.jordiguzman.com.astronomyapp.mainUi.utils;
 
 
 import android.content.Context;

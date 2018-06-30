@@ -21,7 +21,7 @@ public class ImagesDetail  {
         return name;
     }
 
-    public String getDescrption() {
+    public String getDescription() {
         return description;
     }
 

@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/linearLayout_activity_image"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +9,7 @@
     android:orientation="vertical">
 
     <ImageButton
-        android:id="@+id/ib_image_apod"
+        android:id="@+id/ib_image_hubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -24,29 +23,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/layout_image_apod"
+        android:id="@+id/layout_image_hubble"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="appkite.jordiguzman.com.astronomyapp.apod.ui.ImageApodActivity">
 
 
         <com.github.chrisbanes.photoview.PhotoView
-            android:id="@+id/iv_image_apod"
+            android:id="@+id/iv_image_hubble"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/app_name"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.youtube.player.YouTubePlayerView
-            android:id="@+id/video_view_apod"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

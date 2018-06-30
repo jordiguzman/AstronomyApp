@@ -137,9 +137,8 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
-                if (mApodData.isEmpty()){
-                    new AsynctTaskApod().execute();
-                }
+                new AsynctTaskApod().execute();
+
             }
 
 
@@ -193,7 +192,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     }
 
-    public void clickMenu(View view){
+    public void clickMenuApod(View view){
         Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
         PopupMenu popupMenu = new PopupMenu(wrapper, view);
         MenuInflater inflater = popupMenu.getMenuInflater();

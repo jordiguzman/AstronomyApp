@@ -8,7 +8,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,7 +44,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     TextView tv_nodata_favorites;
     private RecyclerView mRecyclerView;
     public static ArrayList<String[]> apodArrayList = new ArrayList<>();
-    public static String [][] dataLoaded;
+    public static String [][] dataLoadedApod;
     public static int itemPositionFavorites;
 
 
@@ -84,8 +83,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
     public void loadData(){
         apodArrayList.clear();
-        dataLoaded=null;
-        Log.i("Data", String.valueOf(ApodContract.ApodEntry.CONTENT_URI));
+        dataLoadedApod =null;
         Cursor mCursor = getContentResolver().query(ApodContract.ApodEntry.CONTENT_URI, null
         ,null, null,
                 ApodContract.ApodEntry._ID);
@@ -101,7 +99,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                         mCursor.getString(mCursor.getColumnIndex(ApodContract.ApodEntry._ID))});
             }
             Collections.reverse(apodArrayList);
-            dataLoaded = apodArrayList.toArray(new String[apodArrayList.size()][5]);
+            dataLoadedApod = apodArrayList.toArray(new String[apodArrayList.size()][5]);
             mCursor.close();
         }
     }

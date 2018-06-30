@@ -1,15 +1,24 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -45,14 +54,20 @@ import retrofit2.Response;
 
 public class HubbleActivity extends AppCompatActivity implements AdapterHubble.ItemClickListenerHubble{
 
-    public ArrayList<Images> dataImages = new ArrayList<>();
+    public static ArrayList<Images> dataImages = new ArrayList<>();
     public static ArrayList<ImagesDetail> dataImagesDetail = new ArrayList<>();
     private String url = "http://hubblesite.org/api/v3/image/";
 
-
+    public static int itemPositionHubble;
+    @BindView(R.id.ib_menu_activity_hubble)
+    ImageButton ib_menu_hubble;
     @BindView(R.id.iv_hubble)
     ImageView iv_hubble;
-    public static int itemPositionHubble;
+    @BindView(R.id.pb_hubble_activity)
+    ProgressBar progressBar;
+    @BindView(R.id.rv_hubble)
+    RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +78,10 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[4])
                 .into(iv_hubble);
-
+        recyclerView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
         getDataHubbleImages();
+
 
     }
 
@@ -79,8 +96,9 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                     case 200:
                         dataImages = (ArrayList<Images>) response.body();
                         for (int i=0; i< dataImages.size();i++){
-                            new HttpAsyctaskDataHubbleImagesDetail().execute(url + dataImages.get(i).getId());
+                            new HttpAsyctaskDataHubbleImagesDetail().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url + dataImages.get(i).getId());
                         }
+
                         break;
                     default:
                         Toast.makeText(getApplicationContext(), "Error api", Toast.LENGTH_LONG).show();
@@ -91,6 +109,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
             public void onFailure(@NonNull Call<List<Images>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
             }
+
 
         });
 
@@ -157,16 +176,56 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                             .preload();
                 }
 
-                setupRecyclerView();
+                CountDownTimer countDownTimer = new CountDownTimer(100,1500) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        setupRecyclerView();
+                    }
+                };
+                countDownTimer.start();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
         }
+
+    }
+
+    public void clickMenuHubble(View view){
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popupMenu = new PopupMenu(wrapper, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_apod, popupMenu.getMenu());
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menu_favorites:
+                        goToFavoritesHubble();
+                        break;
+                }
+                return true;
+            }
+
+        });
+    }
+
+    private void goToFavoritesHubble() {
+        Intent intent = new Intent(this, FavoritesHubbleActivity.class);
+        startActivity(intent);
     }
 
 
-
     public  void setupRecyclerView() {
+        progressBar.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
         RecyclerView mRecyclerView = findViewById(R.id.rv_hubble);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         AdapterHubble adapterHubble = new AdapterHubble(this, dataImagesDetail, this);

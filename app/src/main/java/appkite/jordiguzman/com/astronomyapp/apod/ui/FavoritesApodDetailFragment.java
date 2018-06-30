@@ -23,10 +23,10 @@ import android.widget.TextView;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoaded;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.itemPositionFavorites;
 
 public class FavoritesApodDetailFragment extends Fragment implements View.OnClickListener {
@@ -62,7 +62,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
     public void onClick(View v) {
         ContentResolver contentResolver = mContext.getContentResolver();
         Uri uri = ApodContract.ApodEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(FavoritesApodActivity.dataLoaded[itemPositionFavorites][6]).build();
+        uri = uri.buildUpon().appendPath(FavoritesApodActivity.dataLoadedApod[itemPositionFavorites][6]).build();
         contentResolver.delete(uri, null, null);
         snackBarDelete();
 
@@ -101,25 +101,25 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_item.setTypeface(typeface);
-            tv_title_pager_item.setText(dataLoaded[position][0]);
+            tv_title_pager_item.setText(dataLoadedApod[position][0]);
 
             TextView tv_date_pager_item = view.findViewById(R.id.tv_date_pager_item);
-            tv_date_pager_item.setText(String.format("%s\n", dataLoaded[position][1]));
+            tv_date_pager_item.setText(String.format("%s\n", dataLoadedApod[position][1]));
 
             TextView tv_explanation_pager_item = view.findViewById(R.id.tv_explanation_pager_item);
-            tv_explanation_pager_item.setText(dataLoaded[position][2]);
+            tv_explanation_pager_item.setText(dataLoadedApod[position][2]);
 
             TextView tv_copyright_pager_item = view.findViewById(R.id.tv_copyright_pager_item);
-            if (dataLoaded[position][3] == null) {
+            if (dataLoadedApod[position][3] == null) {
                 tv_copyright_pager_item.setText(String.format("%s\n", getString(R.string.no_data)));
             } else {
-                tv_copyright_pager_item.setText(String.format("%s\n", dataLoaded[position][3]));
+                tv_copyright_pager_item.setText(String.format("%s\n", dataLoadedApod[position][3]));
             }
 
             DynamicHeightNetworkImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
-            String url = dataLoaded[position][4];
+            String url = dataLoadedApod[position][4];
             int length = url.length();
             String result = url.substring(length - 3, length);
             if (!result.equals("jpg")) {
@@ -128,7 +128,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
             } else {
-                iv_photo_apod_detail.setImageUrl(dataLoaded[position][4],
+                iv_photo_apod_detail.setImageUrl(dataLoadedApod[position][4],
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
             }
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {

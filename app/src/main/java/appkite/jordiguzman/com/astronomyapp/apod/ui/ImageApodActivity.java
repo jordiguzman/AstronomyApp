@@ -15,10 +15,14 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -32,11 +36,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoaded;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 
 public class ImageApodActivity extends YouTubeBaseActivity  {
 
@@ -50,10 +55,13 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
     YouTubePlayerView videoView_apod;
     @BindView(R.id.ib_image_apod)
     ImageButton ib_image_apod;
+
+    private LinearLayout linearLayout;
     ConstraintLayout constraintLayout;
-    private int currentPositionVideo;
+    private int currentPositionVideo, mMutedColor;
     private YouTubePlayer player;
     private boolean isFavorited, noVideo;
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
@@ -63,6 +71,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         setContentView(R.layout.activity_image_apod);
         ButterKnife.bind(this);
         constraintLayout = findViewById(R.id.layout_image_apod);
+        linearLayout = findViewById(R.id.linearLayout_activity_image);
         ib_image_apod.setVisibility(View.INVISIBLE);
 
 
@@ -96,6 +105,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             }
         });
     }
+
 
     private void preloadPicture() {
         Picasso.get()
@@ -142,7 +152,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         String url_base_embed = "https://www.youtube.com/embed/";
         String url;
         if (isFavorited){
-            url = dataLoaded[position][4];
+            url = dataLoadedApod[position][4];
         }else {
             url = mApodData.get(position).getUrl();
         }
@@ -183,15 +193,38 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             noVideo=true;
             if (isFavorited){
                 Glide.with(this)
-                        .load(dataLoaded[position][5])
+                        .load(dataLoadedApod[position][5])
                         .into(iv_apod_image);
+                setBackground(dataLoadedApod[position][5]);
+
             }else {
                 Glide.with(this)
                         .load(mApodData.get(position).getHdurl())
                         .into(iv_apod_image);
+                setBackground(mApodData.get(position).getHdurl());
             }
 
         }
+    }
+    private void setBackground(String url){
+        ImageLoaderHelper.getInstance(this).getImageLoader()
+                .get(url, new ImageLoader.ImageListener() {
+                    @Override
+                    public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                        Bitmap bitmap = imageContainer.getBitmap();
+                        if (bitmap != null){
+                            Palette p = Palette.from(bitmap).generate();
+                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                            linearLayout.setBackgroundColor(mMutedColor);
+
+                        }
+                    }
+
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                    }
+                });
     }
 
     private void snackBarVideo() {

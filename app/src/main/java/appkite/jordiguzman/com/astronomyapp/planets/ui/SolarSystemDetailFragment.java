@@ -21,8 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.DynamicHeightNetworkImageView;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.BASE_URL_EXTRACT;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;

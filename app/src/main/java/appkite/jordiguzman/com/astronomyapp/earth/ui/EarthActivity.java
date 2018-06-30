@@ -108,7 +108,7 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
 
     private  void populateData() {
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         AdapterEarth adapterEarth = new AdapterEarth(this, earthArrayList, this);
         mRecyclerView.setAdapter(adapterEarth);
         mRecyclerView.setHasFixedSize(true);
