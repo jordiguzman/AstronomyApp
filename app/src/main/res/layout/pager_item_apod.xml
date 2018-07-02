@@ -56,6 +56,8 @@
                     android:textColor="@color/colorAccentLigth"
                     android:layout_marginTop="@dimen/model_margin_8"
                     android:layout_marginBottom="@dimen/model_margin_16"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:layout_marginEnd="@dimen/model_margin_8"
                     android:gravity="center"
                     android:textStyle="bold" />
 
@@ -80,7 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textStyle="italic"
-                        android:textColor="@color/colorAccent"/>
+                        android:textColor="@color/colorAccentLigth"/>
                 </LinearLayout>
 
                 <TextView

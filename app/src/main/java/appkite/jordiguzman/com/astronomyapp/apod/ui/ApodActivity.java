@@ -3,6 +3,7 @@ package appkite.jordiguzman.com.astronomyapp.apod.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +25,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -38,11 +43,14 @@ import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
+import appkite.jordiguzman.com.astronomyapp.mainUi.Splash;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.urlToWidget;
 
 public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemClickListenerApod{
 
@@ -64,6 +72,9 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     private static LocalDate dateOld;
     public static int datesToShow;
     private RecyclerView mRecyclerView;
+    private AsynctTaskApod asynctTaskApod;
+    private int moreDays;
+
 
 
 
@@ -78,36 +89,38 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
         imageCollapsingToolBar();
 
-        datesToShow= 50;
+        datesToShow= 30;
         today = LocalDate.now(ZoneId.of("US/Eastern"));
         datesToShow();
 
-        preLoadHdurl();
+
+        asynctTaskApod = new AsynctTaskApod();
 
 
         if (!mApodData.isEmpty()){
             populateImage(this);
         }else {
             pb_apod_activity.setVisibility(View.VISIBLE);
-            new AsynctTaskApod().execute();
+            asynctTaskApod.execute();
         }
 
 
 
     }
 
+
+
+
+
     @SuppressLint("StaticFieldLeak")
     public class AsynctTaskApod extends AsyncTask<Void, Void, Void>{
-
 
         @Override
         protected Void doInBackground(Void... voids) {
             getDataApod(getApplicationContext());
-
+            preLoadHdurl();
             return null;
         }
-
-
     }
 
     public void getDataApod(final Context context){
@@ -125,19 +138,19 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                         if (mApodData != null){
                             Collections.reverse(mApodData);
                             populateImage(context);
-
+                            urlToWidget = mApodData.get(0).getUrl();
                         }
                         break;
-
                     default:
                         Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
-
                 }
             }
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
-                new AsynctTaskApod().execute();
+                snackBar();
+                asynctTaskApod.cancel(true);
+
 
             }
 
@@ -145,6 +158,24 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         });
     }
 
+
+
+    private void snackBar() {
+            Snackbar mSnackbar = Snackbar
+                    .make(mCoordinatorLayout, getResources().getString(R.string.no_api), Snackbar.LENGTH_INDEFINITE)
+                    .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getApplicationContext(), Splash.class);
+                            startActivity(intent);
+                        }
+                    });
+            mSnackbar.setActionTextColor(Color.RED);
+            View sbView = mSnackbar.getView();
+            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            mSnackbar.show();
+    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -158,11 +189,11 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     private void preLoadHdurl() {
         for (int i=0; i< mApodData.size();i++){
             Glide.with(this)
-                    .load(mApodData.get(i).getHdurl())
+                    .load(mApodData.get(i).getUrl())
+                    .apply(RequestOptions.overrideOf(800,800))
                     .preload();
         }
     }
-
 
     public void populateImage(Context context){
         String url_base_youtube_video= "http://img.youtube.com/vi/";
@@ -200,11 +231,18 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.menu_favorites:
                         goToFavoritesApod();
+                        break;
+                    case R.id.menu_numer_items:
+                        datesToShow= 40;
+                        datesToShow();
+                        asynctTaskApod.cancel(true);
+                        getDataApod(getApplicationContext());
                         break;
                 }
                 return true;
@@ -235,7 +273,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
                 .makeSceneTransitionAnimation(ApodActivity.this, transView, trans);*/
         Intent intent = new Intent(this, ApodDetailActivity.class);
-
         startActivity(intent);
 
     }

@@ -62,7 +62,8 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
                 .load(url)
                 .apply(new RequestOptions().transform(new RoundedCorners(15))
                         .error(R.drawable.ic_galaxy)
-                        .placeholder(R.drawable.ic_galaxy))
+                        .placeholder(R.drawable.ic_galaxy)
+                .override(800,800))
                 .into(holder.iv_earth);
 
          holder.tv_date.setText(mEarthData.get(position).getDate());

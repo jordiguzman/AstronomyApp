@@ -176,7 +176,6 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         contentValues.put(COLUMN_NAME, dataImagesDetail.get(itemPositionHubble).getName());
         contentValues.put(COLUMN_DESCRIPTION, dataImagesDetail.get(itemPositionHubble).getDescription());
         contentValues.put(COLUMN_CREDITS, dataImagesDetail.get(itemPositionHubble).getCredits());
-
         contentValues.put(COLUMN_IMAGE, dataImagesDetail.get(itemPositionHubble).getImage());
         ContentResolver resolver = mContext.getContentResolver();
         resolver.insert(HubbleContract.HubbleEntry.CONTENT_URI, contentValues);

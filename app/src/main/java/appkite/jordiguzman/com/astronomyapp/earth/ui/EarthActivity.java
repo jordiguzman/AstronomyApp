@@ -12,6 +12,8 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,14 +84,15 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
                     case 200:
                         earthArrayList = (ArrayList<Earth>) response.body();
                          if (earthArrayList != null){
-                             populateData();
-                             convertDate();
                              EarthActivity.this.runOnUiThread(new Runnable() {
                                  @Override
                                  public void run() {
                                      preloadPictures();
                                  }
                              });
+                             populateData();
+                             convertDate();
+
                          }
 
                         break;
@@ -115,9 +118,12 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
     }
 
     private void preloadPictures() {
+        Glide.get(this)
+                .setMemoryCategory(MemoryCategory.HIGH);
         for (int i=0; i< earthArrayList.size(); i++){
             Glide.with(this)
                     .load(earthArrayList.get(i).getImage())
+                    .apply(RequestOptions.overrideOf(800,800))
                     .preload();
         }
     }

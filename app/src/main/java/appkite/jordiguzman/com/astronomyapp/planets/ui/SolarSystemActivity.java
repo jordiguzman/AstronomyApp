@@ -74,7 +74,9 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
     private void wikiApiText(String type){
         for (String aTITLE : PLANETS_API) {
             new HttpAsyncTaskText().execute(type + aTITLE);
+
         }
+
     }
 
 
@@ -155,6 +157,7 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
                 if (textWiki.length() > 0){
                     String textHtml = String.valueOf(Html.fromHtml(textWiki.toString()));
                     wikiPlanetsText.add(textHtml);
+
                 }else {
                     Log.e("Error", "");
                 }

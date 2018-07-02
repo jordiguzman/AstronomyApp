@@ -13,7 +13,7 @@
     android:foreground="?selectableItemBackground">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary_light"
         android:orientation="vertical">
@@ -26,12 +26,14 @@
             android:transitionName="@string/trans_photo_apod"
             android:background="@drawable/round_image_view"
             android:scaleType="centerCrop"
+            android:layout_gravity="center"
             android:contentDescription="@string/picture_of_earth"
             tools:targetApi="lollipop" />
         <TextView
             android:id="@+id/tv_date_earth"
             android:textStyle="italic"
             android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_gravity="center"
             style="@style/TextViewModelSubTitle"
             android:layout_marginLeft="@dimen/model_margin_8" />
 

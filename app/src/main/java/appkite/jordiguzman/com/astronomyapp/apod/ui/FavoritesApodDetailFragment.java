@@ -4,6 +4,7 @@ package appkite.jordiguzman.com.astronomyapp.apod.ui;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,10 +17,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
@@ -32,6 +37,8 @@ import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity
 public class FavoritesApodDetailFragment extends Fragment implements View.OnClickListener {
 
     private Context mContext;
+    private View linearLayout;
+    private int mMutedColor;
 
 
     @Override
@@ -54,9 +61,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
-
     }
-
 
     @Override
     public void onClick(View v) {
@@ -115,7 +120,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             } else {
                 tv_copyright_pager_item.setText(String.format("%s\n", dataLoadedApod[position][3]));
             }
-
+            linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
             DynamicHeightNetworkImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
@@ -127,9 +132,11 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                setColorLinearlayout(urlResult);
             } else {
                 iv_photo_apod_detail.setImageUrl(dataLoadedApod[position][4],
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                setColorLinearlayout(dataLoadedApod[position][4]);
             }
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,11 +148,26 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                     startActivity(intent);
                 }
             });
-
-
             return view;
         }
+        private void setColorLinearlayout(String url){
+            ImageLoaderHelper.getInstance(mContext).getImageLoader()
+                    .get(url, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            Bitmap bitmap = imageContainer.getBitmap();
+                            if (bitmap !=null){
+                                Palette p = Palette.from(bitmap).generate();
+                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                linearLayout.setBackgroundColor(mMutedColor);
+                            }
+                        }
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
 
+                        }
+                    });
+        }
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);

@@ -2,38 +2,40 @@ package appkite.jordiguzman.com.astronomyapp.planets.ui;
 
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.BASE_URL_EXTRACT;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
-import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS_API;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 import static appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity.wikiPlanetsText;
 
 public class SolarSystemDetailFragment extends Fragment{
 
     private Context mContext;
-    private FrameLayout mFrameLayout;
+    private View linearLayout;
+    private int mMutedColor;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +43,7 @@ public class SolarSystemDetailFragment extends Fragment{
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         assert container != null;
         mContext = container.getContext();
         return inflater.inflate(R.layout.fragment_solar_system_detail, container, false);
@@ -86,34 +88,43 @@ public class SolarSystemDetailFragment extends Fragment{
             tv_title_solar_system_item.setText(PLANETS[position]);
 
             TextView tv_explanation_solar_system_item = view.findViewById(R.id.tv_explanation_pager_solar_system_item);
-            if (wikiPlanetsText.get(position) != null){
-                tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
-            }else {
-                snackBar();
-                wikiApiText(BASE_URL_EXTRACT);
-            }
+            tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
 
+
+            Resources resources = mContext.getResources();
+            String[] subTitle = resources.getStringArray(R.array.subtitle_array);
+            TextView tv_subtitles = view.findViewById(R.id.tv_subtitle_pager_solar_system);
+            tv_subtitles.setText(subTitle[position]);
 
             DynamicHeightNetworkImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
             photo_solar_system_detail.setImageUrl(URL_PLANETS[position],
                     ImageLoaderHelper.getInstance(mContext).getImageLoader());
 
+            linearLayout = view.findViewById(R.id.linearLayout_solar_system_detail);
+            setColorLinearlayout(URL_PLANETS[position]);
             return view;
         }
 
-        private void snackBar() {
-            Snackbar snackbar = Snackbar
-                    .make(mFrameLayout, "Loading...", 4000)
-                    .setActionTextColor(Color.RED);
+        private void setColorLinearlayout(String url){
+            ImageLoaderHelper.getInstance(mContext).getImageLoader()
+                    .get(url, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            Bitmap bitmap = imageContainer.getBitmap();
+                            if (bitmap !=null){
+                                Palette p = Palette.from(bitmap).generate();
+                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                linearLayout.setBackgroundColor(mMutedColor);
+                            }
+                        }
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
 
-            snackbar.show();
+                        }
+                    });
         }
 
-        private void wikiApiText(String type){
-            for (String aTITLE : PLANETS_API) {
-                new SolarSystemActivity.HttpAsyncTaskText().execute(type + aTITLE);
-            }
-        }
+
 
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

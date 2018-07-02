@@ -67,6 +67,7 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterHubbleFavoritesViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             iv_hubble = itemView.findViewById(R.id.iv_hubble);
             tv_title_hubble =itemView.findViewById(R.id.tv_title_huble);
             iv_hubble.setClipToOutline(true);

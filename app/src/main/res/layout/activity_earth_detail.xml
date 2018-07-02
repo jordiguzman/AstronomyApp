@@ -70,12 +70,11 @@
         app:layout_constraintStart_toStartOf="@+id/tv_distance_earth"
         app:layout_constraintTop_toBottomOf="@+id/tv_distance_earth" />
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/iv_detail_earth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
-        android:onClick="clickPictureEarth"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

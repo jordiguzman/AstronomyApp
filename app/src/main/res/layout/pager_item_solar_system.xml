@@ -26,23 +26,54 @@
             android:layout_height="0dp"
             android:background="@color/photo_placeholder"
             android:scaleType="centerCrop" />
+        <appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:maxWidth="1000dp">
 
+            <LinearLayout
+                android:id="@+id/linearLayout_solar_system_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="@dimen/model_margin_8"
+                android:orientation="vertical">
                 <TextView
                     android:id="@+id/tv_title_pager_solar_system_item"
-                    style="@style/TextAppearance.AppCompat.Subhead"
+                    style="?android:attr/textAppearanceLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorAccentLigth"
+                    android:layout_marginTop="@dimen/model_margin_8"
+                    android:layout_marginBottom="@dimen/model_margin_16"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:layout_marginEnd="@dimen/model_margin_8"
                     android:gravity="center"
                     android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_subtitle_pager_solar_system"
+                    style="?android:attr/textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/model_margin_8"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:layout_marginEnd="@dimen/model_margin_8"
+                    android:textStyle="italic"
+                    android:textColor="@color/colorAccentLigth"/>
+
+            </LinearLayout>
                 <TextView
                     android:id="@+id/tv_explanation_pager_solar_system_item"
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/model_margin_8"
                     android:layout_marginEnd="@dimen/model_margin_8"
+                    android:layout_marginTop="@dimen/model_margin_8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-
+        </appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout>
             </LinearLayout>
         </ScrollView>
 

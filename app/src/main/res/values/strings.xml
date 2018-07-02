@@ -42,6 +42,28 @@
     <string name="extract">Extract</string>
     <string name="complete_text">Complete text</string>
 
+    <!--           SOLAR SYSTEM             -->
+
+    <string-array name="subtitle_array">
+        <item>A G-type main-sequence star (G2V)</item>
+        <item>The smallest and innermost planet</item>
+        <item>The hottest planet in the Solar System</item>
+        <item>Our home planet</item>
+        <item>The Red Planet, dry and cool</item>
+        <item>The largest planet, a gas giant</item>
+        <item>Another gas giant with awesome rings</item>
+        <item>A ice giant</item>
+        <item>The farthest planet frum the Sun</item>
+        <item>A drwaf planet in the Kuiper belt</item>
+        <item>The most geologically object in the Solar System</item>
+        <item>The largest moon of Jupiter</item>
+        <item>Their size is almost that of Mercury</item>
+        <item>Possibly it has a huge water ocean beneath it</item>
+        <item>The only moon with a dense atmosphere</item>
+        <item>A moon with giants geysers</item>
+        <item></item>
+    </string-array>
+
     <string name="lorem_test">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="hubble_news">Hubble News</string>
     <string name="appwidget_text">EXAMPLE</string>
@@ -70,6 +92,10 @@
     <string name="astronaut_picture">Astronaut Picture</string>
     <string name="is_favorited">This item is already in Favorites!</string>
     <string name="no_network">No network connection!</string>
+    <string name="no_api">Problem with api</string>
     <string name="retry">RETRY</string>
+    <string name="widget_astronomyapp">Widget AstronomyApp</string>
+    <string name="image_widget">Image Widget</string>
+    <string name="number_of_days">Number of days</string>
 
 </resources>

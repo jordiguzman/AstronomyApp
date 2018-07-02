@@ -2,7 +2,10 @@ package appkite.jordiguzman.com.astronomyapp.planets.adapter;
 
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +33,7 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
     @Override
     public AdapterSystemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,6 +46,9 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
     @Override
     public void onBindViewHolder(@NonNull AdapterSystemViewHolder holder, int position) {
         holder.tv_title.setText(PLANETS[position]);
+        Resources resources = mContext.getResources();
+        String [] subtitle = resources.getStringArray(R.array.subtitle_array);
+        holder.tv_subtitle.setText(subtitle[position]);
         Glide.with(mContext)
                 .load(URL_PLANETS[position])
                 .apply(new RequestOptions().transform(new RoundedCorners(15)))
@@ -61,14 +68,17 @@ public class AdapterSolarSystem extends RecyclerView.Adapter<AdapterSolarSystem.
 
     class AdapterSystemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        final TextView tv_title;
+        final TextView tv_title, tv_subtitle;
         final ImageView iv_system;
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterSystemViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             tv_title = itemView.findViewById(R.id.tv_title_system);
             iv_system = itemView.findViewById(R.id.iv_system_item);
+            tv_subtitle = itemView.findViewById(R.id.tv_subtitle_system);
+            iv_system.setClipToOutline(true);
         }
 
 

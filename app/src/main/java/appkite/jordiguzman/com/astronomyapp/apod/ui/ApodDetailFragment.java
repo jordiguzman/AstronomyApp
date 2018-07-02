@@ -143,7 +143,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         @Override
         public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
 
-            LayoutInflater inflater = LayoutInflater.from(getContext());
+            final LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_apod, container, false);
             container.addView(view);
 
@@ -174,28 +174,25 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             if (!result.equals("jpg")) {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
+                if (!urlResult.isEmpty())setColorLinearlayout(urlResult);
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
-                setColorLinearlayout(urlResult);
 
             } else {
+                if (!mApodData.get(position).getUrl().isEmpty())setColorLinearlayout(mApodData.get(position).getUrl());
                 iv_photo_apod_detail.setImageUrl(mApodData.get(position).getUrl(),
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
-                 setColorLinearlayout(mApodData.get(position).getUrl());
-            }
 
+            }
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     Intent intent = new Intent(getContext(), ImageApodActivity.class);
-                    intent.putExtra("position", position);
+                    intent.putExtra("position", itemPosition);
                     startActivity(intent);
                 }
             });
-
-
-
             return view;
         }
         private void setColorLinearlayout(String url){
@@ -210,7 +207,6 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                                 linearLayout.setBackgroundColor(mMutedColor);
                             }
                         }
-
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
 

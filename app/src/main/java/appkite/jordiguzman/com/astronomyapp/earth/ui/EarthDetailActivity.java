@@ -6,13 +6,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.text.DecimalFormat;
 
@@ -26,8 +26,7 @@ import static appkite.jordiguzman.com.astronomyapp.earth.ui.ImageActivityEarth.i
 
 public class EarthDetailActivity extends AppCompatActivity  {
 
-    @BindView(R.id.iv_detail_earth)
-    ImageView iv_detail_earth;
+
     @BindView(R.id.btn_step_forward)
     ImageButton btn_step_forward;
     @BindView(R.id.btn_animation)
@@ -38,7 +37,7 @@ public class EarthDetailActivity extends AppCompatActivity  {
     TextView tv_distance_sun;
     @BindView(R.id.tv_caption)
     TextView tv_caption;
-
+    PhotoView iv_detail_earth;
     private int index =0;
     private boolean isStop;
     private Thread mThread;
@@ -50,7 +49,7 @@ public class EarthDetailActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_earth_detail);
         ButterKnife.bind(this);
 
-
+        iv_detail_earth = findViewById(R.id.iv_detail_earth);
         index = itemPositionEarth;
         tv_distance_earth.setText(convertDoubleEarth(index));
         tv_distance_sun.setText(convertDoubleSun(index));

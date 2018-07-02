@@ -16,6 +16,7 @@ import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.graphics.Palette;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -77,6 +78,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
         if (isLandscape() && savedInstanceState==null){
             currentPositionVideo =savedInstanceState.getInt("current");
+            Log.i("Data onSave", String.valueOf(currentPositionVideo));
         }
 
         hideNavigation();
@@ -86,6 +88,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         if (bundle != null) {
             position = bundle.getInt("position");
             isFavorited = bundle.getBoolean("isFavorited");
+
         }
 
         populatePictureVideo();
@@ -117,7 +120,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Picasso.get()
-                .load(mApodData.get(position).getHdurl())
+                .load(mApodData.get(position).getUrl())
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -192,16 +195,18 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         } else {
             noVideo=true;
             if (isFavorited){
+                setBackground(dataLoadedApod[position][5]);
                 Glide.with(this)
                         .load(dataLoadedApod[position][5])
                         .into(iv_apod_image);
-                setBackground(dataLoadedApod[position][5]);
+
 
             }else {
+                setBackground(mApodData.get(position).getUrl());
                 Glide.with(this)
-                        .load(mApodData.get(position).getHdurl())
+                        .load(mApodData.get(position).getUrl())
                         .into(iv_apod_image);
-                setBackground(mApodData.get(position).getHdurl());
+
             }
 
         }
@@ -255,6 +260,8 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         super.onSaveInstanceState(bundle);
         if (videoView_apod != null && !noVideo){
             bundle.putInt("current", player.getCurrentTimeMillis());
+            Log.i("Data onSave", String.valueOf(player.getCurrentTimeMillis()));
+
         }
     }
 

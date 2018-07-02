@@ -3,6 +3,7 @@ package appkite.jordiguzman.com.astronomyapp.mainUi;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -19,6 +20,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
 import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
@@ -30,6 +43,7 @@ import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod.API_KEY;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
@@ -44,6 +58,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
     private CheckOnLine checkOnLIne;
+    public static String urlToWidget;
+    public static String name, url;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -66,7 +82,6 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         mAdapterMain.notifyDataSetChanged();
 
 
-
         Glide.with(this)
                 .load(Splash.URL)
                 .into(iv_main);
@@ -81,7 +96,60 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 preLoadImagesSystem();
             }
         });
+        String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
+        new HttpAsyncTaskApodForWidget().execute(urlApi + API_KEY);
 
+    }
+
+
+    public static String GETText(String url){
+        InputStream inputStream;
+        String result = "";
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
+            inputStream = httpResponse.getEntity().getContent();
+            if (inputStream != null){
+                result = converInputStreamToString(inputStream);
+            }else {
+                result = "Error";
+            }
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return  result;
+    }
+
+    private static String converInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        StringBuilder result = new StringBuilder();
+        while ((line = bufferedReader.readLine()) != null)result.append(line);
+
+        inputStream.close();
+        return result.toString();
+    }
+
+    static class HttpAsyncTaskApodForWidget extends AsyncTask<String, Void, String>{
+
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return GETText(strings[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                name = jsonObject.getString("title");
+                url = jsonObject.getString("url");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showSnackbar() {

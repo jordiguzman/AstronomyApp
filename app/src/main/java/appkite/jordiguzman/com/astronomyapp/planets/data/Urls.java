@@ -11,6 +11,7 @@ public class Urls {
 
     public static final String BASE_URL_EXTRACT = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=";
 
+
     public static final String[] URL_PLANETS ={ "https://firebasestorage.googleapis.com/v0/b/astronomyapp-2bbd6.appspot.com/o/images%2F06_sun.jpg?alt=media&token=b5efa728-b938-42b4-875c-be9de67a0a27",
     "https://firebasestorage.googleapis.com/v0/b/astronomyapp-2bbd6.appspot.com/o/images%2F07_mercury.jpg?alt=media&token=16aa67ef-5e85-40af-b51d-7dfd0e77d278",
     "https://firebasestorage.googleapis.com/v0/b/astronomyapp-2bbd6.appspot.com/o/images%2F08_venus.jpg?alt=media&token=6aa567f9-732f-4e1d-9e14-98ac403d0f53",
