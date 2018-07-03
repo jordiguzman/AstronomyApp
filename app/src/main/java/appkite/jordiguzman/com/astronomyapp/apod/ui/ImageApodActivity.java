@@ -17,13 +17,13 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.graphics.Palette;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -35,9 +35,10 @@ import com.squareup.picasso.Target;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -62,6 +63,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
     private int currentPositionVideo, mMutedColor;
     private YouTubePlayer player;
     private boolean isFavorited, noVideo;
+    private GestureDetector mGestureDetector;
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -74,6 +76,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         constraintLayout = findViewById(R.id.layout_image_apod);
         linearLayout = findViewById(R.id.linearLayout_activity_image);
         ib_image_apod.setVisibility(View.INVISIBLE);
+
 
 
         if (isLandscape() && savedInstanceState==null){
@@ -107,8 +110,28 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                 ib_image_apod.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        final int action = event.getActionMasked();
+        switch (action){
+            case (MotionEvent.ACTION_DOWN):
+                Log.i("Down","Action was DOWN");
+                return true;
+            case (MotionEvent.ACTION_MOVE):
+                Log.i("MOve","Action was MOVE");
+                return true;
+
+            default :
+                return super.onTouchEvent(event);
+        }
+
+
+
+    }
 
     private void preloadPicture() {
         Picasso.get()
@@ -211,26 +234,31 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
         }
     }
-    private void setBackground(String url){
-        ImageLoaderHelper.getInstance(this).getImageLoader()
-                .get(url, new ImageLoader.ImageListener() {
-                    @Override
-                    public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                        Bitmap bitmap = imageContainer.getBitmap();
-                        if (bitmap != null){
+    private void setBackground(final String url){
+            final Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap= GlideApp.with(getApplicationContext())
+                                .asBitmap()
+                                .load(url)
+                                .submit(500,500)
+                                .get();
+                        if (bitmap !=null){
                             Palette p = Palette.from(bitmap).generate();
                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
                             linearLayout.setBackgroundColor(mMutedColor);
-
                         }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
                     }
+                }
+            });
+            thread.start();
+        }
 
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                    }
-                });
-    }
 
     private void snackBarVideo() {
         Snackbar snackbar = Snackbar
@@ -271,4 +299,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         super.onPostResume();
         hideNavigation();
     }
+
+
+
 }

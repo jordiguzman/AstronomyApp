@@ -24,13 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
+import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_COPYRIGHT;
 import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_DATE;
@@ -195,23 +195,29 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             });
             return view;
         }
-        private void setColorLinearlayout(String url){
-            ImageLoaderHelper.getInstance(mContext).getImageLoader()
-                    .get(url, new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap !=null){
-                                Palette p = Palette.from(bitmap).generate();
-                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                                linearLayout.setBackgroundColor(mMutedColor);
-                            }
+        private void setColorLinearlayout(final String url){
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap= GlideApp.with(mContext)
+                                .asBitmap()
+                                .load(url)
+                                .submit(500,500)
+                                .get();
+                        if (bitmap !=null){
+                            Palette p = Palette.from(bitmap).generate();
+                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                            linearLayout.setBackgroundColor(mMutedColor);
                         }
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
         }
 
 

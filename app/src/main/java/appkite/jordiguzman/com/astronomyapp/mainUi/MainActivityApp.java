@@ -1,7 +1,9 @@
 package appkite.jordiguzman.com.astronomyapp.mainUi;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +48,8 @@ import butterknife.ButterKnife;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod.API_KEY;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
+import static appkite.jordiguzman.com.astronomyapp.widget.WidgetAstronomyApp.name;
+import static appkite.jordiguzman.com.astronomyapp.widget.WidgetAstronomyApp.url;
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
 
@@ -59,7 +64,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     CoordinatorLayout mCoordinatorLayout;
     private CheckOnLine checkOnLIne;
     public static String urlToWidget;
-    public static String name, url;
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -97,7 +102,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             }
         });
         String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
-        new HttpAsyncTaskApodForWidget().execute(urlApi + API_KEY);
+        new HttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
 
     }
 
@@ -132,6 +137,12 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     static class HttpAsyncTaskApodForWidget extends AsyncTask<String, Void, String>{
 
+        @SuppressLint("StaticFieldLeak")
+        private Context mContext;
+
+        HttpAsyncTaskApodForWidget(Context context){
+            mContext = context;
+        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -144,7 +155,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 JSONObject jsonObject = new JSONObject(result);
                 name = jsonObject.getString("title");
                 url = jsonObject.getString("url");
-
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("name", name);
+                editor.putString("url", url);
+                editor.apply();
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -219,5 +234,48 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                 break;
         }
     }
+    public static void deleteCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            deleteDir(dir);
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
 
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (String aChildren : children) {
+                boolean success = deleteDir(new File(dir, aChildren));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else
+            return dir != null && dir.isFile() && dir.delete();
+    }
+
+    private void showSnackbarFinish() {
+        Snackbar mSnackbar = Snackbar
+                .make(mCoordinatorLayout, getResources().getString(R.string.finish), Snackbar.LENGTH_INDEFINITE)
+                .setAction(getResources().getString(R.string.exit), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        deleteCache(getApplicationContext());
+                        finish();
+
+                    }
+                });
+        mSnackbar.setActionTextColor(Color.RED);
+        View sbView = mSnackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+        mSnackbar.show();
+    }
+    @Override
+    public void onBackPressed() {
+        showSnackbarFinish();
+    }
 }

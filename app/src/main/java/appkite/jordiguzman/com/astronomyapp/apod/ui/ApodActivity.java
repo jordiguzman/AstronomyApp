@@ -31,7 +31,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -276,34 +275,9 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         startActivity(intent);
 
     }
-    public static void deleteCache(Context context) {
-        try {
-            File dir = context.getCacheDir();
-            deleteDir(dir);
-        } catch (Exception e) {
-            e.getMessage();
-        }
-    }
 
-    public static boolean deleteDir(File dir) {
-        if (dir != null && dir.isDirectory()) {
-            String[] children = dir.list();
-            for (String aChildren : children) {
-                boolean success = deleteDir(new File(dir, aChildren));
-                if (!success) {
-                    return false;
-                }
-            }
-            return dir.delete();
-        } else
-            return dir != null && dir.isFile() && dir.delete();
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //deleteCache(this);
-    }
+
 
 
 }

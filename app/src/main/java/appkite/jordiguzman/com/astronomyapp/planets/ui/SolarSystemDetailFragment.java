@@ -2,6 +2,7 @@ package appkite.jordiguzman.com.astronomyapp.planets.ui;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -20,15 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
+import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
+import static appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity.itemPositionSolar;
 import static appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity.wikiPlanetsText;
 
 public class SolarSystemDetailFragment extends Fragment{
@@ -53,8 +55,24 @@ public class SolarSystemDetailFragment extends Fragment{
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_solar_system);
         mViewPager.setAdapter(new SolarSystemAdapter());
-        mViewPager.setCurrentItem(SolarSystemActivity.itemPositionSolar);
+        mViewPager.setCurrentItem(itemPositionSolar);
 
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                itemPositionSolar = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
@@ -78,7 +96,7 @@ public class SolarSystemDetailFragment extends Fragment{
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-            LayoutInflater inflater = LayoutInflater.from(getContext());
+            final LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_solar_system, container, false);
             container.addView(view);
 
@@ -88,7 +106,10 @@ public class SolarSystemDetailFragment extends Fragment{
             tv_title_solar_system_item.setText(PLANETS[position]);
 
             TextView tv_explanation_solar_system_item = view.findViewById(R.id.tv_explanation_pager_solar_system_item);
-            tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
+            if (isAdded()){
+                tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
+            }
+
 
 
             Resources resources = mContext.getResources();
@@ -99,31 +120,44 @@ public class SolarSystemDetailFragment extends Fragment{
             DynamicHeightNetworkImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
             photo_solar_system_detail.setImageUrl(URL_PLANETS[position],
                     ImageLoaderHelper.getInstance(mContext).getImageLoader());
+            photo_solar_system_detail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ImageSolarSystemActivity.class);
+                    intent.putExtra("position", itemPositionSolar);
+                    startActivity(intent);
+                }
+            });
 
             linearLayout = view.findViewById(R.id.linearLayout_solar_system_detail);
             setColorLinearlayout(URL_PLANETS[position]);
             return view;
         }
 
-        private void setColorLinearlayout(String url){
-            ImageLoaderHelper.getInstance(mContext).getImageLoader()
-                    .get(url, new ImageLoader.ImageListener() {
-                        @Override
-                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
-                            Bitmap bitmap = imageContainer.getBitmap();
-                            if (bitmap !=null){
-                                Palette p = Palette.from(bitmap).generate();
-                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                                linearLayout.setBackgroundColor(mMutedColor);
-                            }
+        private void setColorLinearlayout(final String url){
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap= GlideApp.with(mContext)
+                                .asBitmap()
+                                .load(url)
+                                .submit(500,500)
+                                .get();
+                        if (bitmap !=null){
+                            Palette p = Palette.from(bitmap).generate();
+                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                            linearLayout.setBackgroundColor(mMutedColor);
                         }
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-
-                        }
-                    });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
         }
-
 
 
         @Override

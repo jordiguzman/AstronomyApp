@@ -2,8 +2,11 @@ package appkite.jordiguzman.com.astronomyapp.hubble.adapter;
 
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,7 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
     @Override
     public AdapterHubbleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +55,9 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
                 .load(mDataImagesDetail.get(position).getImage())
                 .into(holder.iv_hubble);
         holder.tv_hubble.setText(mDataImagesDetail.get(position).getName());
+        String creditTemp = String.valueOf(Html.fromHtml((mDataImagesDetail.get(position).getCredits())));
+        holder.tv_credits.setText(mContext.getString(R.string.credits).concat(creditTemp));
+
     }
 
     @Override
@@ -65,13 +72,16 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
     class AdapterHubbleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView iv_hubble;
-        TextView tv_hubble;
+        TextView tv_hubble, tv_credits;
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterHubbleViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             iv_hubble = itemView.findViewById(R.id.iv_hubble);
             tv_hubble = itemView.findViewById(R.id.tv_title_huble);
+            tv_credits = itemView.findViewById(R.id.tv_credits);
+            iv_hubble.setClipToOutline(true);
         }
 
         @Override
