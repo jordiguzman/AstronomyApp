@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,12 +44,16 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
     ImageView iv_system;
     @BindView(R.id.rv_system)
     RecyclerView mRecyclerView;
+    @BindView(R.id.collapsing_system)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+
     public static int itemPositionSolar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_planets);
         ButterKnife.bind(this);
+        imageCollapsingToolBar();
 
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[2])
@@ -115,7 +120,12 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
         startActivity(intent);
 
     }
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
 
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
+    }
 
 
 

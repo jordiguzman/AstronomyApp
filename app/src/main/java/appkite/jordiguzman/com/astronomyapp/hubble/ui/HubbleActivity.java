@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,6 +68,8 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
     ProgressBar progressBar;
     @BindView(R.id.rv_hubble)
     RecyclerView recyclerView;
+    @BindView(R.id.collapsing_hubble)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
 
     @Override
@@ -75,6 +78,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         setContentView(R.layout.activity_hubble);
         ButterKnife.bind(this);
 
+        imageCollapsingToolBar();
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[4])
                 .into(iv_hubble);
@@ -142,6 +146,12 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         return result.toString();
     }
 
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
+
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
+    }
     @SuppressLint("StaticFieldLeak")
     class HttpAsyctaskDataHubbleImagesDetail extends AsyncTask<String, Void, String>{
 
@@ -201,7 +211,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
         PopupMenu popupMenu = new PopupMenu(wrapper, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_apod, popupMenu.getMenu());
+        inflater.inflate(R.menu.menu_hubble, popupMenu.getMenu());
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

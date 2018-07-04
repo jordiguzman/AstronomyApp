@@ -12,6 +12,10 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
@@ -41,13 +45,15 @@ public class ImageActivityEarth extends AppCompatActivity {
     PhotoView iv_image_earth;
     @BindView(R.id.ib_image_earth)
     ImageButton ib_image_earth;
+    private boolean hideButtonNavigation;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_earth);
         ButterKnife.bind(this);
-
+        showNavigation();
         Glide.with(this)
                 .load(setPicture(indexEarth))
                 .error(Glide.with(this)
@@ -66,8 +72,28 @@ public class ImageActivityEarth extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
+                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                StrictMode.setVmPolicy(builder.build());
                 shareImageEarth(getApplicationContext());
 
+            }
+        });
+        iv_image_earth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!hideButtonNavigation){
+                    Animation up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
+                    ib_image_earth.startAnimation(up);
+                    ib_image_earth.setVisibility(View.INVISIBLE);
+                    hideNavigation();
+                    hideButtonNavigation = true;
+                }else {
+                    Animation down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_down);
+                    ib_image_earth.startAnimation(down);
+                    ib_image_earth.setVisibility(View.VISIBLE);
+                    showNavigation();
+                    hideButtonNavigation = false;
+                }
             }
         });
 
@@ -119,5 +145,30 @@ public class ImageActivityEarth extends AppCompatActivity {
             e.printStackTrace();
         }
         return bmpUri;
+    }
+    public void hideNavigation() {
+        View decorView = getWindow().getDecorView();
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void showNavigation() {
+        View decorView = getWindow().getDecorView();
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
 }

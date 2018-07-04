@@ -3,6 +3,8 @@ package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,10 +17,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
@@ -32,7 +39,8 @@ import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActi
 public class FavoritesHubbleDetailFragment extends Fragment implements View.OnClickListener {
 
     private Context mContext;
-
+    private int mMutedColor;
+    private View linearLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,11 +97,11 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
 
         @NonNull
         @Override
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        public Object instantiateItem(@NonNull ViewGroup container, final int position) {
             final LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.pager_item_hubble, container, false);
             container.addView(view);
-            boolean isFavorited = true;
+            final boolean isFavorited = true;
 
             TextView tv_title_pager_hubble_item = view.findViewById(R.id.tv_title_pager_hubble_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
@@ -104,16 +112,45 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
             tv_description_hubble_item.setText(dataLoadedHubble[position][1]);
 
             TextView tv_creditt_hubble_item = view.findViewById(R.id.tv_creditt_hubble_item);
-            tv_creditt_hubble_item.setText(dataLoadedHubble[position][2]);
+            String creditTemp = String.valueOf(Html.fromHtml(dataLoadedHubble[position][2]));
+            tv_creditt_hubble_item.setText(creditTemp);
 
+            linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
             DynamicHeightNetworkImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
             photo_hubble_detail.setImageUrl(dataLoadedHubble[position][3],
                     ImageLoaderHelper.getInstance(mContext).getImageLoader());
+            setColorLinearlayout(dataLoadedHubble[position][3]);
+            photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ImageHubbleActivity.class);
+                    intent.putExtra("position", position);
+                    intent.putExtra("isFavorited", isFavorited);
+                    startActivity(intent);
+                }
+            });
 
             return view;
 
         }
+        private void setColorLinearlayout(String url){
+            ImageLoaderHelper.getInstance(mContext).getImageLoader()
+                    .get(url, new ImageLoader.ImageListener() {
+                        @Override
+                        public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                            Bitmap bitmap = imageContainer.getBitmap();
+                            if (bitmap !=null){
+                                Palette p = Palette.from(bitmap).generate();
+                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                linearLayout.setBackgroundColor(mMutedColor);
+                            }
+                        }
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
 
+                        }
+                    });
+        }
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);

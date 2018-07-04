@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_fragment_hubble"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_fragment_hubble"
     android:layout_marginBottom="4dp"
     android:layout_marginLeft="4dp"
     android:layout_marginRight="4dp"
@@ -29,36 +29,65 @@
                 android:background="@color/photo_placeholder"
                 android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/tv_title_pager_hubble_item"
-                style="@style/TextAppearance.AppCompat.Subhead"
+            <appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:layout_marginEnd="@dimen/model_margin_8"
-                android:layout_marginStart="@dimen/model_margin_8" />
+                android:layout_gravity="center_horizontal"
+                android:maxWidth="1000dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_description_hubble_item"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/model_margin_8"
-                android:layout_marginStart="@dimen/model_margin_8" />
+                <LinearLayout
+                    android:id="@+id/linearLayout_hubble_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/model_margin_8"
+                    android:background="@color/colorPrimary"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_creditt_hubble_item"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/model_margin_8"
-                android:layout_marginStart="@dimen/model_margin_8" />
+                    <TextView
+                        android:id="@+id/tv_title_pager_hubble_item"
+                        style="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/colorAccentLigth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/model_margin_8"
+                        android:layout_marginBottom="@dimen/model_margin_16"
+                        android:layout_marginStart="@dimen/model_margin_8"
+                        android:layout_marginEnd="@dimen/model_margin_8"
+                        android:gravity="center"
+                        android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/tv_creditt_hubble_item"
+                        style="?android:attr/textAppearanceSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorAccentLigth"
+                        android:layout_marginEnd="@dimen/model_margin_8"
+                        android:layout_marginStart="@dimen/model_margin_8"
+                        android:layout_marginBottom="@dimen/model_margin_8"
+                        android:textSize="12sp"
+                        android:textStyle="italic"/>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/model_margin_8"
+                    android:layout_marginStart="@dimen/model_margin_8"
+                    android:layout_marginTop="@dimen/model_margin_8"
+                    android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_description_hubble_item"
+                    style="@style/TextAppearance.AppCompat.Subhead"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item" />
 
+                </LinearLayout>
+
+            </appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout>
 
         </LinearLayout>
     </ScrollView>

@@ -16,10 +16,11 @@ import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,8 +63,8 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
     ConstraintLayout constraintLayout;
     private int currentPositionVideo, mMutedColor;
     private YouTubePlayer player;
-    private boolean isFavorited, noVideo;
-    private GestureDetector mGestureDetector;
+    private boolean isFavorited, noVideo, hideButtonNavigation;
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -75,16 +76,18 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         ButterKnife.bind(this);
         constraintLayout = findViewById(R.id.layout_image_apod);
         linearLayout = findViewById(R.id.linearLayout_activity_image);
-        ib_image_apod.setVisibility(View.INVISIBLE);
+        showNavigation();
 
 
 
-        if (isLandscape() && savedInstanceState==null){
+
+        if (savedInstanceState!=null){
             currentPositionVideo =savedInstanceState.getInt("current");
-            Log.i("Data onSave", String.valueOf(currentPositionVideo));
-        }
+            }
 
-        hideNavigation();
+
+
+
         preloadPicture();
 
         Bundle bundle = getIntent().getExtras();
@@ -107,37 +110,33 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         iv_apod_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ib_image_apod.setVisibility(View.VISIBLE);
+                if (!hideButtonNavigation){
+                    Animation up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
+                    ib_image_apod.startAnimation(up);
+                    ib_image_apod.setVisibility(View.INVISIBLE);
+                    hideNavigation();
+                    hideButtonNavigation = true;
+                }else {
+                    Animation down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_down);
+                    ib_image_apod.startAnimation(down);
+                    ib_image_apod.setVisibility(View.VISIBLE);
+                    showNavigation();
+                    hideButtonNavigation = false;
+                }
+
             }
         });
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
 
-        final int action = event.getActionMasked();
-        switch (action){
-            case (MotionEvent.ACTION_DOWN):
-                Log.i("Down","Action was DOWN");
-                return true;
-            case (MotionEvent.ACTION_MOVE):
-                Log.i("MOve","Action was MOVE");
-                return true;
-
-            default :
-                return super.onTouchEvent(event);
-        }
-
-
-
-    }
 
     private void preloadPicture() {
         Picasso.get()
                 .load(mApodData.get(position).getHdurl())
                 .fetch();
     }
+
 
     public void shareImage(final Context context){
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -151,7 +150,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                         i.setType("image/*");
                         i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
                         context.startActivity(Intent.createChooser(i, "Share Image"));
-                        ib_image_apod.setVisibility(View.INVISIBLE);
+
                     }
 
                     @Override
@@ -159,11 +158,14 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                     @Override
                     public void onPrepareLoad(Drawable placeHolderDrawable) {}
                 });
+
+
     }
     static public Uri getLocalBitmapUri(Bitmap bmp, Context context) {
         Uri bmpUri = null;
         try {
-            File file =  new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
+            File file =  new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "share_image_" + System.currentTimeMillis() + ".png");
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
@@ -174,6 +176,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         return bmpUri;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void populatePictureVideo(){
         String url_base_embed = "https://www.youtube.com/embed/";
         String url;
@@ -182,10 +185,12 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         }else {
             url = mApodData.get(position).getUrl();
         }
+
         int length = url.length();
         String result = url.substring(length - 3, length);
         if (!result.equals("jpg")) {
             noVideo = false;
+            hideNavigation();
             ib_image_apod.setVisibility(View.INVISIBLE);
             iv_apod_image.setVisibility(View.INVISIBLE);
             final String key = url.substring(url_base_embed.length(), url.length() - 6);
@@ -278,18 +283,29 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void showNavigation() {
+        View decorView = getWindow().getDecorView();
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+    }
     @Override
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
         if (videoView_apod != null && !noVideo){
             bundle.putInt("current", player.getCurrentTimeMillis());
-            Log.i("Data onSave", String.valueOf(player.getCurrentTimeMillis()));
-
         }
     }
 
@@ -297,7 +313,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        hideNavigation();
+
     }
 
 

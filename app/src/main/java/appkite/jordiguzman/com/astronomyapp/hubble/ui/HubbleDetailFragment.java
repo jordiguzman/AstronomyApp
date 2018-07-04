@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,16 +18,20 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.graphics.Palette;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.concurrent.ExecutionException;
+
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_CREDITS;
 import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_DESCRIPTION;
@@ -41,7 +46,8 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
     private Context mContext;
     private int caseSnackBar;
-
+    private int mMutedColor;
+    private View linearLayout;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,11 +153,11 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
             tv_creditt_hubble_item.setText(creditTemp);
 
 
-
+            linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
             DynamicHeightNetworkImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
             photo_hubble_detail.setImageUrl(dataImagesDetail.get(position).getImage(),
                     ImageLoaderHelper.getInstance(mContext).getImageLoader());
-
+            setColorLinearlayout(dataImagesDetail.get(position).getImage());
             photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -164,6 +170,30 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
         }
 
+        private void setColorLinearlayout(final String url){
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Bitmap bitmap= GlideApp.with(mContext)
+                                .asBitmap()
+                                .load(url)
+                                .submit(500,500)
+                                .get();
+                        if (bitmap !=null){
+                            Palette p = Palette.from(bitmap).generate();
+                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                            linearLayout.setBackgroundColor(mMutedColor);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        }
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);

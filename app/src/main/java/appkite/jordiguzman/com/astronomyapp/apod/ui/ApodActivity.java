@@ -3,6 +3,7 @@ package appkite.jordiguzman.com.astronomyapp.apod.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -21,6 +22,8 @@ import android.view.ContextThemeWrapper;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -72,7 +75,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     public static int datesToShow;
     private RecyclerView mRecyclerView;
     private AsynctTaskApod asynctTaskApod;
-    private int moreDays;
+
 
 
 
@@ -89,7 +92,11 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         imageCollapsingToolBar();
 
         datesToShow= 30;
-        today = LocalDate.now(ZoneId.of("US/Eastern"));
+        saveNumberItems();
+        readSharedPreferences();
+
+
+        today = LocalDate.now(ZoneId.of("US/Michigan"));
         datesToShow();
 
 
@@ -107,8 +114,10 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     }
 
-
-
+    private void readSharedPreferences() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("itemNumber", Context.MODE_PRIVATE);
+        datesToShow = sharedPreferences.getInt("number", 0);
+    }
 
 
     @SuppressLint("StaticFieldLeak")
@@ -237,17 +246,53 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                     case R.id.menu_favorites:
                         goToFavoritesApod();
                         break;
-                    case R.id.menu_numer_items:
+                    case R.id.menu_numer_items_30:
+                        datesToShow= 30;
+                        menuActions();
+                        break;
+                    case R.id.menu_numer_items_40:
                         datesToShow= 40;
-                        datesToShow();
-                        asynctTaskApod.cancel(true);
-                        getDataApod(getApplicationContext());
+                        menuActions();
+                        break;
+                    case R.id.menu_numer_items_60:
+                        datesToShow = 60;
+                        menuActions();
                         break;
                 }
                 return true;
             }
 
         });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void menuActions(){
+        showSnackbar();
+        saveNumberItems();
+        datesToShow();
+        asynctTaskApod.cancel(true);
+        getDataApod(getApplicationContext());
+        Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+        mCoordinatorLayout.setAnimation(shake);
+        showSnackbar();
+    }
+
+
+    private void showSnackbar() {
+        Snackbar mSnackbar = Snackbar
+                .make(mCoordinatorLayout, getResources().getString(R.string.number_of_days_30),
+                        Snackbar.LENGTH_LONG);
+
+        View sbView = mSnackbar.getView();
+        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+        mSnackbar.show();
+    }
+
+    public void saveNumberItems(){
+        SharedPreferences sharedPreferences = this.getSharedPreferences("itemNumber", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("number", datesToShow);
+        editor.apply();
     }
 
     private void goToFavoritesApod() {

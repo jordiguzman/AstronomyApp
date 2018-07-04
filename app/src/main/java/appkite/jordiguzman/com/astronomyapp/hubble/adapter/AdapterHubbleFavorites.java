@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,13 +50,15 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
                 .load(dataLoadedHubble[position][3])
                 .into(holder.iv_hubble);
         holder.tv_title_hubble.setText(dataLoadedHubble[position][0]);
-
+        String creditsTemp = String.valueOf(Html.fromHtml(dataLoadedHubble[position][2]));
+        holder.tv_credits.setText(creditsTemp);
     }
 
     @Override
     public int getItemCount() {
         return hubbleArrayList.size();
     }
+
     public interface ItemClickListenerHubbleFavorites{
         void onClickItem(int position);
     }
@@ -63,13 +66,14 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
     class AdapterHubbleFavoritesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
          ImageView iv_hubble;
-         TextView tv_title_hubble;
+         TextView tv_title_hubble, tv_credits;
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         AdapterHubbleFavoritesViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             iv_hubble = itemView.findViewById(R.id.iv_hubble);
             tv_title_hubble =itemView.findViewById(R.id.tv_title_huble);
+            tv_credits = itemView.findViewById(R.id.tv_credits);
             iv_hubble.setClipToOutline(true);
         }
 

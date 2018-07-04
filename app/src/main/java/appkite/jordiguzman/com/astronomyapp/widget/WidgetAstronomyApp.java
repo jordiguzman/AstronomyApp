@@ -32,6 +32,7 @@ public class WidgetAstronomyApp extends AppWidgetProvider {
     }
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
         readSharedPreferences(context);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_astronomy_app);
         AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.iv_widget, views, appWidgetIds) {

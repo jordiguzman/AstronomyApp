@@ -94,7 +94,9 @@
     <string name="retry">RETRY</string>
 
     <string name="image_widget">Image Widget</string>
-    <string name="number_of_days">Number of days</string>
+    <string name="number_of_days_30">Showing 30 days</string>
+    <string name="number_of_days_40">Showing 40 days</string>
+    <string name="number_of_days_60">Showing 60 days</string>
     <string name="picture_from_hubble">Picture from Hubble</string>
     <string name="credits">Credit:&#160;</string>
 
