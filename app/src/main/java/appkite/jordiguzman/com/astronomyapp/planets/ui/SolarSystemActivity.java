@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -33,6 +34,7 @@ import appkite.jordiguzman.com.astronomyapp.planets.adapter.AdapterSolarSystem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.isTablet;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.BASE_URL_EXTRACT;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS_API;
 
@@ -60,7 +62,13 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
                 .into(iv_system);
 
         setupRecyclerView();
-        wikiApiText(BASE_URL_EXTRACT);
+        SolarSystemActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                wikiApiText(BASE_URL_EXTRACT);
+            }
+        });
+
 
 
 
@@ -69,7 +77,12 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
 
     }
     public void setupRecyclerView(){
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        if (isTablet(this)){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }else {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        }
+
         AdapterSolarSystem adapterSolarSystem = new AdapterSolarSystem(this, this);
         mRecyclerView.setAdapter(adapterSolarSystem);
         mRecyclerView.setHasFixedSize(true);

@@ -23,7 +23,7 @@
             android:fontFamily="@font/alfa_slab_one"
             android:text="@string/app_name"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/model_text_size_18"
+            android:textSize="@dimen/model_text_size_subtitle"
             android:textStyle="bold" />
 
     </LinearLayout>

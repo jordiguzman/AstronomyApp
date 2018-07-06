@@ -24,6 +24,7 @@
             android:id="@+id/photo_solar_system_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/margin_bottom_image_pager_item"
             android:background="@color/photo_placeholder"
             android:scaleType="centerCrop" />
         <appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout
@@ -64,19 +65,25 @@
                     android:layout_marginStart="@dimen/model_margin_8"
                     android:layout_marginEnd="@dimen/model_margin_8"
                     android:textStyle="italic"
+                    android:textSize="@dimen/model_text_size_16"
                     android:textColor="@color/colorAccentLigth"/>
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/model_margin_8"
+                android:layout_marginStart="@dimen/model_margin_8"
+                android:layout_marginTop="@dimen/model_margin_8"
+                android:orientation="vertical">
                 <TextView
                     android:id="@+id/tv_explanation_pager_solar_system_item"
                     style="@style/TextAppearance.AppCompat.Subhead"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/model_margin_8"
-                    android:layout_marginEnd="@dimen/model_margin_8"
-                    android:layout_marginTop="@dimen/model_margin_8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item" />
+                    android:textSize="@dimen/model_text_size_16"
+                    android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item"/>
+            </LinearLayout>
         </appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout>
             </LinearLayout>
     </appkite.jordiguzman.com.astronomyapp.mainUi.utils.ObservableScrollView>

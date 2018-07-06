@@ -127,17 +127,19 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             String url = dataLoadedApod[position][4];
             int length = url.length();
             String result = url.substring(length - 3, length);
-            if (!result.equals("jpg")) {
+            if (result.equals("jpg") || result.equals("peg")
+                    || result.equals("gif") || result.equals("png")){
+                iv_photo_apod_detail.setImageUrl(dataLoadedApod[position][4],
+                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                setColorLinearlayout(dataLoadedApod[position][4]);
+            }else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
                 setColorLinearlayout(urlResult);
-            } else {
-                iv_photo_apod_detail.setImageUrl(dataLoadedApod[position][4],
-                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
-                setColorLinearlayout(dataLoadedApod[position][4]);
             }
+
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

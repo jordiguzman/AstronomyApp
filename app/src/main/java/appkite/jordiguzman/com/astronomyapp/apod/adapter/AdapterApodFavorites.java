@@ -53,7 +53,16 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
         String url = dataLoadedApod[position][4];
         int length = url.length();
         String result = url.substring(length - 3, length);
-        if (!result.equals("jpg")) {
+        if (result.equals("peg") || result.equals("jpg")
+                || result.equals("gif") || result.equals("png")){
+            Glide.with(mContext)
+                    .load(dataLoadedApod[position][4])
+                    .apply(new RequestOptions().transform(new RoundedCorners(15))
+                            .error(R.drawable.ic_galaxy)
+                            .placeholder(R.drawable.ic_galaxy))
+                    .into(holder.iv_apod);
+        }
+        else   {
             String key = url.substring(url_base_embed.length(), url.length() - 6);
             String urlResult = url_base_youtube_video + key + "/0.jpg";
             Glide.with(mContext)
@@ -62,14 +71,8 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
                             .error(R.drawable.ic_galaxy)
                             .placeholder(R.drawable.ic_galaxy))
                     .into(holder.iv_apod);
-        } else {
-            Glide.with(mContext)
-                    .load(dataLoadedApod[position][4])
-                    .apply(new RequestOptions().transform(new RoundedCorners(15))
-                            .error(R.drawable.ic_galaxy)
-                            .placeholder(R.drawable.ic_galaxy))
-                    .into(holder.iv_apod);
         }
+
     }
 
     @Override

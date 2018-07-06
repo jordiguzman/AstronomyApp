@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -80,7 +82,12 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         }
 
         RecyclerView mRecyclerView = findViewById(R.id.rv_main);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        if (isTablet(this)){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2 ));
+        }else {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        }
+
         AdapterMain mAdapterMain = new AdapterMain(this, MainActivityApp.this);
         mRecyclerView.setAdapter(mAdapterMain);
         mRecyclerView.setHasFixedSize(true);
@@ -106,6 +113,13 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     }
 
+    public static boolean isTablet(Context context){
+
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+
+    }
 
     public static String GETText(String url){
         InputStream inputStream;

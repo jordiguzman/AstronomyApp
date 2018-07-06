@@ -15,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -52,6 +53,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.isTablet;
 import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.urlToWidget;
 
 public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemClickListenerApod{
@@ -80,7 +82,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +98,12 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         readSharedPreferences();
 
 
-        today = LocalDate.now(ZoneId.of("US/Michigan"));
-        datesToShow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            today = LocalDate.now(ZoneId.of("US/Michigan"));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            datesToShow();
+        }
 
 
         asynctTaskApod = new AsynctTaskApod();
@@ -186,11 +192,13 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public static void datesToShow(){
 
         for (int i = 0; i < datesToShow; i++) {
-            dateOld = today.minusDays(i);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                dateOld = today.minusDays(i);
+            }
 
         }
     }
@@ -203,29 +211,38 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         }
     }
 
+
     public void populateImage(Context context){
         String url_base_youtube_video= "http://img.youtube.com/vi/";
         String url_base_embed = "https://www.youtube.com/embed/";
 
         if (mApodData != null){
             AdapterApod mAdapterApod = new AdapterApod(mApodData, this, ApodActivity.this);
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+
+            if (isTablet(context)){
+                mRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+            }else {
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+            }
+
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setAdapter(mAdapterApod);
             String url = mApodData.get(0).getUrl();
             int length = url.length();
             String result = url.substring(length-3, length);
-            if (!result.equals("jpg")){
+            if (result.equals("jpg") || result.equals("peg")
+                    || result.equals("gif") || result.equals("png")){
+                Glide.with(context)
+                        .load(mApodData.get(0).getUrl())
+                        .into(iv_apod);
+            }else {
                 String key = url.substring(url_base_embed.length(), url.length()-6);
                 String urlResult = url_base_youtube_video + key +"/0.jpg";
                 Glide.with(context)
                         .load(urlResult)
                         .into(iv_apod);
-            }else {
-                Glide.with(context)
-                        .load(mApodData.get(0).getUrl())
-                        .into(iv_apod);
             }
+
         }
         pb_apod_activity.setVisibility(View.INVISIBLE);
 

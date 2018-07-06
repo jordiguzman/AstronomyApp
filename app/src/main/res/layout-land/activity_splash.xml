@@ -10,8 +10,11 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/model_margin_8"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/model_margin_16"
+
+
+
         android:background="@drawable/ic_galaxy"
         android:contentDescription="@string/app_name"
         app:layout_constraintBottom_toBottomOf="parent"

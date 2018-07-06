@@ -55,18 +55,21 @@ public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodVie
         String url = mApodData.get(position).getUrl();
         int length = url.length();
         String result = url.substring(length - 3, length);
-        if (!result.equals("jpg")) {
-            String key = url.substring(url_base_embed.length(), url.length() - 6);
-            String urlResult = url_base_youtube_video + key + "/0.jpg";
+
+        if (result.equals("peg") || result.equals("jpg")
+                || result.equals("gif") || result.equals("png")){
             Glide.with(mContext)
-                    .load(urlResult)
+                    .load(mApodData.get(position).getUrl())
                     .apply(new RequestOptions().transform(new RoundedCorners(15))
                             .error(R.drawable.ic_galaxy)
                             .placeholder(R.drawable.ic_galaxy))
                     .into(holder.iv_apod);
-        } else {
+        }
+        else   {
+            String key = url.substring(url_base_embed.length(), url.length() - 6);
+            String urlResult = url_base_youtube_video + key + "/0.jpg";
             Glide.with(mContext)
-                    .load(mApodData.get(position).getUrl())
+                    .load(urlResult)
                     .apply(new RequestOptions().transform(new RoundedCorners(15))
                             .error(R.drawable.ic_galaxy)
                             .placeholder(R.drawable.ic_galaxy))

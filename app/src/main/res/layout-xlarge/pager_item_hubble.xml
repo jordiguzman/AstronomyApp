@@ -26,6 +26,7 @@
                 android:id="@+id/photo_hubble_detail"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/margin_bottom_image_pager_item"
                 android:background="@color/photo_placeholder"
                 android:scaleType="centerCrop" />
 
@@ -70,6 +71,7 @@
                         android:layout_marginEnd="@dimen/model_margin_8"
                         android:layout_marginStart="@dimen/model_margin_8"
                         android:layout_marginBottom="@dimen/model_margin_8"
+                        android:textSize="@dimen/model_text_size_16"
                         android:textStyle="italic"/>
                 </LinearLayout>
 
@@ -85,6 +87,7 @@
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/model_text_size_16"
                     android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item" />
 
                 </LinearLayout>

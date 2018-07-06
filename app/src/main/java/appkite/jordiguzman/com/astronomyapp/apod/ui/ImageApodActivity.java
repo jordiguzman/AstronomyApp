@@ -188,39 +188,8 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
         int length = url.length();
         String result = url.substring(length - 3, length);
-        if (!result.equals("jpg")) {
-            noVideo = false;
-            hideNavigation();
-            ib_image_apod.setVisibility(View.INVISIBLE);
-            iv_apod_image.setVisibility(View.INVISIBLE);
-            final String key = url.substring(url_base_embed.length(), url.length() - 6);
-            iv_apod_image.setVisibility(View.INVISIBLE);
-            videoView_apod.setVisibility(View.VISIBLE);
-
-            videoView_apod.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
-                @Override
-                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                    player = youTubePlayer;
-                     if (key != null && !b){
-                         youTubePlayer.loadVideo(key);
-                     }else {
-                         youTubePlayer.seekToMillis(currentPositionVideo);
-                         youTubePlayer.play();
-                     }
-                     if (isLandscape()){
-                         youTubePlayer.seekToMillis(currentPositionVideo);
-                         youTubePlayer.play();
-                     }
-                }
-
-                @Override
-                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                    snackBarVideo();
-                }
-            });
-
-
-        } else {
+        if (result.equals("jpg") || result.equals("peg")
+                || result.equals("gif") || result.equals("png")){
             noVideo=true;
             if (isFavorited){
                 setBackground(dataLoadedApod[position][5]);
@@ -236,8 +205,38 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                         .into(iv_apod_image);
 
             }
+        }else {
+            noVideo = false;
+            hideNavigation();
+            ib_image_apod.setVisibility(View.INVISIBLE);
+            iv_apod_image.setVisibility(View.INVISIBLE);
+            final String key = url.substring(url_base_embed.length(), url.length() - 6);
+            iv_apod_image.setVisibility(View.INVISIBLE);
+            videoView_apod.setVisibility(View.VISIBLE);
 
+            videoView_apod.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                    player = youTubePlayer;
+                    if (key != null && !b){
+                        youTubePlayer.loadVideo(key);
+                    }else {
+                        youTubePlayer.seekToMillis(currentPositionVideo);
+                        youTubePlayer.play();
+                    }
+                    if (isLandscape()){
+                        youTubePlayer.seekToMillis(currentPositionVideo);
+                        youTubePlayer.play();
+                    }
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    snackBarVideo();
+                }
+            });
         }
+
     }
     private void setBackground(final String url){
             final Thread thread = new Thread(new Runnable() {

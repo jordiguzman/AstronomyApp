@@ -9,6 +9,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,6 +52,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.isTablet;
 
 
 public class HubbleActivity extends AppCompatActivity implements AdapterHubble.ItemClickListenerHubble{
@@ -237,7 +240,11 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         RecyclerView mRecyclerView = findViewById(R.id.rv_hubble);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        if (isTablet(this)){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }else {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        }
         AdapterHubble adapterHubble = new AdapterHubble(this, dataImagesDetail, this);
         mRecyclerView.setAdapter(adapterHubble);
         mRecyclerView.setHasFixedSize(true);

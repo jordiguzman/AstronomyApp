@@ -29,6 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:transitionName="@string/trans_photo_apod"
+                android:layout_marginBottom="@dimen/margin_bottom_image_pager_item"
                 android:background="@color/photo_placeholder"
                 android:scaleType="centerCrop"
                 tools:targetApi="lollipop" />

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
@@ -24,12 +25,14 @@ import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthDetailActivity.dateApi;
+import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.isTablet;
 
 public class EarthActivity extends AppCompatActivity implements AdapterEarth.ItemClickListenerEarth {
 
@@ -59,7 +62,6 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
                 .into(iv_earth);
 
         if (earthArrayList.isEmpty()){
-            preloadPictures();
             getDataEarth();
         }else {
             populateData();
@@ -110,19 +112,23 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
     }
 
     private  void populateData() {
+        if (isTablet(this)){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         AdapterEarth adapterEarth = new AdapterEarth(this, earthArrayList, this);
         mRecyclerView.setAdapter(adapterEarth);
         mRecyclerView.setHasFixedSize(true);
     }
 
     private void preloadPictures() {
-        Glide.get(this)
-                .setMemoryCategory(MemoryCategory.HIGH);
+        Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
         for (int i=0; i< earthArrayList.size(); i++){
-            Glide.with(this)
+            GlideApp.with(this)
                     .load(earthArrayList.get(i).getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .apply(RequestOptions.overrideOf(800,800))
                     .preload();
         }

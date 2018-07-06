@@ -19,6 +19,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private int caseSnackBar;
     private int mMutedColor;
     private View linearLayout;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -159,31 +161,36 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             tv_explanation_pager_item.setText(mApodData.get(position).getExplanation());
 
             TextView tv_copyright_pager_item = view.findViewById(R.id.tv_copyright_pager_item);
+
             if (mApodData.get(position).getCopyright() == null) {
                 tv_copyright_pager_item.setText(String.format("%s\n", getString(R.string.no_data)));
             } else {
                 tv_copyright_pager_item.setText(String.format("%s\n", mApodData.get(position).getCopyright()));
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
+
             DynamicHeightNetworkImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
             String url = mApodData.get(position).getUrl();
             int length = url.length();
             String result = url.substring(length - 3, length);
-            if (!result.equals("jpg")) {
+            if (result.equals("jpg") || result.equals("peg")
+                    || result.equals("gif") || result.equals("png")){
+                if (!mApodData.get(position).getUrl().isEmpty())setColorLinearlayout(mApodData.get(position).getUrl());
+                iv_photo_apod_detail.setImageUrl(mApodData.get(position).getUrl(),
+                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
+
+            }else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 if (!urlResult.isEmpty())setColorLinearlayout(urlResult);
                 iv_photo_apod_detail.setImageUrl(urlResult,
                         ImageLoaderHelper.getInstance(mContext).getImageLoader());
 
-            } else {
-                if (!mApodData.get(position).getUrl().isEmpty())setColorLinearlayout(mApodData.get(position).getUrl());
-                iv_photo_apod_detail.setImageUrl(mApodData.get(position).getUrl(),
-                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
-
             }
+
+
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -256,6 +263,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                  View snackbarView = snackbar.getView();
                  int snackbarTextId = android.support.design.R.id.snackbar_text;
                  TextView textView = snackbarView.findViewById(snackbarTextId);
+                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
                  textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
                  snackbar.show();
                  break;
@@ -264,6 +272,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 View snackbarView1 = snackbar.getView();
                 int snackbarTextId1 = android.support.design.R.id.snackbar_text;
                 TextView textView1 = snackbarView1.findViewById(snackbarTextId1);
+                textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
                 textView1.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
                 snackbar.show();
                 break;

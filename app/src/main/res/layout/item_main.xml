@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/height_image_main"
             android:scaleType="centerCrop"
             android:contentDescription="@string/app_name"/>
 
@@ -30,10 +30,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/alfa_slab_one"
             android:layout_gravity="center"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="4dp"
+            android:paddingLeft="@dimen/model_margin_16"
+            android:paddingTop="@dimen/model_margin_16"
+            android:paddingRight="@dimen/model_margin_16"
+            android:paddingBottom="@dimen/padding_textview_item_main"
             android:textColor="@color/primary_text"
             android:ellipsize="end"
             android:maxLines="4" />
