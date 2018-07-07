@@ -1,6 +1,7 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -83,6 +84,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
 
 
+    @TargetApi(Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +102,10 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             today = LocalDate.now(ZoneId.of("US/Michigan"));
+        }else {
+
+            today = LocalDate.now();
+
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             datesToShow();
@@ -283,7 +289,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void menuActions(){
-        showSnackbar();
         saveNumberItems();
         datesToShow();
         asynctTaskApod.cancel(true);
@@ -291,18 +296,44 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mCoordinatorLayout.setAnimation(shake);
         showSnackbar();
+        populateImage(this);
     }
 
 
     private void showSnackbar() {
-        Snackbar mSnackbar = Snackbar
-                .make(mCoordinatorLayout, getResources().getString(R.string.number_of_days_30),
-                        Snackbar.LENGTH_LONG);
+        switch (datesToShow){
+            case 30:
+                Snackbar mSnackbar = Snackbar
+                        .make(mCoordinatorLayout, getResources().getString(R.string.number_of_days_30),
+                                Snackbar.LENGTH_LONG);
+                View sbView = mSnackbar.getView();
+                TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                mSnackbar.show();
+                break;
+            case 40:
+                Snackbar mSnackbar1 = Snackbar
+                        .make(mCoordinatorLayout, getResources().getString(R.string.number_of_days_40),
+                                Snackbar.LENGTH_LONG);
+                View sbView1 = mSnackbar1.getView();
+                TextView textView1 = sbView1.findViewById(android.support.design.R.id.snackbar_text);
+                textView1.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                mSnackbar1.show();
+                break;
+            case 60:
+                Snackbar mSnackbar2 = Snackbar
+                        .make(mCoordinatorLayout, getResources().getString(R.string.number_of_days_60),
+                                Snackbar.LENGTH_LONG);
+                View sbView2 = mSnackbar2.getView();
+                TextView textView2 = sbView2.findViewById(android.support.design.R.id.snackbar_text);
+                textView2.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                mSnackbar2.show();
+                break;
 
-        View sbView = mSnackbar.getView();
-        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-        mSnackbar.show();
+        }
+
+
+
     }
 
     public void saveNumberItems(){
@@ -328,11 +359,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     @Override
     public void onClickItem(int position) {
         itemPosition = position;
-        /*String trans = getString(R.string.trans_photo_apod);
-        View transView = findViewById(R.id.iv_apod);
-        ViewCompat.setTransitionName(transView, trans);
-        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(ApodActivity.this, transView, trans);*/
+
         Intent intent = new Intent(this, ApodDetailActivity.class);
         startActivity(intent);
 

@@ -55,6 +55,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.AdapterViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final AdapterViewHolder holder,  int position) {
+
         holder.tv_main_title.setText(STRINGS_MAIN[position]);
         holder.tv_main_subtitle.setText(STRINGS_MAIN_SUB[position]);
         Glide.with(mContext)
@@ -79,12 +80,14 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.AdapterViewHol
         ImageView iv_thumbnail;
         TextView tv_main_title, tv_main_subtitle;
 
+
         AdapterViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             iv_thumbnail = itemView.findViewById(R.id.thumbnail);
             tv_main_title = itemView.findViewById(R.id.main_title);
             tv_main_subtitle = itemView.findViewById(R.id.main_subtitle);
+
         }
 
         @Override

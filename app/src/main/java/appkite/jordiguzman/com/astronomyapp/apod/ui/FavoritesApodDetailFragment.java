@@ -21,6 +21,7 @@ import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -28,8 +29,8 @@ import com.android.volley.toolbox.ImageLoader;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.itemPositionFavorites;
@@ -121,7 +122,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                 tv_copyright_pager_item.setText(String.format("%s\n", dataLoadedApod[position][3]));
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
-            DynamicHeightNetworkImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
+            ImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
             String url = dataLoadedApod[position][4];
@@ -129,14 +130,18 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             String result = url.substring(length - 3, length);
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
-                iv_photo_apod_detail.setImageUrl(dataLoadedApod[position][4],
-                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                GlideApp.with(mContext)
+                        .load(dataLoadedApod[position][4])
+                        .into(iv_photo_apod_detail);
+
                 setColorLinearlayout(dataLoadedApod[position][4]);
             }else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
-                iv_photo_apod_detail.setImageUrl(urlResult,
-                        ImageLoaderHelper.getInstance(mContext).getImageLoader());
+                GlideApp.with(mContext)
+                        .load(urlResult)
+                        .into(iv_photo_apod_detail);
+
                 setColorLinearlayout(urlResult);
             }
 

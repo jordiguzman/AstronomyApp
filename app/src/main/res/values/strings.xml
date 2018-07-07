@@ -28,6 +28,7 @@
     <string name="failed_insert_row">Failed to insert row into: </string>
     <string name="date">Date:&#160;</string>
     <string name="copyright">Copyright:&#160;</string>
+    <string name="image_pager_item_apod">Picture of APOD</string>
 
 
     <!--          MAPS            -->
@@ -99,5 +100,8 @@
     <string name="number_of_days_60">Showing 60 days</string>
     <string name="picture_from_hubble">Picture from Hubble</string>
     <string name="credits">Credit:&#160;</string>
+    <string name="fix_iss">Fix/Unfix ISS</string>
+    <string name="image_pager_item_hubble">Picture of Hubble</string>
+    <string name="image_pager_item_system">Picture of Solar System</string>
 
 </resources>

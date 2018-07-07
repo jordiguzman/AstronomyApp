@@ -23,13 +23,12 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
 import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
@@ -154,9 +153,11 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
-            DynamicHeightNetworkImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
-            photo_hubble_detail.setImageUrl(dataImagesDetail.get(position).getImage(),
-                    ImageLoaderHelper.getInstance(mContext).getImageLoader());
+            ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
+            GlideApp.with(mContext)
+                    .load(dataImagesDetail.get(position).getImage())
+                    .into(photo_hubble_detail);
+
             setColorLinearlayout(dataImagesDetail.get(position).getImage());
             photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
                 @Override

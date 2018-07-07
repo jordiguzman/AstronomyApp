@@ -88,7 +88,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
 
 
-        preloadPicture();
+        //preloadPicture();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -132,6 +132,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
 
     private void preloadPicture() {
+
         Picasso.get()
                 .load(mApodData.get(position).getHdurl())
                 .fetch();
@@ -201,7 +202,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             }else {
                 setBackground(mApodData.get(position).getUrl());
                 Glide.with(this)
-                        .load(mApodData.get(position).getUrl())
+                        .load(mApodData.get(position).getHdurl())
                         .into(iv_apod_image);
 
             }

@@ -49,8 +49,13 @@ public class EarthDetailActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_earth_detail);
         ButterKnife.bind(this);
 
+
+
         iv_detail_earth = findViewById(R.id.iv_detail_earth);
         index = itemPositionEarth;
+        if (savedInstanceState!=null){
+            index = savedInstanceState.getInt("index");
+        }
         tv_distance_earth.setText(convertDoubleEarth(index));
         tv_distance_sun.setText(convertDoubleSun(index));
         tv_caption.setText(earthArrayList.get(index).getCaption());
@@ -145,7 +150,11 @@ public class EarthDetailActivity extends AppCompatActivity  {
         startActivity(intent);
     }
 
-
-
-
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (iv_detail_earth != null){
+            outState.putInt("index", index);
+        }
+    }
 }

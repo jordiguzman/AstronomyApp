@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/fix_iss"
+        android:title="@string/fix_iss"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
     <item android:id="@+id/menu_astronauts"
         android:title="@string/astronauts_in_space"
         android:orderInCategory="100"

@@ -24,36 +24,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/model_margin_16"
-        android:layout_marginRight="@dimen/model_margin_16"
         android:layout_marginTop="@dimen/model_margin_16"
-        android:contentDescription="@string/menu_button"
         android:onClick="clickMenuIss"
+        android:contentDescription="@string/menu_button"
         android:src="@drawable/ic_menu_black_24dp"
         map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+        map:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="@dimen/model_margin_16" />
 
     <TextView
         android:id="@+id/tv_data_iss_position"
-        style="@style/TextViewModelSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/model_margin_8"
         android:textColor="@android:color/white"
+        style="@style/TextViewModelSubTitle"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_data_iss"
-        style="@style/TextViewModelSubTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/model_margin_16"
+        style="@style/TextViewModelSubTitle"
         android:layout_marginStart="@dimen/model_margin_16"
         android:layout_marginTop="@dimen/margin_top_iss_text"
         android:textColor="@android:color/white"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+        map:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/model_margin_16" />
 
 
 </android.support.constraint.ConstraintLayout>

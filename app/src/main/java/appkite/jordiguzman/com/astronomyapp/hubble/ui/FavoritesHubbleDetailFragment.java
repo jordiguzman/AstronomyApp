@@ -22,6 +22,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -29,8 +30,8 @@ import com.android.volley.toolbox.ImageLoader;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
+import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.hubbleArrayList;
@@ -116,9 +117,11 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
             tv_creditt_hubble_item.setText(creditTemp);
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
-            DynamicHeightNetworkImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
-            photo_hubble_detail.setImageUrl(dataLoadedHubble[position][3],
-                    ImageLoaderHelper.getInstance(mContext).getImageLoader());
+            ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
+            GlideApp.with(mContext)
+                    .load(dataLoadedHubble[position][3])
+                    .into(photo_hubble_detail);
+
             setColorLinearlayout(dataLoadedHubble[position][3]);
             photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
                 @Override

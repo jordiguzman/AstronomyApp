@@ -85,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private  LatLng ISS;
     private int mPolyCounter;
     private int mPoly;
-    private boolean mThreadManager;
+    private boolean mThreadManager, fixISS;
     private int mProgress;
     private Polyline mPolyLine;
     private int mCurrentColor;
@@ -112,17 +112,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void clickMenuIss(View view){
+    public void clickMenuIss(final View view){
         Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
-        PopupMenu popupMenu = new PopupMenu(wrapper, view);
+        final PopupMenu popupMenu = new PopupMenu(wrapper, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.menu_iss, popupMenu.getMenu());
 
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
+                    case R.id.fix_iss:
+                        fixISS = !fixISS;
+                        break;
                     case R.id.menu_astronauts:
                         Intent intent = new Intent(getApplicationContext(), AstronautsActivity.class);
                         startActivity(intent);
@@ -165,7 +169,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getDataISS();
 
             }
-        }, 0, 1000);
+        }, 0, 3000);
 
         mMarkerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_iss));
         mMarkerOptions.anchor(0.5f, 0.5f);
@@ -318,8 +322,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     MapsActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
-                            mMap.getUiSettings().setScrollGesturesEnabled(true);
+                            if (fixISS){
+                                mMap.getUiSettings().setScrollGesturesEnabled(false);
+                            }else {
+                                mMap.getUiSettings().setScrollGesturesEnabled(true);
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
+                            }
                             if (iss != null){
                                 iss.remove();
                             }
@@ -428,16 +436,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-/*@Override
-    protected void onResume() {
-        super.onResume();
-        mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                getDataISS();
 
-            }
-        }, 0, 1000);
-    }*/
 }

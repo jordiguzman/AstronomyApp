@@ -19,13 +19,12 @@ import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
@@ -117,9 +116,11 @@ public class SolarSystemDetailFragment extends Fragment{
             TextView tv_subtitles = view.findViewById(R.id.tv_subtitle_pager_solar_system);
             tv_subtitles.setText(subTitle[position]);
 
-            DynamicHeightNetworkImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
-            photo_solar_system_detail.setImageUrl(URL_PLANETS[position],
-                    ImageLoaderHelper.getInstance(mContext).getImageLoader());
+            ImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
+            GlideApp.with(mContext)
+                    .load(URL_PLANETS[position])
+                    .into(photo_solar_system_detail);
+
             photo_solar_system_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

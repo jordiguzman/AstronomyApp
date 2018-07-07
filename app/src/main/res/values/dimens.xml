@@ -43,6 +43,8 @@
     <dimen name="model_padding_pager_item">4dp</dimen>
     <dimen name="max_width">750dp</dimen>
     <dimen name="margin_model_ib_earth">70dp</dimen>
+    <dimen name="margin_top_iss_text">52dp</dimen>
+    <dimen name="heigh_item_pager">250dp</dimen>
 
 
 </resources>

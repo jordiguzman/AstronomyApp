@@ -20,13 +20,14 @@
         android:orientation="vertical">
 
 
-        <appkite.jordiguzman.com.astronomyapp.mainUi.utils.DynamicHeightNetworkImageView
+        <ImageView
             android:id="@+id/photo_solar_system_detail"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/heigh_item_pager"
             android:layout_marginBottom="@dimen/margin_bottom_image_pager_item"
             android:background="@color/photo_placeholder"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/image_pager_item_system"/>
         <appkite.jordiguzman.com.astronomyapp.mainUi.utils.MaxWidthLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

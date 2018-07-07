@@ -40,6 +40,7 @@ public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.Adap
         mTwitterWikiClickListener = twitterClickListener;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
     @Override
     public AdapterAstronautViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

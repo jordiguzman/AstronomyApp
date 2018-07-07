@@ -12,6 +12,7 @@
     <dimen name="model_text_size_title">20sp</dimen>
 
     <dimen name="margin_bottom_image_pager_item">-60dp</dimen>
+    <dimen name="heigh_item_pager">500dp</dimen>
 
 
 </resources>

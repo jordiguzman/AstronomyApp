@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -55,9 +54,6 @@ import static appkite.jordiguzman.com.astronomyapp.widget.WidgetAstronomyApp.url
 
 public class MainActivityApp extends AppCompatActivity  implements AdapterMain.ItemClickListener{
 
-
-
-
     @BindView(R.id.iv_main)
     ImageView iv_main;
     @BindView(R.id.collapsing_main)
@@ -68,7 +64,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     public static String urlToWidget;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -278,7 +274,11 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                     @Override
                     public void onClick(View v) {
                         deleteCache(getApplicationContext());
-                        finish();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            finishAndRemoveTask();
+                        }else {
+                            finish();
+                        }
 
                     }
                 });
