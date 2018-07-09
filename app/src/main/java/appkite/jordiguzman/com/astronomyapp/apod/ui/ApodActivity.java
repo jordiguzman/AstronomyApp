@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -47,7 +48,7 @@ import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
-import appkite.jordiguzman.com.astronomyapp.mainUi.Splash;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -64,7 +65,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     public static int itemPosition;
     @SuppressLint("StaticFieldLeak")
-    private static ImageView iv_apod;
+    private  ImageView iv_apod;
     @BindView(R.id.pb_apod_activity)
     ProgressBar pb_apod_activity;
     @BindView(R.id.collapsing_apod)
@@ -80,24 +81,25 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     private AsynctTaskApod asynctTaskApod;
 
 
-
-
-
-
     @TargetApi(Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apod);
         ButterKnife.bind(this);
-        iv_apod = findViewById(R.id.iv_apod);
+        iv_apod = findViewById(R.id.iv_item_apod);
         mRecyclerView = findViewById(R.id.rv_apod);
 
+        if (LeakCanary.isInAnalyzerProcess(this)){
+            return;
+        }
+        LeakCanary.install(getApplication());
         imageCollapsingToolBar();
 
         datesToShow= 30;
         saveNumberItems();
         readSharedPreferences();
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -116,7 +118,13 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
 
         if (!mApodData.isEmpty()){
-            populateImage(this);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    populateImage(getApplicationContext());
+                }
+            });
+
         }else {
             pb_apod_activity.setVisibility(View.VISIBLE);
             asynctTaskApod.execute();
@@ -172,6 +180,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                 asynctTaskApod.cancel(true);
 
 
+
             }
 
 
@@ -186,8 +195,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                     .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(getApplicationContext(), Splash.class);
-                            startActivity(intent);
+                            asynctTaskApod.execute();
                         }
                     });
             mSnackbar.setActionTextColor(Color.RED);
@@ -359,12 +367,12 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     @Override
     public void onClickItem(int position) {
         itemPosition = position;
-
         Intent intent = new Intent(this, ApodDetailActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.move_down_activity, R.anim.move_up_activity);
+
 
     }
-
 
 
 

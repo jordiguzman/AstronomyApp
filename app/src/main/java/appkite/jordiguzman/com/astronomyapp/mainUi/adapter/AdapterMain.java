@@ -93,6 +93,7 @@ public class AdapterMain extends RecyclerView.Adapter<AdapterMain.AdapterViewHol
         @Override
         public void onClick(View v) {
             int clickPosition = getAdapterPosition();
+
             mItemClickListener.onClickItem(clickPosition);
         }
     }

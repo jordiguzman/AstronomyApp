@@ -29,7 +29,7 @@ public class Splash extends AppCompatActivity {
         preDownloadMainImages();
 
 
-        CountDownTimer countDownTimer = new CountDownTimer(1000, 100) {
+        CountDownTimer countDownTimer = new CountDownTimer(3000, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -61,6 +61,7 @@ public class Splash extends AppCompatActivity {
         public void toMain(){
             Intent intent = new Intent(getApplicationContext(), MainActivityApp.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

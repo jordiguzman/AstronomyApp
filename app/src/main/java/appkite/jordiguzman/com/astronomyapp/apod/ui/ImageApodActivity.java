@@ -15,6 +15,7 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.view.Window;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -81,6 +83,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
 
 
+
         if (savedInstanceState!=null){
             currentPositionVideo =savedInstanceState.getInt("current");
             }
@@ -96,8 +99,9 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             isFavorited = bundle.getBoolean("isFavorited");
 
         }
-
+        preloadPicture();
         populatePictureVideo();
+        ViewCompat.setTransitionName(iv_apod_image, "Image");
         ib_image_apod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +136,6 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
 
     private void preloadPicture() {
-
         Picasso.get()
                 .load(mApodData.get(position).getHdurl())
                 .fetch();
@@ -201,8 +204,9 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
             }else {
                 setBackground(mApodData.get(position).getUrl());
-                Glide.with(this)
+                GlideApp.with(this)
                         .load(mApodData.get(position).getHdurl())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(iv_apod_image);
 
             }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -66,7 +67,7 @@ public class ImageActivityEarth extends AppCompatActivity {
                 .apply(new RequestOptions().override(900,900)
                 .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(iv_image_earth);
-
+        ViewCompat.setTransitionName(iv_image_earth, "image");
 
         ib_image_earth.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)

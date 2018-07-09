@@ -99,7 +99,7 @@ public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodVie
             itemView.setOnClickListener(this);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_date = itemView.findViewById(R.id.tv_date);
-            iv_apod = itemView.findViewById(R.id.iv_apod);
+            iv_apod = itemView.findViewById(R.id.iv_item_apod);
             iv_apod.setClipToOutline(true);
         }
 

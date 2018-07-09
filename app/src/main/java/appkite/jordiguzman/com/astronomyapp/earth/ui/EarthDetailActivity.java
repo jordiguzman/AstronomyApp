@@ -2,6 +2,7 @@ package appkite.jordiguzman.com.astronomyapp.earth.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -61,12 +62,17 @@ public class EarthDetailActivity extends AppCompatActivity  {
         tv_caption.setText(earthArrayList.get(index).getCaption());
 
 
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(getApplicationContext())
+                        .setMemoryCategory(MemoryCategory.HIGH);
+                Glide.with(getApplicationContext())
+                        .load(setPicture(index))
+                        .into(iv_detail_earth);
+            }
+        });
 
-        Glide.get(this)
-                .setMemoryCategory(MemoryCategory.HIGH);
-        Glide.with(this)
-                .load(setPicture(index))
-                .into(iv_detail_earth);
     }
 
 
@@ -147,7 +153,11 @@ public class EarthDetailActivity extends AppCompatActivity  {
     public void clickPictureEarth(View view){
         indexEarth = index;
         Intent intent = new Intent(this, ImageActivityEarth.class);
-        startActivity(intent);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                iv_detail_earth,
+                "image");
+        startActivity(intent, optionsCompat.toBundle());
     }
 
     @Override

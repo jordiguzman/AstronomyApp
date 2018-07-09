@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_COPYRIGHT;
@@ -119,7 +121,12 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         switch (v.getId()){
            case R.id.fb_favorites:
                 if (isFavorited()){
-                    saveApodData();
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            saveApodData();
+                        }
+                    });
                 }else {
                     caseSnackBar=1;
                     showSnackBar();
@@ -140,6 +147,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             return object == view;
         }
 
+
         @NonNull
         @Override
         public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
@@ -147,6 +155,8 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             final LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_apod, container, false);
             container.addView(view);
+
+
 
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
@@ -168,7 +178,8 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
 
-            ImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
+            final ImageView iv_photo_apod_detail = view.findViewById(R.id.iv_item_apod);
+
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
             String url = mApodData.get(position).getUrl();
@@ -196,16 +207,19 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     Intent intent = new Intent(getContext(), ImageApodActivity.class);
                     intent.putExtra("position", itemPosition);
-                    startActivity(intent);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            iv_photo_apod_detail,
+                            "Image");
+                    startActivity(intent, optionsCompat.toBundle());
                 }
             });
             return view;
         }
         private void setColorLinearlayout(final String url){
-            Thread thread = new Thread(new Runnable() {
+            AppExecutors.getInstance().networkIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -225,8 +239,10 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                         e.printStackTrace();
                     }
                 }
+
             });
-            thread.start();
+
+
         }
 
 
@@ -236,7 +252,6 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         }
     }
     public void saveApodData() {
-
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_ID, mApodData.get(itemPosition).getDate());
         contentValues.put(COLUMN_TITLE, mApodData.get(itemPosition).getTitle());

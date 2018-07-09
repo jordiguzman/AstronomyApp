@@ -62,7 +62,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     CoordinatorLayout mCoordinatorLayout;
     private CheckOnLine checkOnLIne;
     public static String urlToWidget;
-
+    public static TextView text;
 
 
     @Override
@@ -70,6 +70,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_app);
         ButterKnife.bind(this);
+
 
          checkOnLIne = new CheckOnLine(this);
         if (!checkOnLIne.isOnline()){
@@ -219,6 +220,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     @Override
     public void onClickItem(int position) {
+
         switch (position){
             case 0:
                 Intent intent = new Intent(this, ApodActivity.class);

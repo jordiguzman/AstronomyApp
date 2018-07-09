@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -8,6 +8,7 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayoutCustom</item>
         <item name="cardViewStyle">@style/Base.CardView</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
     </style>
 
     <style name="AppThemeActionBar" parent="AppTheme">

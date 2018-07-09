@@ -73,12 +73,15 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
                     .into(holder.iv_apod);
         }
 
+
     }
 
     @Override
     public int getItemCount() {
         return apodArrayList.size();
     }
+
+
 
     public interface ItemClickListenerApodFavorites{
         void onClickItem(int position);
@@ -95,7 +98,7 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
             itemView.setOnClickListener(this);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_date = itemView.findViewById(R.id.tv_date);
-            iv_apod = itemView.findViewById(R.id.iv_apod);
+            iv_apod = itemView.findViewById(R.id.iv_item_apod);
             iv_apod.setClipToOutline(true);
         }
 

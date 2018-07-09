@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -31,8 +32,6 @@ import appkite.jordiguzman.com.astronomyapp.planets.data.Urls;
 import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
 
 public class ImageSolarSystemActivity extends AppCompatActivity {
 
@@ -66,6 +65,7 @@ public class ImageSolarSystemActivity extends AppCompatActivity {
             }
         });
 
+        ViewCompat.setTransitionName(iv_image_solar, "image");
         iv_image_solar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +91,7 @@ public class ImageSolarSystemActivity extends AppCompatActivity {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Picasso.get()
-                .load(mApodData.get(position).getUrl())
+                .load(Urls.URL_PLANETS[position])
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

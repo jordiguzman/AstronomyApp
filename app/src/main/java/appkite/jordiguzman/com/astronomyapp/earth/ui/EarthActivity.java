@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         setContentView(R.layout.activity_earth);
         ButterKnife.bind(this);
 
+        if (LeakCanary.isInAnalyzerProcess(this)){
+            return;
+        }
+        LeakCanary.install(getApplication());
 
 
         mRecyclerView= findViewById(R.id.rv_earth);

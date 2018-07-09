@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -116,7 +117,7 @@ public class SolarSystemDetailFragment extends Fragment{
             TextView tv_subtitles = view.findViewById(R.id.tv_subtitle_pager_solar_system);
             tv_subtitles.setText(subTitle[position]);
 
-            ImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
+            final ImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
             GlideApp.with(mContext)
                     .load(URL_PLANETS[position])
                     .into(photo_solar_system_detail);
@@ -126,7 +127,11 @@ public class SolarSystemDetailFragment extends Fragment{
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ImageSolarSystemActivity.class);
                     intent.putExtra("position", itemPositionSolar);
-                    startActivity(intent);
+                    ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            photo_solar_system_detail,
+                            "image");
+                    startActivity(intent, activityOptionsCompat.toBundle());
                 }
             });
 

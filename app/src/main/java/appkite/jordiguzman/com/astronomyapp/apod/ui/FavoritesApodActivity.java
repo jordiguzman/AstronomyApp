@@ -1,13 +1,18 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,7 +35,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
     @BindView(R.id.tv_title_apod)
     TextView title_apod;
-    @BindView(R.id.iv_apod)
+    @BindView(R.id.iv_item_apod)
     ImageView iv_apod;
     @BindView(R.id.ib_menu_acticity_apod)
     ImageButton ib_menu;
@@ -46,7 +51,6 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     public static ArrayList<String[]> apodArrayList = new ArrayList<>();
     public static String [][] dataLoadedApod;
     public static int itemPositionFavorites;
-
 
 
     @Override
@@ -65,7 +69,38 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                 .into(iv_apod);
         loadData();
         populateRecyclerView();
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                deleteItem(position);
+                reloadAfterDelete();
+                snackBarDelete();
+
+            }
+        }).attachToRecyclerView(mRecyclerView);
+
+    }
+
+    private void snackBarDelete() {
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
+        snackbar.show();
+    }
+    private void deleteItem(int position){
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = ApodContract.ApodEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(FavoritesApodActivity.dataLoadedApod[position][6]).build();
+        contentResolver.delete(uri, null, null);
+        populateRecyclerView();
     }
 
 
@@ -79,6 +114,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapterApodFavorites);
+
     }
 
     public void loadData(){

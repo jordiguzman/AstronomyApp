@@ -147,6 +147,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap = googleMap;
         mMap.setMapType(2);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
         if (mTimer == null){
             mTimer = new Timer();
@@ -322,11 +324,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     MapsActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
                             if (fixISS){
                                 mMap.getUiSettings().setScrollGesturesEnabled(false);
                             }else {
                                 mMap.getUiSettings().setScrollGesturesEnabled(true);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
+                                mMap.animateCamera(CameraUpdateFactory.zoomTo(21.0f));
                             }
                             if (iss != null){
                                 iss.remove();

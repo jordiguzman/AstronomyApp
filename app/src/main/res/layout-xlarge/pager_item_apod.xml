@@ -25,7 +25,7 @@
 
 
             <ImageView
-                android:id="@+id/photo_apod_detail"
+                android:id="@+id/iv_item_apod"
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
                 android:layout_marginBottom="@dimen/margin_bottom_image_pager_item"
@@ -50,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:layout_marginBottom="@dimen/model_margin_8"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:elevation="@dimen/elevation">
 
                 <TextView
                     android:id="@+id/tv_title_pager_item"

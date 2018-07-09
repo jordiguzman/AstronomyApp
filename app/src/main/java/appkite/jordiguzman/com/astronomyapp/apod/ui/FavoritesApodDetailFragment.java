@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -122,7 +123,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                 tv_copyright_pager_item.setText(String.format("%s\n", dataLoadedApod[position][3]));
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
-            ImageView iv_photo_apod_detail = view.findViewById(R.id.photo_apod_detail);
+            final ImageView iv_photo_apod_detail = view.findViewById(R.id.iv_item_apod);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
             String url = dataLoadedApod[position][4];
@@ -152,7 +153,11 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                     Intent intent = new Intent(getContext(), ImageApodActivity.class);
                     intent.putExtra("position", position);
                     intent.putExtra("isFavorited", isFavorited);
-                    startActivity(intent);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            iv_photo_apod_detail,
+                            "Image");
+                    startActivity(intent, optionsCompat.toBundle());
                 }
             });
             return view;

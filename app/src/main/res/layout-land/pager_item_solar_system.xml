@@ -43,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:layout_marginBottom="@dimen/model_margin_8"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:elevation="@dimen/elevation">
                 <TextView
                     android:id="@+id/tv_title_pager_solar_system_item"
                     style="?android:attr/textAppearanceLarge"
