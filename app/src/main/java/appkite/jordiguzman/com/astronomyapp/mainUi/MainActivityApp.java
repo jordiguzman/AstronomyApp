@@ -23,10 +23,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +31,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
@@ -62,6 +61,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     CoordinatorLayout mCoordinatorLayout;
     private CheckOnLine checkOnLIne;
     public static String urlToWidget;
+    @SuppressLint("StaticFieldLeak")
     public static TextView text;
 
 
@@ -98,15 +98,15 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
         imageCollapsingToolBar();
 
 
+         runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 preLoadImagesSystem();
+             }
+         });
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                preLoadImagesSystem();
-            }
-        });
         String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
-        new HttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
+        new GetHttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
 
     }
 
@@ -118,46 +118,35 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
     }
 
-    public static String GETText(String url){
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-        return  result;
-    }
+    static class GetHttpAsyncTaskApodForWidget extends AsyncTask<String, Void, String>{
 
-    private static String converInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        StringBuilder result = new StringBuilder();
-        while ((line = bufferedReader.readLine()) != null)result.append(line);
-
-        inputStream.close();
-        return result.toString();
-    }
-
-    static class HttpAsyncTaskApodForWidget extends AsyncTask<String, Void, String>{
-
+        String serverResponse;
         @SuppressLint("StaticFieldLeak")
         private Context mContext;
 
-        HttpAsyncTaskApodForWidget(Context context){
-            mContext = context;
+        GetHttpAsyncTaskApodForWidget(Context context) {
+            this.mContext = context;
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            return GETText(strings[0]);
+            URL url;
+            HttpURLConnection urlConnection;
+            try {
+                url = new URL(strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode = urlConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    serverResponse = converInputStreamToString(urlConnection.getInputStream());
+                }
+            } catch (MalformedURLException e) {
+                e.getMessage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return serverResponse;
+
         }
 
         @Override
@@ -177,6 +166,17 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
             }
         }
     }
+
+    private static String converInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        StringBuilder result = new StringBuilder();
+        while ((line = bufferedReader.readLine()) != null)result.append(line);
+
+        inputStream.close();
+        return result.toString();
+    }
+
 
     private void showSnackbar() {
         Snackbar mSnackbar = Snackbar

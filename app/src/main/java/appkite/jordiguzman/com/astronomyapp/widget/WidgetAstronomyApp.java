@@ -7,13 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.request.target.AppWidgetTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.mainUi.Splash;
@@ -22,7 +18,7 @@ import appkite.jordiguzman.com.astronomyapp.mainUi.Splash;
 public class WidgetAstronomyApp extends AppWidgetProvider {
 
     public static String name, url;
-    public static Bitmap bitmap;
+
 
 
     public static void pushWidgetUpdate(Context context, RemoteViews remoteViews) {
@@ -36,10 +32,6 @@ public class WidgetAstronomyApp extends AppWidgetProvider {
         readSharedPreferences(context);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_astronomy_app);
         AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.iv_widget, views, appWidgetIds) {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                super.onResourceReady(resource, transition);
-            }
         };
 
          GlideApp.with(context)

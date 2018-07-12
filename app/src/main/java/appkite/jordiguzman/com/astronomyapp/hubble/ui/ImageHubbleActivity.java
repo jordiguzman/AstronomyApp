@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.view.View;
@@ -64,7 +65,7 @@ public class ImageHubbleActivity extends AppCompatActivity {
 
 
         populateImage();
-
+        ViewCompat.setTransitionName(iv_apod_image, "image");
         ib_image_apod.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,10 +193,5 @@ public class ImageHubbleActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
     }
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
 
-    }
 }

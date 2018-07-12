@@ -12,10 +12,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.MemoryCategory;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +22,6 @@ import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -53,10 +48,10 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         setContentView(R.layout.activity_earth);
         ButterKnife.bind(this);
 
-        if (LeakCanary.isInAnalyzerProcess(this)){
+        /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
-        LeakCanary.install(getApplication());
+        LeakCanary.install(getApplication());*/
 
 
         mRecyclerView= findViewById(R.id.rv_earth);
@@ -91,10 +86,10 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
                     case 200:
                         earthArrayList = (ArrayList<Earth>) response.body();
                          if (earthArrayList != null){
-                             EarthActivity.this.runOnUiThread(new Runnable() {
+                             runOnUiThread(new Runnable() {
                                  @Override
                                  public void run() {
-                                     preloadPictures();
+                                     //preloadPictures();
                                  }
                              });
                              populateData();
@@ -128,16 +123,7 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         mRecyclerView.setHasFixedSize(true);
     }
 
-    private void preloadPictures() {
-        Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
-        for (int i=0; i< earthArrayList.size(); i++){
-            GlideApp.with(this)
-                    .load(earthArrayList.get(i).getImage())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .apply(RequestOptions.overrideOf(800,800))
-                    .preload();
-        }
-    }
+
 
     @SuppressLint("ResourceAsColor")
     public void imageCollapsingToolBar(){

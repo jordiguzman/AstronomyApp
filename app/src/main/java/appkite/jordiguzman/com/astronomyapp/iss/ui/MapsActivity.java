@@ -38,10 +38,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,8 +46,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -85,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private  LatLng ISS;
     private int mPolyCounter;
     private int mPoly;
-    private boolean mThreadManager, fixISS;
+    private boolean fixISS;
     private int mProgress;
     private Polyline mPolyLine;
     private int mCurrentColor;
@@ -193,7 +193,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 try {
-                    mThreadManager = true;
+
                      currentDate = new Date();
                     mProgress = 0;
                     for (int i = 0; i < 20; ++i) {
@@ -206,7 +206,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         updatePolyline(currentDate);
                         Thread.sleep(1000);
                     }
-                    mThreadManager = false;
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -244,7 +244,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 response.getJSONObject(i).getDouble("longitude"));
                     }
 
-                    MapsActivity.this.runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         public void run() {
                             if (finalStart == 10) {
                                 for (int i = 0; i < futureTen.length - 1; ++i) {
@@ -315,22 +315,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
 
-                    Date date = Calendar.getInstance().getTime();
+                    Date date = Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime();
                     final String dateFormated= new SimpleDateFormat("hh:mm:ss").format(date);
 
                     ISS = new LatLng(latitude, longitude);
                     decimalFormat = new DecimalFormat("0.00");
 
-                    MapsActivity.this.runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
                             if (fixISS){
-                                mMap.getUiSettings().setScrollGesturesEnabled(false);
-                            }else {
                                 mMap.getUiSettings().setScrollGesturesEnabled(true);
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
-                                mMap.animateCamera(CameraUpdateFactory.zoomTo(21.0f));
+
+
+                            }else {
+                                mMap.getUiSettings().setScrollGesturesEnabled(false);
                             }
                             if (iss != null){
                                 iss.remove();
@@ -365,25 +366,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mRequestQueue.add(jsonObjectRequest);
     }
-    private String getDataAstronaut(String url){
 
-
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-        return  result;
-    }
     private static String converInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -393,9 +376,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         inputStream.close();
         return result.toString();
     }
-
-
-
 
     @Override
     protected void onDestroy() {
@@ -407,11 +387,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("StaticFieldLeak")
     class HttpAsyntaskDataAstronauts extends AsyncTask<String, Void, String>{
 
-
+        String serverResponse;
 
         @Override
         protected String doInBackground(String... strings) {
-            return getDataAstronaut(strings[0]);
+            URL url;
+            HttpURLConnection urlConnection;
+            try {
+                url = new URL(strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode= urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    serverResponse = converInputStreamToString(urlConnection.getInputStream());
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return serverResponse;
         }
 
         @Override

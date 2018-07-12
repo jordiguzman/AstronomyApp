@@ -53,14 +53,6 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private View linearLayout;
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +65,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
         mViewPager.setAdapter(new ApodPageAdapter());
-        mViewPager.setCurrentItem(ApodActivity.itemPosition);
+        mViewPager.setCurrentItem(itemPosition);
         FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites);
 
         fb_favorites.setOnClickListener(this);
@@ -92,6 +84,14 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                final float normalizedposition = Math.abs(Math.abs(position) - 1);
+                page.setScaleX(normalizedposition / 2 + 0.5f);
+                page.setScaleY(normalizedposition / 2 + 0.5f);
             }
         });
 
@@ -273,27 +273,21 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
     }
     public void showSnackBar(){
-        Snackbar snackbar;
+        Snackbar snackbar = null;
         switch (caseSnackBar){
             case 0:
                  snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_LONG );
-                 View snackbarView = snackbar.getView();
-                 int snackbarTextId = android.support.design.R.id.snackbar_text;
-                 TextView textView = snackbarView.findViewById(snackbarTextId);
-                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
-                 textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
-                 snackbar.show();
                  break;
             case 1:
                 snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_LONG );
-                View snackbarView1 = snackbar.getView();
-                int snackbarTextId1 = android.support.design.R.id.snackbar_text;
-                TextView textView1 = snackbarView1.findViewById(snackbarTextId1);
-                textView1.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
-                textView1.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
-                snackbar.show();
                 break;
         }
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
+        textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
+        snackbar.show();
 
 
     }

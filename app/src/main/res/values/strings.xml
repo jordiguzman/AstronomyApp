@@ -55,15 +55,15 @@
         <item>The Red Planet, dry and cool</item>
         <item>The largest planet, a gas giant</item>
         <item>Another gas giant with awesome rings</item>
-        <item>A ice giant</item>
+        <item>An ice giant</item>
         <item>The farthest planet from the Sun</item>
-        <item>A drwaf planet in the Kuiper belt</item>
+        <item>A dwarf planet in the Kuiper belt</item>
         <item>The most geologically active object in the Solar System</item>
         <item>The largest moon of Jupiter</item>
         <item>Their size is almost that of Mercury</item>
-        <item>Possibly it has a huge water ocean beneath it</item>
+        <item>It may have a huge water ocean beneath it</item>
         <item>The only moon with a dense atmosphere</item>
-        <item>A moon with giants geysers</item>
+        <item>A moon with giant geysers</item>
     </string-array>
 
     <string name="hubble_news">Hubble Pictures</string>
@@ -83,25 +83,26 @@
     <string name="fast_forward">Fast Forward</string>
     <string name="picture_of_earth">Picture of Earth</string>
     <string name="flag_from_astronaut">Flag From Astronaut</string>
-    <string name="logo_twitter">Logo Twitter</string>
-    <string name="logo_wikipedia">Logo Wikipedia</string>
+    <string name="logo_twitter">Twitter Logo</string>
+    <string name="logo_wikipedia">Wikipedia Logo</string>
     <string name="astronauts_in_space">Astronauts in space</string>
-    <string name="webcam_from_iss">Webcam from ISS</string>
-    <string name="problems_with_webcam">Problems with Webcam</string>
+    <string name="webcam_from_iss">ISS Webcam</string>
+    <string name="problems_with_webcam">Webcam issues. Try again later.</string>
     <string name="astronaut_picture">Astronaut Picture</string>
-    <string name="is_favorited">This item is already in Favorites!</string>
-    <string name="no_network">No network connection!</string>
+    <string name="is_favorited">This item is already in Favorites</string>
+    <string name="no_network">No network connection</string>
     <string name="no_api">Problem with api</string>
     <string name="retry">RETRY</string>
 
-    <string name="image_widget">Image Widget</string>
+    <string name="image_widget">Widget Picture</string>
     <string name="number_of_days_30">Showing 30 days</string>
     <string name="number_of_days_40">Showing 40 days</string>
     <string name="number_of_days_60">Showing 60 days</string>
-    <string name="picture_from_hubble">Picture from Hubble</string>
+    <string name="picture_from_hubble">Hubble Picture</string>
     <string name="credits">Credit:&#160;</string>
-    <string name="fix_iss">Fix/Unfix ISS</string>
-    <string name="image_pager_item_hubble">Picture of Hubble</string>
-    <string name="image_pager_item_system">Picture of Solar System</string>
+    <string name="fix_iss">Lock/Unlock ISS picture</string>
+    <string name="image_pager_item_hubble">Hubble Picture</string>
+    <string name="image_pager_item_system">Solar System Picture</string>
+    <string name="swipe_delete">Swipe to remove from Favorites</string>
 
 </resources>

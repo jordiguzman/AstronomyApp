@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -43,11 +44,6 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
     private int mMutedColor;
     private View linearLayout;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,11 +56,37 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_hubble);
         mViewPager.setAdapter(new FavoritesHubblePageAdapter());
-        mViewPager.setCurrentItem(FavoritesHubbleActivity.itemPositionFavoritesHubble);
+        mViewPager.setCurrentItem(itemPositionFavoritesHubble);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites_hubble);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                itemPositionFavoritesHubble = position;
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                final float normalizedposition = Math.abs(Math.abs(position) - 1);
+                page.setScaleX(normalizedposition / 2 + 0.5f);
+                page.setScaleY(normalizedposition / 2 + 0.5f);
+            }
+        });
     }
+
 
     @Override
     public void onClick(View v) {
@@ -117,7 +139,7 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
             tv_creditt_hubble_item.setText(creditTemp);
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
-            ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
+            final ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
             GlideApp.with(mContext)
                     .load(dataLoadedHubble[position][3])
                     .into(photo_hubble_detail);
@@ -129,7 +151,11 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
                     Intent intent = new Intent(getContext(), ImageHubbleActivity.class);
                     intent.putExtra("position", position);
                     intent.putExtra("isFavorited", isFavorited);
-                    startActivity(intent);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            photo_hubble_detail,
+                            "image");
+                    startActivity(intent, optionsCompat.toBundle());
                 }
             });
 

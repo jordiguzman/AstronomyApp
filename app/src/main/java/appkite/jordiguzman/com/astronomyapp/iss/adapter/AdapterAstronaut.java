@@ -30,9 +30,9 @@ import appkite.jordiguzman.com.astronomyapp.iss.model.Astronaut;
 
 public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.AdapterAstronautViewHolder>{
 
-    private Context mContext;
-    private ArrayList<Astronaut> mAstronautData;
-    private TwitterWikiClickListener  mTwitterWikiClickListener;
+    private final Context mContext;
+    private final ArrayList<Astronaut> mAstronautData;
+    private final TwitterWikiClickListener  mTwitterWikiClickListener;
 
     public AdapterAstronaut(ArrayList<Astronaut> astronauts, Context context, TwitterWikiClickListener twitterClickListener){
         this.mAstronautData= astronauts;

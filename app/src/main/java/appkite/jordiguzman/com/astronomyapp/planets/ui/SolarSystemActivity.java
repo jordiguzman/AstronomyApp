@@ -15,10 +15,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +22,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
@@ -65,7 +64,7 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
         SolarSystemActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                wikiApiText(BASE_URL_EXTRACT);
+                wikiApiText();
             }
         });
 
@@ -89,32 +88,14 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
     }
 
 
-    private void wikiApiText(String type){
+    private void wikiApiText(){
         for (String aTITLE : PLANETS_API) {
-            new HttpAsyncTaskText().execute(type + aTITLE);
+            new HttpAsyncTaskText().execute(BASE_URL_EXTRACT + aTITLE);
 
         }
 
     }
 
-
-    public static String GETText(String url){
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse  httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-        return  result;
-    }
 
     private static String converInputStreamToString(InputStream inputStream) throws IOException{
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -145,10 +126,25 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
     @SuppressLint("StaticFieldLeak")
     static class HttpAsyncTaskText extends AsyncTask<String, Void, String>{
 
+        String serverResponse;
 
         @Override
         protected String doInBackground(String... strings) {
-            return GETText(strings[0]);
+            URL url;
+            HttpURLConnection urlConnection;
+            try {
+                url = new URL(strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode= urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    serverResponse = converInputStreamToString(urlConnection.getInputStream());
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return serverResponse;
         }
 
         @Override

@@ -25,10 +25,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +33,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +60,6 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
     public static ArrayList<Images> dataImages = new ArrayList<>();
     public static ArrayList<ImagesDetail> dataImagesDetail = new ArrayList<>();
     private String url = "http://hubblesite.org/api/v3/image/";
-
     public static int itemPositionHubble;
     @BindView(R.id.ib_menu_activity_hubble)
     ImageButton ib_menu_hubble;
@@ -122,23 +120,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
 
     }
 
-    public String getDataHubbleImagesDetail(String url){
-        InputStream inputStream;
-        String result = "";
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpResponse httpResponse = httpClient.execute(new HttpGet(url));
-            inputStream = httpResponse.getEntity().getContent();
-            if (inputStream != null){
-                result = converInputStreamToString(inputStream);
-            }else {
-                result = "Error";
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-        return  result;
-    }
+
     private static String converInputStreamToString(InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
@@ -158,9 +140,24 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
     @SuppressLint("StaticFieldLeak")
     class HttpAsyctaskDataHubbleImagesDetail extends AsyncTask<String, Void, String>{
 
+        String serverResponse;
         @Override
         protected String doInBackground(String... strings) {
-            return getDataHubbleImagesDetail(strings[0]);
+            URL url;
+            HttpURLConnection urlConnection;
+            try {
+                url = new URL(strings[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                int responseCode= urlConnection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK){
+                    serverResponse = converInputStreamToString(urlConnection.getInputStream());
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return serverResponse;
         }
 
         @Override
@@ -177,17 +174,17 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                 String image = oneImage.getString("file_url");
                 String imageTemp = image.substring(image.length()-3);
                 if (imageTemp.equals("pdf") || imageTemp.equals("tif")){
-                    oneImage = imageFiles.getJSONObject(2);
+                    oneImage = imageFiles.getJSONObject(3);
                     image = oneImage.getString("file_url");
                 }
                 imagesDetail = new ImagesDetail(name, description, credits, image);
 
                 dataImagesDetail.add(imagesDetail);
-                for (int i=0; i<dataImagesDetail.size(); i++){
+                /*for (int i=0; i<dataImagesDetail.size(); i++){
                     Glide.with(getApplicationContext())
                     .load(dataImagesDetail.get(i).getImage())
                             .preload();
-                }
+                }*/
 
                 CountDownTimer countDownTimer = new CountDownTimer(100,1500) {
                     @Override
@@ -257,6 +254,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         itemPositionHubble = position;
         Intent intent = new Intent(this, HubbleDetailActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
 
     }
 }

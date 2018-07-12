@@ -4,11 +4,13 @@
     <dimen name="model_margin_8">8dp</dimen>
     <dimen name="model_margin_14">12dp</dimen>
     <dimen name="model_margin_16">16dp</dimen>
+    <dimen name="model_margin_18">18dp</dimen>
     <dimen name="model_margin_bottom_text_page_item">55dp</dimen>
     <dimen name="logo_nasa_dim">75dp</dimen>
 
     <dimen name="model_text_size_12">12sp</dimen>
     <dimen name="model_text_size_16">16sp</dimen>
+    <dimen name="model_text_size_24">24sp</dimen>
 
     <dimen name="model_text_size_subtitle">12sp</dimen>
     <dimen name="model_text_size_title">16sp</dimen>
@@ -45,6 +47,9 @@
     <dimen name="margin_model_ib_earth">70dp</dimen>
     <dimen name="margin_top_iss_text">52dp</dimen>
     <dimen name="heigh_item_pager">250dp</dimen>
+    <dimen name="model_padding_16">16dp</dimen>
+    <dimen name="image_widget_width">180dp</dimen>
+    <dimen name="image_widget_height">130dp</dimen>
 
 
 </resources>

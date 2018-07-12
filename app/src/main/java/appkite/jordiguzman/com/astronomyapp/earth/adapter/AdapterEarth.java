@@ -76,6 +76,10 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
                             public void run() {
                                 GlideApp.with(mContext)
                                         .load(url)
+                                        .apply(new RequestOptions()
+                                        .placeholder(R.drawable.ic_galaxy)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .override(800,800))
                                         .into(holder.iv_earth);
                             }
                         });
@@ -98,6 +102,7 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
          holder.tv_date.setText(mEarthData.get(position).getDate());
 
     }
+
 
     @Override
     public int getItemCount() {

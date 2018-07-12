@@ -25,18 +25,18 @@
 
         <ImageView
             android:id="@+id/iv_astronaut"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/image_item_model"
+            android:layout_height="@dimen/image_item_model"
             android:layout_margin="@dimen/model_margin_8"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             android:background="@drawable/round_image_view"
             android:contentDescription="@string/astronaut_picture"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:targetApi="lollipop"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
 
         <ImageView
@@ -45,13 +45,13 @@
             android:layout_height="@dimen/twitter_wiki_side"
             android:layout_gravity="end"
             android:layout_margin="@dimen/model_margin_8"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             android:contentDescription="@string/logo_twitter"
             android:src="@drawable/twitter"
             app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_astronaut"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
         <ImageView
             android:id="@+id/iv_wikipedia"
@@ -59,13 +59,13 @@
             android:layout_height="@dimen/twitter_wiki_side"
             android:layout_gravity="end"
             android:layout_margin="@dimen/model_margin_8"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             android:contentDescription="@string/logo_wikipedia"
             android:src="@drawable/wiki"
             app:layout_constraintStart_toEndOf="@+id/iv_twitter"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_astronaut"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
         <ImageView
             android:id="@+id/iv_flag"
@@ -73,54 +73,54 @@
             android:layout_height="@dimen/height_flag"
             android:layout_gravity="end"
             android:layout_margin="@dimen/model_margin_8"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="@dimen/model_margin_8"
+            android:layout_marginEnd="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_18"
             android:contentDescription="@string/flag_from_astronaut"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.13" />
+            app:layout_constraintVertical_bias="0.13"
+            android:layout_marginRight="@dimen/model_margin_8" />
 
         <TextView
             android:id="@+id/tv_name_astronaut"
             style="@style/TextViewModelTitle"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             android:fontFamily="@font/alfa_slab_one"
-
             app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
         <TextView
             android:id="@+id/tv_title_astronaut"
             style="@style/TextViewModelSubTitle"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             android:textStyle="italic"
             app:layout_constraintStart_toEndOf="@+id/iv_astronaut"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_astronaut"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
         <TextView
             android:id="@+id/tv_bio"
             style="@style/TextViewModelSubTitle"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/model_margin_8"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_astronaut"
-            android:layout_marginLeft="8dp" />
+            android:layout_marginLeft="@dimen/model_margin_8" />
 
         <TextView
             android:id="@+id/tv_time_in_space"
             style="@style/TextViewModelSubTitle"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginBottom="@dimen/model_margin_8"
+            android:layout_marginEnd="@dimen/model_margin_8"
+            android:layout_marginStart="@dimen/model_margin_8"
+            android:layout_marginTop="@dimen/model_margin_8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

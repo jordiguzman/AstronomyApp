@@ -43,11 +43,6 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
     private int mMutedColor;
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -63,13 +58,22 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
+
+        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                final float normalizedposition = Math.abs(Math.abs(position) - 1);
+                page.setScaleX(normalizedposition / 2 + 0.5f);
+                page.setScaleY(normalizedposition / 2 + 0.5f);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         ContentResolver contentResolver = mContext.getContentResolver();
         Uri uri = ApodContract.ApodEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(FavoritesApodActivity.dataLoadedApod[itemPositionFavorites][6]).build();
+        uri = uri.buildUpon().appendPath(dataLoadedApod[itemPositionFavorites][6]).build();
         contentResolver.delete(uri, null, null);
         snackBarDelete();
 
@@ -185,5 +189,6 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             container.removeView((View) object);
         }
     }
+
 
 }

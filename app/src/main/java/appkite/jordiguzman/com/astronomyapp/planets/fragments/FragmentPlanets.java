@@ -20,11 +20,8 @@ public class FragmentPlanets extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_planets, container, false);
-        //TextView textView = rootView.findViewById(R.id.tv_planet_description);
+        return inflater.inflate(R.layout.fragment_planets, container, false);
 
-        //textView.setText(Html.fromHtml(""));
-        return rootView;
     }
 
 }

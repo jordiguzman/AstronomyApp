@@ -52,8 +52,8 @@
 
         <ImageView
             android:id="@+id/iv_widget"
-            android:layout_width="180dp"
-            android:layout_height="130dp"
+            android:layout_width="@dimen/image_widget_width"
+            android:layout_height="@dimen/image_widget_height"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/model_margin_8"
             android:layout_marginEnd="@dimen/model_margin_8"

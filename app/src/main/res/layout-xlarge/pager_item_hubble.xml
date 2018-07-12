@@ -47,7 +47,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/model_margin_8"
                     android:background="@color/colorPrimary"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:elevation="@dimen/elevation">
 
                     <TextView
                         android:id="@+id/tv_title_pager_hubble_item"

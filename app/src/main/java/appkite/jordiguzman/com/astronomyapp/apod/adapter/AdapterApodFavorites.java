@@ -25,8 +25,8 @@ import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity
 
 public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavorites.AdapterApodFavoritesViewHolder> {
 
-    private Context mContext;
-    private ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
+    private final Context mContext;
+    private final ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
 
 
     public AdapterApodFavorites(ArrayList<String[]> arrayList, Context context,

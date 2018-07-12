@@ -107,7 +107,15 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             public void onClick(View v) {
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
-                shareImage(getApplicationContext());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        shareImage(getApplicationContext());
+                    }
+                });
+
+
+
             }
         });
 
@@ -313,12 +321,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
 
-    }
 
 
 

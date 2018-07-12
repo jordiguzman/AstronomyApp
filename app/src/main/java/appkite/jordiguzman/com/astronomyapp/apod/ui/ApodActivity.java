@@ -35,7 +35,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -90,10 +89,10 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         iv_apod = findViewById(R.id.iv_item_apod);
         mRecyclerView = findViewById(R.id.rv_apod);
 
-        if (LeakCanary.isInAnalyzerProcess(this)){
+        /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
-        LeakCanary.install(getApplication());
+        LeakCanary.install(getApplication());*/
         imageCollapsingToolBar();
 
         datesToShow= 30;
@@ -195,6 +194,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                     .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            asynctTaskApod.cancel(true);
                             asynctTaskApod.execute();
                         }
                     });
@@ -369,12 +369,21 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         itemPosition = position;
         Intent intent = new Intent(this, ApodDetailActivity.class);
         startActivity(intent);
-        overridePendingTransition(R.anim.move_down_activity, R.anim.move_up_activity);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
 
 
     }
 
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!mApodData.isEmpty()){
+             runOnUiThread(new Runnable() {
+                 @Override
+                 public void run() {
+                     populateImage(getApplicationContext());
+                 }
+             });
+        }
+    }
 }

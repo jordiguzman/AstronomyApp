@@ -35,15 +35,7 @@ public class MainTest {
 
     @Test
     public void mainTest() {
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.main_title), withText("APOD"),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("APOD")));
+
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.main_title), withText("APOD"),

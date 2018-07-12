@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -30,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_CREDITS;
@@ -47,10 +49,6 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
     private int caseSnackBar;
     private int mMutedColor;
     private View linearLayout;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -84,6 +82,14 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
             }
         });
+        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                final float normalizedposition = Math.abs(Math.abs(position) - 1);
+                page.setScaleX(normalizedposition / 2 + 0.5f);
+                page.setScaleY(normalizedposition / 2 + 0.5f);
+            }
+        });
     }
 
     private boolean isFavoritedHubble(){
@@ -109,7 +115,13 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         switch (v.getId()){
             case R.id.fb_favorites_hubble:
                 if (isFavoritedHubble()){
-                    saveHubbleData();
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            saveHubbleData();
+                        }
+                    });
+
                 }else {
                     caseSnackBar = 1;
                     showSnackBarHubble();
@@ -153,7 +165,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
-            ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
+            final ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
             GlideApp.with(mContext)
                     .load(dataImagesDetail.get(position).getImage())
                     .into(photo_hubble_detail);
@@ -164,7 +176,11 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ImageHubbleActivity.class);
                     intent.putExtra("position", position);
-                    startActivity(intent);
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(),
+                            photo_hubble_detail,
+                            "image");
+                    startActivity(intent, optionsCompat.toBundle());
                 }
             });
             return view;
@@ -172,28 +188,30 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         }
 
         private void setColorLinearlayout(final String url){
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Bitmap bitmap= GlideApp.with(mContext)
-                                .asBitmap()
-                                .load(url)
-                                .submit(500,500)
-                                .get();
-                        if (bitmap !=null){
-                            Palette p = Palette.from(bitmap).generate();
-                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                            linearLayout.setBackgroundColor(mMutedColor);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
+             AppExecutors.getInstance().networkIO().execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     try {
+                         Bitmap bitmap= GlideApp.with(mContext)
+                                 .asBitmap()
+                                 .load(url)
+                                 .submit(500,500)
+                                 .get();
+                         if (bitmap !=null){
+                             Palette p = Palette.from(bitmap).generate();
+                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                             linearLayout.setBackgroundColor(mMutedColor);
+                         }
+                     } catch (InterruptedException e) {
+                         e.printStackTrace();
+                     } catch (ExecutionException e) {
+                         e.printStackTrace();
+                     }
+                 }
+             });
+
+
+
         }
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

@@ -72,6 +72,7 @@
             android:authorities="appkite.jordiguzman.com.astronomyapp.hubble"
             android:exported="false" />
 
+
         <activity android:name=".planets.ui.SolarSystemDetailActivity" />
         <activity android:name=".hubble.ui.HubbleDetailActivity" />
 
@@ -94,7 +95,7 @@
         <activity android:name=".hubble.ui.ImageHubbleActivity" />
         <activity android:name=".hubble.ui.FavoritesHubbleActivity" />
         <activity android:name=".hubble.ui.FavoritesHubbleDetailActivity" />
-        <activity android:name=".planets.ui.ImageSolarSystemActivity"></activity>
+        <activity android:name=".planets.ui.ImageSolarSystemActivity"/>
     </application>
 
 </manifest>

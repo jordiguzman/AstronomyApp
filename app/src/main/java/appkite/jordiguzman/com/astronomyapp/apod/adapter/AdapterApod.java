@@ -24,9 +24,9 @@ import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodViewHolder> {
 
 
-    private Context mContext;
-    private ArrayList<Apod> mApodData;
-    private ItemClickListenerApod mItemClickListenerApod;
+    private final Context mContext;
+    private final ArrayList<Apod> mApodData;
+    private final ItemClickListenerApod mItemClickListenerApod;
 
 
     public AdapterApod(ArrayList<Apod> apods, Context context, ItemClickListenerApod itemClickListenerApod) {

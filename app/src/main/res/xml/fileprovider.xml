@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
-    <!-- See table below.  The external-files-path DOES NOT require external storage permissions. -->
+<paths xmlns:tools="http://schemas.android.com/tools">
+
     <files-path name="my_images" path="images/"/>
 
-
-    <!--Uncomment below to share the entire application specific directory -->
-    <!--<external-path name="all_dirs" path="."/>-->
+    <external-path name="all_dirs" path="."/>
+    <cache-path name="share" path="image_manager_disk_cache" tools:path="DiskCache.Factory.DEFAULT_DISK_CACHE_DIR" />
 </paths>

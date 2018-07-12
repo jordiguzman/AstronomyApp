@@ -1,11 +1,17 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +38,8 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
     ImageView iv_hubble;
     @BindView(R.id.tv_nodata_favorites_hubble)
     TextView tv_nodata;
+    @BindView(R.id.coordinator_list_activity)
+    CoordinatorLayout mCoordinatorLayout;
     private RecyclerView mRecyclerView;
     public static int itemPositionFavoritesHubble;
 
@@ -51,6 +59,36 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
                 .load(AdapterMain.URL_MAIN[4])
                 .into(iv_hubble);
         loadData();
+        populateRecyclerView();
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                 deleteItem(position);
+                 reloadAfterDelete();
+                 snackBarDelete();
+
+            }
+        }).attachToRecyclerView(mRecyclerView);
+    }
+    private void snackBarDelete() {
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
+        snackbar.show();
+    }
+    public void deleteItem(int position){
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = HubbleContract.HubbleEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(dataLoadedHubble[position][5]).build();
+        contentResolver.delete(uri, null, null);
         populateRecyclerView();
     }
 

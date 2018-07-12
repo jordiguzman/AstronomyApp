@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,6 +54,8 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     public static int itemPositionFavorites;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +71,10 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                 .load(AdapterMain.URL_MAIN[0])
                 .into(iv_apod);
         loadData();
+        if (dataLoadedApod.length != 0){
+            showSnackBar();
+
+        }
         populateRecyclerView();
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -152,8 +159,19 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         reloadAfterDelete();
+    }
+    public void showSnackBar(){
+        Snackbar snackbar = Snackbar.make( mCoordinatorLayout, R.string.swipe_delete, Snackbar.LENGTH_SHORT );
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
+        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
+        snackbar.show();
+
+
     }
 }

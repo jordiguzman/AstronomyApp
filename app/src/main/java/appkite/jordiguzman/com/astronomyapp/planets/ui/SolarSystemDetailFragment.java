@@ -38,10 +38,6 @@ public class SolarSystemDetailFragment extends Fragment{
     private Context mContext;
     private View linearLayout;
     private int mMutedColor;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -74,6 +70,14 @@ public class SolarSystemDetailFragment extends Fragment{
             }
         });
 
+        mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                final float normalizedposition = Math.abs(Math.abs(position) - 1);
+                page.setScaleX(normalizedposition / 2 + 0.5f);
+                page.setScaleY(normalizedposition / 2 + 0.5f);
+            }
+        });
     }
 
 
