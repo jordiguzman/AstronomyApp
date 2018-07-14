@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthDetailActivity.dateApi;
@@ -66,7 +65,7 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
 
 
 
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(url)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -74,7 +73,7 @@ public class AdapterEarth extends RecyclerView.Adapter<AdapterEarth.AdapterEarth
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                GlideApp.with(mContext)
+                                Glide.with(mContext)
                                         .load(url)
                                         .apply(new RequestOptions()
                                         .placeholder(R.drawable.ic_galaxy)

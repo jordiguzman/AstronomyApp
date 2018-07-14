@@ -27,12 +27,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_COPYRIGHT;
 import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_DATE;
@@ -51,6 +52,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private int caseSnackBar;
     private int mMutedColor;
     private View linearLayout;
+    private ApodPageAdapter apodPageAdapter = new ApodPageAdapter();
 
 
     @Nullable
@@ -67,7 +69,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         mViewPager.setAdapter(new ApodPageAdapter());
         mViewPager.setCurrentItem(itemPosition);
         FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites);
-
+        apodPageAdapter.notifyDataSetChanged();
         fb_favorites.setOnClickListener(this);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -188,7 +190,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
                 if (!mApodData.get(position).getUrl().isEmpty())setColorLinearlayout(mApodData.get(position).getUrl());
-                GlideApp.with(mContext)
+                Glide.with(mContext)
                         .load(mApodData.get(position).getUrl())
                         .into(iv_photo_apod_detail);
 
@@ -197,7 +199,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
                 if (!urlResult.isEmpty())setColorLinearlayout(urlResult);
-                GlideApp.with(mContext)
+                Glide.with(mContext)
                         .load(urlResult)
                         .into(iv_photo_apod_detail);
 
@@ -223,7 +225,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void run() {
                     try {
-                        Bitmap bitmap= GlideApp.with(mContext)
+                        Bitmap bitmap= Glide.with(mContext)
                                 .asBitmap()
                                 .load(url)
                                 .submit(500,500)

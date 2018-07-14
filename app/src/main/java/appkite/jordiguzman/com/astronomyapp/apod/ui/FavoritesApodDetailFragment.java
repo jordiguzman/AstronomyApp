@@ -27,11 +27,11 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.itemPositionFavorites;
@@ -41,7 +41,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
     private Context mContext;
     private View linearLayout;
     private int mMutedColor;
-
+    private FavoritesApodPageAdapter favoritesApodPageAdapter = new FavoritesApodPageAdapter();
 
     @Nullable
     @Override
@@ -58,7 +58,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
-
+        favoritesApodPageAdapter.notifyDataSetChanged();
         mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
@@ -135,7 +135,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             String result = url.substring(length - 3, length);
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
-                GlideApp.with(mContext)
+                Glide.with(mContext)
                         .load(dataLoadedApod[position][4])
                         .into(iv_photo_apod_detail);
 
@@ -143,7 +143,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             }else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
-                GlideApp.with(mContext)
+                Glide.with(mContext)
                         .load(urlResult)
                         .into(iv_photo_apod_detail);
 

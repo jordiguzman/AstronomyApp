@@ -27,12 +27,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_CREDITS;
 import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_DESCRIPTION;
@@ -49,12 +50,14 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
     private int caseSnackBar;
     private int mMutedColor;
     private View linearLayout;
+    private HubbleAdapter hubbleAdapter = new HubbleAdapter();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         assert  container != null;
         mContext = container.getContext();
+
         return inflater.inflate(R.layout.fragment_hubble_detail, container, false);
     }
 
@@ -65,7 +68,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         mViewPager.setCurrentItem(itemPositionHubble);
         FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites_hubble);
         fb_favorites.setOnClickListener(this);
-
+        hubbleAdapter.notifyDataSetChanged();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -144,12 +147,14 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
             return object == view;
         }
 
+
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, final int position) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_hubble, container, false);
             container.addView(view);
+
 
             TextView tv_title_pager_hubble_item = view.findViewById(R.id.tv_title_pager_hubble_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
@@ -166,11 +171,17 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
             final ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
-            GlideApp.with(mContext)
+            Glide.with(mContext)
                     .load(dataImagesDetail.get(position).getImage())
                     .into(photo_hubble_detail);
 
+
+
             setColorLinearlayout(dataImagesDetail.get(position).getImage());
+
+
+
+
             photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -192,7 +203,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                  @Override
                  public void run() {
                      try {
-                         Bitmap bitmap= GlideApp.with(mContext)
+                         Bitmap bitmap= Glide.with(mContext)
                                  .asBitmap()
                                  .load(url)
                                  .submit(500,500)

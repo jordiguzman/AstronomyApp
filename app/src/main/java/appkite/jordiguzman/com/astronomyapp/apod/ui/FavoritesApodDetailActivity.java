@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApodFavorites;
 
 public class FavoritesApodDetailActivity  extends FragmentActivity{
 
@@ -26,6 +27,17 @@ public class FavoritesApodDetailActivity  extends FragmentActivity{
             FavoritesApodDetailFragment fragment = new FavoritesApodDetailFragment();
             transaction.replace(R.id.content_fragment, fragment);
             transaction.commit();
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count ==0){
+            super.onBackPressed();
+            AdapterApodFavorites.numItems = FavoritesApodActivity.dataLoadedApod.length;
+        }else {
+            getFragmentManager().popBackStack();
+
         }
     }
 }

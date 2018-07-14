@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -113,7 +112,7 @@ public class ImageHubbleActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Bitmap bitmap= GlideApp.with(getApplicationContext())
+                    Bitmap bitmap= Glide.with(getApplicationContext())
                             .asBitmap()
                             .load(url)
                             .submit(500,500)

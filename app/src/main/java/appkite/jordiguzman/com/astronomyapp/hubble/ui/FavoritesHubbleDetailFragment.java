@@ -28,11 +28,11 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.hubbleArrayList;
@@ -43,6 +43,7 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
     private Context mContext;
     private int mMutedColor;
     private View linearLayout;
+    private FavoritesHubblePageAdapter favoritesHubblePageAdapter = new FavoritesHubblePageAdapter();
 
     @Nullable
     @Override
@@ -60,6 +61,7 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites_hubble);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
+        favoritesHubblePageAdapter.notifyDataSetChanged();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -140,7 +142,7 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
             final ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
-            GlideApp.with(mContext)
+            Glide.with(mContext)
                     .load(dataLoadedHubble[position][3])
                     .into(photo_hubble_detail);
 

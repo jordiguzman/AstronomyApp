@@ -63,6 +63,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     public static String urlToWidget;
     @SuppressLint("StaticFieldLeak")
     public static TextView text;
+    private Snackbar mSnackbarExit;
 
 
     @Override
@@ -270,8 +271,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     }
 
     private void showSnackbarFinish() {
-        Snackbar mSnackbar = Snackbar
-                .make(mCoordinatorLayout, getResources().getString(R.string.finish), Snackbar.LENGTH_INDEFINITE)
+        mSnackbarExit = Snackbar
+                .make(mCoordinatorLayout, getResources().getString(R.string.finish), 5000)
                 .setAction(getResources().getString(R.string.exit), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -284,14 +285,16 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
                     }
                 });
-        mSnackbar.setActionTextColor(Color.RED);
-        View sbView = mSnackbar.getView();
+        mSnackbarExit.setActionTextColor(Color.RED);
+        View sbView = mSnackbarExit.getView();
         TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-        mSnackbar.show();
+        mSnackbarExit.show();
     }
     @Override
     public void onBackPressed() {
         showSnackbarFinish();
     }
+
+
 }

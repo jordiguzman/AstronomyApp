@@ -19,19 +19,19 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.apodArrayList;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 
 public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavorites.AdapterApodFavoritesViewHolder> {
 
     private final Context mContext;
     private final ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
+    public static int numItems = dataLoadedApod.length;
 
-
-    public AdapterApodFavorites(ArrayList<String[]> arrayList, Context context,
+    public AdapterApodFavorites(ArrayList<String[]> apodArrayList, Context context,
                                 ItemClickListenerApodFavorites itemClickListenerApodFavorites ){
-        apodArrayList = arrayList;
+        FavoritesApodActivity.apodArrayList = apodArrayList;
         this.mContext = context;
         this.mItemClickListenerApodFavorites = itemClickListenerApodFavorites;
     }
@@ -76,9 +76,10 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
 
     }
 
+
     @Override
     public int getItemCount() {
-        return apodArrayList.size();
+        return numItems;
     }
 
 

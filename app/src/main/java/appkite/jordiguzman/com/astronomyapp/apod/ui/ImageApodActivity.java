@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -41,7 +42,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -212,9 +212,9 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
             }else {
                 setBackground(mApodData.get(position).getUrl());
-                GlideApp.with(this)
+                Glide.with(this)
                         .load(mApodData.get(position).getHdurl())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                         .into(iv_apod_image);
 
             }
@@ -256,7 +256,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                 @Override
                 public void run() {
                     try {
-                        Bitmap bitmap= GlideApp.with(getApplicationContext())
+                        Bitmap bitmap= Glide.with(getApplicationContext())
                                 .asBitmap()
                                 .load(url)
                                 .submit(500,500)

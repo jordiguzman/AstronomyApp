@@ -121,6 +121,7 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         AdapterEarth adapterEarth = new AdapterEarth(this, earthArrayList, this);
         mRecyclerView.setAdapter(adapterEarth);
         mRecyclerView.setHasFixedSize(true);
+        adapterEarth.notifyDataSetChanged();
     }
 
 

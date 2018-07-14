@@ -20,6 +20,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -29,7 +30,6 @@ import java.io.IOException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.planets.data.Urls;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,7 +53,7 @@ public class ImageSolarSystemActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
          position= bundle.getInt("position");
 
-        GlideApp.with(this)
+        Glide.with(this)
                 .load(Urls.URL_PLANETS[position])
                 .into(iv_image_solar);
         ib_image_earth.setOnClickListener(new View.OnClickListener() {

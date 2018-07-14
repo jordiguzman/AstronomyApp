@@ -29,7 +29,6 @@ import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.model.ImagesDetail;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHubbleViewHolder>{
 
@@ -61,7 +60,7 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
     public void onBindViewHolder(@NonNull final AdapterHubbleViewHolder holder, int position) {
 
         final String url = mDataImagesDetail.get(position).getImage();
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(url)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -69,7 +68,7 @@ public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHub
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                GlideApp.with(mContext)
+                                Glide.with(mContext)
                                         .load(url)
                                         .apply(new RequestOptions()
                                                 .placeholder(R.drawable.ic_galaxy)

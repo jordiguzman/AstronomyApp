@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.AppWidgetTarget;
 
 import appkite.jordiguzman.com.astronomyapp.R;
@@ -34,7 +35,7 @@ public class WidgetAstronomyApp extends AppWidgetProvider {
         AppWidgetTarget appWidgetTarget = new AppWidgetTarget(context, R.id.iv_widget, views, appWidgetIds) {
         };
 
-         GlideApp.with(context)
+         Glide.with(context)
                  .asBitmap()
                  .load(url)
                  .into(appWidgetTarget);

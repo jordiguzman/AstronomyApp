@@ -30,12 +30,7 @@ public class ApodDetailActivity extends FragmentActivity {
             transaction.commit();
         }
 
-
-
-
     }
-
-
 
 
 }

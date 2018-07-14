@@ -324,6 +324,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(ISS));
 
                             if (fixISS){
                                 mMap.getUiSettings().setScrollGesturesEnabled(true);

@@ -47,7 +47,6 @@ import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -117,12 +116,14 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
 
         if (!mApodData.isEmpty()){
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    populateImage(getApplicationContext());
-                }
-            });
+             runOnUiThread(new Runnable() {
+                 @Override
+                 public void run() {
+                     populateImage(getApplicationContext());
+                 }
+             });
+
+
 
         }else {
             pb_apod_activity.setVisibility(View.VISIBLE);
@@ -232,6 +233,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
         if (mApodData != null){
             AdapterApod mAdapterApod = new AdapterApod(mApodData, this, ApodActivity.this);
+            mAdapterApod.notifyDataSetChanged();
 
             if (isTablet(context)){
                 mRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));

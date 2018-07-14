@@ -180,11 +180,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                 imagesDetail = new ImagesDetail(name, description, credits, image);
 
                 dataImagesDetail.add(imagesDetail);
-                /*for (int i=0; i<dataImagesDetail.size(); i++){
-                    Glide.with(getApplicationContext())
-                    .load(dataImagesDetail.get(i).getImage())
-                            .preload();
-                }*/
+
 
                 CountDownTimer countDownTimer = new CountDownTimer(100,1500) {
                     @Override
@@ -245,6 +241,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         AdapterHubble adapterHubble = new AdapterHubble(this, dataImagesDetail, this);
         mRecyclerView.setAdapter(adapterHubble);
         mRecyclerView.setHasFixedSize(true);
+        adapterHubble.notifyDataSetChanged();
 
     }
 

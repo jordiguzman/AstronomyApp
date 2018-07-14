@@ -28,7 +28,6 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.hubbleArrayList;
@@ -57,7 +56,7 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
     @Override
     public void onBindViewHolder(@NonNull final AdapterHubbleFavoritesViewHolder holder, int position) {
         final String url =dataLoadedHubble[position][3];
-        GlideApp.with(mContext)
+        Glide.with(mContext)
                 .load(url)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -65,7 +64,7 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                GlideApp.with(mContext)
+                                Glide.with(mContext)
                                         .load(url)
                                         .apply(new RequestOptions()
                                                 .placeholder(R.drawable.ic_galaxy)

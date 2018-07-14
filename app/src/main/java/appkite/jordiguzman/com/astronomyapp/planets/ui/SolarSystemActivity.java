@@ -85,10 +85,11 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
         AdapterSolarSystem adapterSolarSystem = new AdapterSolarSystem(this, this);
         mRecyclerView.setAdapter(adapterSolarSystem);
         mRecyclerView.setHasFixedSize(true);
+        adapterSolarSystem.notifyDataSetChanged();
     }
 
 
-    private void wikiApiText(){
+    public static void wikiApiText(){
         for (String aTITLE : PLANETS_API) {
             new HttpAsyncTaskText().execute(BASE_URL_EXTRACT + aTITLE);
 

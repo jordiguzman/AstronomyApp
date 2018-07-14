@@ -23,10 +23,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.widget.GlideApp;
 
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
@@ -38,6 +39,7 @@ public class SolarSystemDetailFragment extends Fragment{
     private Context mContext;
     private View linearLayout;
     private int mMutedColor;
+    private SolarSystemAdapter solarSystemAdapter = new SolarSystemAdapter();
 
     @Nullable
     @Override
@@ -52,7 +54,7 @@ public class SolarSystemDetailFragment extends Fragment{
         ViewPager mViewPager = view.findViewById(R.id.pager_solar_system);
         mViewPager.setAdapter(new SolarSystemAdapter());
         mViewPager.setCurrentItem(itemPositionSolar);
-
+        solarSystemAdapter.notifyDataSetChanged();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -103,16 +105,21 @@ public class SolarSystemDetailFragment extends Fragment{
             final LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_solar_system, container, false);
             container.addView(view);
-
+            solarSystemAdapter.notifyDataSetChanged();
             TextView tv_title_solar_system_item = view.findViewById(R.id.tv_title_pager_solar_system_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_solar_system_item.setTypeface(typeface);
             tv_title_solar_system_item.setText(PLANETS[position]);
 
             TextView tv_explanation_solar_system_item = view.findViewById(R.id.tv_explanation_pager_solar_system_item);
-            if (isAdded()){
+            try {
                 tv_explanation_solar_system_item.setText(wikiPlanetsText.get(position));
+            }catch (Exception e){
+                e.getMessage();
+               SolarSystemActivity.wikiApiText();
             }
+
+
 
 
 
@@ -122,7 +129,7 @@ public class SolarSystemDetailFragment extends Fragment{
             tv_subtitles.setText(subTitle[position]);
 
             final ImageView photo_solar_system_detail = view.findViewById(R.id.photo_solar_system_detail);
-            GlideApp.with(mContext)
+            Glide.with(mContext)
                     .load(URL_PLANETS[position])
                     .into(photo_solar_system_detail);
 
@@ -149,7 +156,7 @@ public class SolarSystemDetailFragment extends Fragment{
                 @Override
                 public void run() {
                     try {
-                        Bitmap bitmap= GlideApp.with(mContext)
+                        Bitmap bitmap= Glide.with(mContext)
                                 .asBitmap()
                                 .load(url)
                                 .submit(500,500)
