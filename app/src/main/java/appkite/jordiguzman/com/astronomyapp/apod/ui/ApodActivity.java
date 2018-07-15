@@ -59,7 +59,7 @@ import static appkite.jordiguzman.com.astronomyapp.mainUi.MainActivityApp.urlToW
 public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemClickListenerApod{
 
 
-    public static ArrayList<Apod> mApodData = new ArrayList<>();
+    public static ArrayList<Apod> mApodDataMain = new ArrayList<>();
 
     public static int itemPosition;
     @SuppressLint("StaticFieldLeak")
@@ -115,7 +115,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         asynctTaskApod = new AsynctTaskApod();
 
 
-        if (!mApodData.isEmpty()){
+        if (!mApodDataMain.isEmpty()){
              runOnUiThread(new Runnable() {
                  @Override
                  public void run() {
@@ -161,12 +161,12 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
             public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
                 switch (response.code()){
                     case 200:
-                        mApodData = (ArrayList<Apod>) response.body();
+                        mApodDataMain = (ArrayList<Apod>) response.body();
 
-                        if (mApodData != null){
-                            Collections.reverse(mApodData);
+                        if (mApodDataMain != null){
+                            Collections.reverse(mApodDataMain);
                             populateImage(context);
-                            urlToWidget = mApodData.get(0).getUrl();
+                            urlToWidget = mApodDataMain.get(0).getUrl();
                         }
                         break;
                     default:
@@ -218,9 +218,9 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         }
     }
     private void preLoadHdurl() {
-        for (int i=0; i< mApodData.size();i++){
+        for (int i = 0; i< mApodDataMain.size(); i++){
             Glide.with(this)
-                    .load(mApodData.get(i).getUrl())
+                    .load(mApodDataMain.get(i).getUrl())
                     .apply(RequestOptions.overrideOf(800,800))
                     .preload();
         }
@@ -231,8 +231,8 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         String url_base_youtube_video= "http://img.youtube.com/vi/";
         String url_base_embed = "https://www.youtube.com/embed/";
 
-        if (mApodData != null){
-            AdapterApod mAdapterApod = new AdapterApod(mApodData, this, ApodActivity.this);
+        if (mApodDataMain != null){
+            AdapterApod mAdapterApod = new AdapterApod(mApodDataMain, this, ApodActivity.this);
             mAdapterApod.notifyDataSetChanged();
 
             if (isTablet(context)){
@@ -243,13 +243,13 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setAdapter(mAdapterApod);
-            String url = mApodData.get(0).getUrl();
+            String url = mApodDataMain.get(0).getUrl();
             int length = url.length();
             String result = url.substring(length-3, length);
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
                 Glide.with(context)
-                        .load(mApodData.get(0).getUrl())
+                        .load(mApodDataMain.get(0).getUrl())
                         .into(iv_apod);
             }else {
                 String key = url.substring(url_base_embed.length(), url.length()-6);
@@ -379,7 +379,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     @Override
     protected void onResume() {
         super.onResume();
-        if (!mApodData.isEmpty()){
+        if (!mApodDataMain.isEmpty()){
              runOnUiThread(new Runnable() {
                  @Override
                  public void run() {

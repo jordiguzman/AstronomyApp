@@ -1,12 +1,10 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,21 +28,25 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
+import appkite.jordiguzman.com.astronomyapp.hubble.adapter.AdapterHubbleFavorites;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.AppDatabaseHubble;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleEntry;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.hubbleArrayList;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.itemPositionFavoritesHubble;
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.mHubbleDataList;
 
 public class FavoritesHubbleDetailFragment extends Fragment implements View.OnClickListener {
 
     private Context mContext;
     private int mMutedColor;
     private View linearLayout;
-    private FavoritesHubblePageAdapter favoritesHubblePageAdapter = new FavoritesHubblePageAdapter();
-
+    private AdapterHubbleFavorites adapterHubbleFavorites;
+    private AppDatabaseHubble mDb;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,12 +58,13 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_hubble);
+        mDb = AppDatabaseHubble.getInstance(getContext());
+        adapterHubbleFavorites = new AdapterHubbleFavorites(mHubbleDataList, mContext, null);
         mViewPager.setAdapter(new FavoritesHubblePageAdapter());
         mViewPager.setCurrentItem(itemPositionFavoritesHubble);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites_hubble);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
-        favoritesHubblePageAdapter.notifyDataSetChanged();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -92,15 +95,19 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        ContentResolver contentResolver = mContext.getContentResolver();
-        Uri uri = HubbleContract.HubbleEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(dataLoadedHubble[itemPositionFavoritesHubble][5]).build();
-        contentResolver.delete(uri, null, null);
-        snackBarDelete();
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<HubbleEntry> hubbleEntries = adapterHubbleFavorites.getHubbleData();
+                mDb.hubbleDao().deleteHubble(hubbleEntries.get(itemPositionFavoritesHubble));
+                snackBarDelete();
+            }
+        });
+
     }
 
     private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.data_deleted, Snackbar.LENGTH_LONG );
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.data_deleted, Snackbar.LENGTH_SHORT );
         View snackbarView = snackbar.getView();
         int snackbarTextId = android.support.design.R.id.snackbar_text;
         TextView textView = snackbarView.findViewById(snackbarTextId);
@@ -112,7 +119,7 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
 
         @Override
         public int getCount() {
-            return hubbleArrayList.size();
+            return mHubbleDataList.size();
         }
 
         @Override
@@ -131,22 +138,22 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
             TextView tv_title_pager_hubble_item = view.findViewById(R.id.tv_title_pager_hubble_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_hubble_item.setTypeface(typeface);
-            tv_title_pager_hubble_item.setText(dataLoadedHubble[position][0]);
+            tv_title_pager_hubble_item.setText(mHubbleDataList.get(position).getName());
 
             TextView tv_description_hubble_item = view.findViewById(R.id.tv_description_hubble_item);
-            tv_description_hubble_item.setText(dataLoadedHubble[position][1]);
+            tv_description_hubble_item.setText(mHubbleDataList.get(position).getDescription());
 
             TextView tv_creditt_hubble_item = view.findViewById(R.id.tv_creditt_hubble_item);
-            String creditTemp = String.valueOf(Html.fromHtml(dataLoadedHubble[position][2]));
+            String creditTemp = String.valueOf(Html.fromHtml(mHubbleDataList.get(position).getCredits()));
             tv_creditt_hubble_item.setText(creditTemp);
 
             linearLayout = view.findViewById(R.id.linearLayout_hubble_detail);
             final ImageView photo_hubble_detail = view.findViewById(R.id.photo_hubble_detail);
             Glide.with(mContext)
-                    .load(dataLoadedHubble[position][3])
+                    .load(mHubbleDataList.get(position).getImage())
                     .into(photo_hubble_detail);
 
-            setColorLinearlayout(dataLoadedHubble[position][3]);
+            setColorLinearlayout(mHubbleDataList.get(position).getImage());
             photo_hubble_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

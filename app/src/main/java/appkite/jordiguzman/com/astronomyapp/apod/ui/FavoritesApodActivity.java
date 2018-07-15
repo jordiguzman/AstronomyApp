@@ -1,18 +1,19 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,19 +22,21 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApodFavorites;
-import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
-import appkite.jordiguzman.com.astronomyapp.apod.data.ApodDbHelper;
+import appkite.jordiguzman.com.astronomyapp.apod.data.ApodEntry;
+import appkite.jordiguzman.com.astronomyapp.apod.data.AppDatabase;
+import appkite.jordiguzman.com.astronomyapp.apod.data.MainViewModel;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavoritesApodActivity extends AppCompatActivity implements AdapterApodFavorites.ItemClickListenerApodFavorites,
-        LoaderManager.LoaderCallbacks<Cursor>{
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodDetailFragment.dates;
+
+public class FavoritesApodActivity extends AppCompatActivity implements AdapterApodFavorites.ItemClickListenerApodFavorites{
 
     @BindView(R.id.tv_title_apod)
     TextView title_apod;
@@ -50,10 +53,11 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     @BindView(R.id.tv_nodata_favorites)
     TextView tv_nodata_favorites;
     private RecyclerView mRecyclerView;
-    public static ArrayList<String[]> apodArrayList = new ArrayList<>();
-    public static String [][] dataLoadedApod;
     public static int itemPositionFavorites;
-    private ApodDbHelper db;
+    public static List<ApodEntry> mApodDataList;
+    private AdapterApodFavorites adapterApodFavorites;
+    private AppDatabase mDb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +69,61 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
         ib_menu.setVisibility(View.INVISIBLE);
         title_apod.setText(R.string.favorites);
-
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[0])
                 .into(iv_apod);
-
-        getSupportLoaderManager().initLoader(1, null,  this);
+        mDb = AppDatabase.getInstance(this);
+        setupViewModel();
+        checkApodArrayIsEmpty();
         populateRecyclerView();
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<ApodEntry> apodEntries = adapterApodFavorites.getApodData();
+                        mDb.apodDao().deleteApod(apodEntries.get(position));
+                        dates.remove(position);
+                        snackBarDelete();
+                        //checkApodArrayIsEmpty();
+                    }
+                });
+
+            }
+        }).attachToRecyclerView(mRecyclerView);
+
     }
 
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getApodData().observe(this, new Observer<List<ApodEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<ApodEntry> apodEntries) {
+                mApodDataList = apodEntries;
+                adapterApodFavorites.setApodData(apodEntries);
 
+            }
+        });
+
+    }
+
+    private void snackBarDelete() {
+        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
+        snackbar.show();
+    }
     private void populateRecyclerView() {
-        checkApodArrayIsEmpty();
-        AdapterApodFavorites adapterApodFavorites = new AdapterApodFavorites(apodArrayList, this, FavoritesApodActivity.this);
+        adapterApodFavorites= new AdapterApodFavorites(mApodDataList, this, FavoritesApodActivity.this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapterApodFavorites);
@@ -86,53 +132,16 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
     }
 
-    private void checkApodArrayIsEmpty() {
-        if (apodArrayList.isEmpty()){
+    public void checkApodArrayIsEmpty() {
+        if (dates.isEmpty()){
+            Log.i("Dates isEmpty", String.valueOf(dates.size()));
             tv_nodata_favorites.setVisibility(View.VISIBLE);
         }else {
+            Log.i("Dates noEmpty", String.valueOf(dates.size()));
             tv_nodata_favorites.setVisibility(View.INVISIBLE);
         }
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        apodArrayList.clear();
-        Uri uri = ApodContract.ApodEntry.CONTENT_URI;
-
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                apodArrayList.add(new String[]{
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_TITLE)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_DATE)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_EXPLANATION)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_COPYRIGHT)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_URL)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry.COLUMN_HURL)),
-                        cursor.getString(cursor.getColumnIndex(ApodContract.ApodEntry._ID))});
-            }
-            Collections.reverse(apodArrayList);
-            dataLoadedApod = apodArrayList.toArray(new String[apodArrayList.size()][5]);
-            cursor.close();
-
-        }
-        return new CursorLoader(this, uri, null, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        AdapterApodFavorites adapterApodFavorites = new AdapterApodFavorites(apodArrayList, this, FavoritesApodActivity.this);
-
-        mRecyclerView.swapAdapter(adapterApodFavorites, true);
-
-
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-
-    }
 
 
     @Override
@@ -145,7 +154,6 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        getSupportLoaderManager().initLoader(1, null,  this);
         populateRecyclerView();
     }
 

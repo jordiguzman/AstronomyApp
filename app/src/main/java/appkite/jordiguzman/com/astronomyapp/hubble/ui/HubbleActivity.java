@@ -238,7 +238,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         }else {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         }
-        AdapterHubble adapterHubble = new AdapterHubble(this, dataImagesDetail, this);
+        AdapterHubble adapterHubble = new AdapterHubble(dataImagesDetail, this, this);
         mRecyclerView.setAdapter(adapterHubble);
         mRecyclerView.setHasFixedSize(true);
         adapterHubble.notifyDataSetChanged();

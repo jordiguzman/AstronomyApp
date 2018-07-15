@@ -1,12 +1,10 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,19 +27,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
+import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApodFavorites;
+import appkite.jordiguzman.com.astronomyapp.apod.data.ApodEntry;
+import appkite.jordiguzman.com.astronomyapp.apod.data.AppDatabase;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.itemPositionFavorites;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.mApodDataList;
 
 public class FavoritesApodDetailFragment extends Fragment implements View.OnClickListener {
 
     private Context mContext;
     private View linearLayout;
     private int mMutedColor;
-    private FavoritesApodPageAdapter favoritesApodPageAdapter = new FavoritesApodPageAdapter();
+
+
+    private AdapterApodFavorites adapterApodFavorites;
+    private AppDatabase mDb;
 
     @Nullable
     @Override
@@ -53,12 +59,14 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
+        mDb = AppDatabase.getInstance(getContext());
+        adapterApodFavorites = new AdapterApodFavorites(mApodDataList, mContext, null);
         mViewPager.setAdapter(new FavoritesApodPageAdapter());
         mViewPager.setCurrentItem(FavoritesApodActivity.itemPositionFavorites);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
         mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
         mFloatingActionButton.setOnClickListener(this);
-        favoritesApodPageAdapter.notifyDataSetChanged();
+
         mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
             public void transformPage(@NonNull View page, float position) {
@@ -67,20 +75,24 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                 page.setScaleY(normalizedposition / 2 + 0.5f);
             }
         });
+
     }
 
     @Override
-    public void onClick(View v) {
-        ContentResolver contentResolver = mContext.getContentResolver();
-        Uri uri = ApodContract.ApodEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(dataLoadedApod[itemPositionFavorites][6]).build();
-        contentResolver.delete(uri, null, null);
-        snackBarDelete();
+    public void onClick(final View v) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<ApodEntry> apodEntries = adapterApodFavorites.getApodData();
+                mDb.apodDao().deleteApod(apodEntries.get(itemPositionFavorites));
+                snackBarDelete();
+            }
+        });
 
     }
 
     private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_deleted, Snackbar.LENGTH_LONG );
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_deleted, Snackbar.LENGTH_SHORT );
         View snackbarView = snackbar.getView();
         int snackbarTextId = android.support.design.R.id.snackbar_text;
         TextView textView = snackbarView.findViewById(snackbarTextId);
@@ -93,7 +105,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
 
         @Override
         public int getCount() {
-            return FavoritesApodActivity.apodArrayList.size();
+            return mApodDataList.size();
         }
 
         @Override
@@ -112,34 +124,34 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_item.setTypeface(typeface);
-            tv_title_pager_item.setText(dataLoadedApod[position][0]);
+            tv_title_pager_item.setText(mApodDataList.get(position).getTitle());
 
             TextView tv_date_pager_item = view.findViewById(R.id.tv_date_pager_item);
-            tv_date_pager_item.setText(String.format("%s\n", dataLoadedApod[position][1]));
+            tv_date_pager_item.setText(String.format("%s\n", mApodDataList.get(position).getDate()));
 
             TextView tv_explanation_pager_item = view.findViewById(R.id.tv_explanation_pager_item);
-            tv_explanation_pager_item.setText(dataLoadedApod[position][2]);
+            tv_explanation_pager_item.setText(mApodDataList.get(position).getExplanation());
 
             TextView tv_copyright_pager_item = view.findViewById(R.id.tv_copyright_pager_item);
-            if (dataLoadedApod[position][3] == null) {
+            if (mApodDataList.get(position).getCopyrigth() == null) {
                 tv_copyright_pager_item.setText(String.format("%s\n", getString(R.string.no_data)));
             } else {
-                tv_copyright_pager_item.setText(String.format("%s\n", dataLoadedApod[position][3]));
+                tv_copyright_pager_item.setText(String.format("%s\n", mApodDataList.get(position).getCopyrigth()));
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
             final ImageView iv_photo_apod_detail = view.findViewById(R.id.iv_item_apod);
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
-            String url = dataLoadedApod[position][4];
+            String url = mApodDataList.get(position).getUrl();
             int length = url.length();
             String result = url.substring(length - 3, length);
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
                 Glide.with(mContext)
-                        .load(dataLoadedApod[position][4])
+                        .load(mApodDataList.get(position).getUrl())
                         .into(iv_photo_apod_detail);
+                if (isAdded())setColorLinearlayout(mApodDataList.get(position).getUrl());
 
-                setColorLinearlayout(dataLoadedApod[position][4]);
             }else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
@@ -147,7 +159,7 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                         .load(urlResult)
                         .into(iv_photo_apod_detail);
 
-                setColorLinearlayout(urlResult);
+                if (isAdded())setColorLinearlayout(urlResult);
             }
 
             iv_photo_apod_detail.setOnClickListener(new View.OnClickListener() {

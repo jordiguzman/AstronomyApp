@@ -45,8 +45,7 @@ import appkite.jordiguzman.com.astronomyapp.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDataMain;
 
 public class ImageApodActivity extends YouTubeBaseActivity  {
 
@@ -145,7 +144,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
 
     private void preloadPicture() {
         Picasso.get()
-                .load(mApodData.get(position).getHdurl())
+                .load(mApodDataMain.get(position).getHdurl())
                 .fetch();
     }
 
@@ -154,7 +153,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         Picasso.get()
-                .load(mApodData.get(position).getUrl())
+                .load(mApodDataMain.get(position).getUrl())
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -193,9 +192,9 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         String url_base_embed = "https://www.youtube.com/embed/";
         String url;
         if (isFavorited){
-            url = dataLoadedApod[position][4];
+            url = mApodDataMain.get(position).getUrl();
         }else {
-            url = mApodData.get(position).getUrl();
+            url = mApodDataMain.get(position).getUrl();
         }
 
         int length = url.length();
@@ -204,16 +203,16 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                 || result.equals("gif") || result.equals("png")){
             noVideo=true;
             if (isFavorited){
-                setBackground(dataLoadedApod[position][5]);
+                setBackground(FavoritesApodActivity.mApodDataList.get(position).getUrl());
                 Glide.with(this)
-                        .load(dataLoadedApod[position][5])
+                        .load(FavoritesApodActivity.mApodDataList.get(position).getUrl())
                         .into(iv_apod_image);
 
 
             }else {
-                setBackground(mApodData.get(position).getUrl());
+                setBackground(mApodDataMain.get(position).getUrl());
                 Glide.with(this)
-                        .load(mApodData.get(position).getHdurl())
+                        .load(mApodDataMain.get(position).getHdurl())
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                         .into(iv_apod_image);
 

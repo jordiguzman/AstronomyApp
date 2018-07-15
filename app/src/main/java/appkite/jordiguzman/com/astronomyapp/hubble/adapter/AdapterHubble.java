@@ -33,13 +33,13 @@ import appkite.jordiguzman.com.astronomyapp.hubble.model.ImagesDetail;
 public class AdapterHubble extends RecyclerView.Adapter<AdapterHubble.AdapterHubbleViewHolder>{
 
     private Context mContext;
-    private ArrayList<ImagesDetail> mDataImagesDetail;
+    public static ArrayList<ImagesDetail> mDataImagesDetail = new ArrayList<>();
     private ItemClickListenerHubble mItemClickListenerHubble;
     private final Handler handler = new Handler();
 
-    public AdapterHubble(Context context, ArrayList<ImagesDetail> dataImagesDetail, ItemClickListenerHubble itemClickListenerHubble){
+    public AdapterHubble(ArrayList<ImagesDetail> imagesDetails, Context context, ItemClickListenerHubble itemClickListenerHubble){
+        mDataImagesDetail = imagesDetails;
         mContext = context;
-        mDataImagesDetail = dataImagesDetail;
         mItemClickListenerHubble = itemClickListenerHubble;
     }
 

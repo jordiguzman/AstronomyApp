@@ -35,7 +35,6 @@ import appkite.jordiguzman.com.astronomyapp.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.dataImagesDetail;
 
 public class ImageHubbleActivity extends AppCompatActivity {
@@ -95,9 +94,9 @@ public class ImageHubbleActivity extends AppCompatActivity {
 
     public void populateImage(){
         if (isfavorited){
-            setBackground(dataLoadedHubble[position][3]);
+            setBackground(HubbleActivity.dataImagesDetail.get(position).getImage());
             Glide.with(this)
-                    .load(dataLoadedHubble[position][3])
+                    .load(HubbleActivity.dataImagesDetail.get(position).getImage())
                     .into(iv_apod_image);
         }else {
             setBackground(dataImagesDetail.get(position).getImage());

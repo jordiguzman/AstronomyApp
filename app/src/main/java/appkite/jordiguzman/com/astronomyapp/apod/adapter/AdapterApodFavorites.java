@@ -16,22 +16,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity;
-
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.dataLoadedApod;
+import appkite.jordiguzman.com.astronomyapp.apod.data.ApodEntry;
 
 public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavorites.AdapterApodFavoritesViewHolder> {
 
     private final Context mContext;
     private final ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
-    public static int numItems = dataLoadedApod.length;
+    private List<ApodEntry> mApodData;
 
-    public AdapterApodFavorites(ArrayList<String[]> apodArrayList, Context context,
+    public AdapterApodFavorites(List<ApodEntry> apods, Context context,
                                 ItemClickListenerApodFavorites itemClickListenerApodFavorites ){
-        FavoritesApodActivity.apodArrayList = apodArrayList;
+        this.mApodData= apods;
         this.mContext = context;
         this.mItemClickListenerApodFavorites = itemClickListenerApodFavorites;
     }
@@ -48,15 +46,15 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
     public void onBindViewHolder(@NonNull AdapterApodFavoritesViewHolder holder, int position) {
         String url_base_youtube_video = "http://img.youtube.com/vi/";
         String url_base_embed = "https://www.youtube.com/embed/";
-        holder.tv_title.setText(dataLoadedApod[position][0]);
-        holder.tv_date.setText(dataLoadedApod[position][1]);
-        String url = dataLoadedApod[position][4];
+        holder.tv_title.setText(mApodData.get(position).getTitle());
+        holder.tv_date.setText(mApodData.get(position).getDate());
+        String url = mApodData.get(position).getUrl();
         int length = url.length();
         String result = url.substring(length - 3, length);
         if (result.equals("peg") || result.equals("jpg")
                 || result.equals("gif") || result.equals("png")){
             Glide.with(mContext)
-                    .load(dataLoadedApod[position][4])
+                    .load(mApodData.get(position).getUrl())
                     .apply(new RequestOptions().transform(new RoundedCorners(15))
                             .error(R.drawable.ic_galaxy)
                             .placeholder(R.drawable.ic_galaxy))
@@ -76,12 +74,22 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
 
     }
 
-
     @Override
     public int getItemCount() {
-        return numItems;
+        if (mApodData == null){
+            return 0;
+        }
+        return mApodData.size();
     }
 
+    public List<ApodEntry> getApodData(){
+        return mApodData;
+    }
+
+    public void setApodData(List<ApodEntry> apodEntries){
+        mApodData = apodEntries;
+        notifyDataSetChanged();
+    }
 
 
     public interface ItemClickListenerApodFavorites{

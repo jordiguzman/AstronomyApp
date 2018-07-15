@@ -25,21 +25,20 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.dataLoadedHubble;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.hubbleArrayList;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleEntry;
 
 public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFavorites.AdapterHubbleFavoritesViewHolder>{
 
     private Context mContext;
     private ItemClickListenerHubbleFavorites mItemClickListenerHubbleFavorites;
     private final Handler handler = new Handler();
-    public AdapterHubbleFavorites(ArrayList<String[]> arrayList, Context context,
+    private List<HubbleEntry> mHubbleData;
+    public AdapterHubbleFavorites(List<HubbleEntry> hubbleEntries, Context context,
                                   ItemClickListenerHubbleFavorites itemClickListenerHubbleFavorites){
-        hubbleArrayList = arrayList;
+        this.mHubbleData = hubbleEntries;
         this.mContext = context;
         this.mItemClickListenerHubbleFavorites = itemClickListenerHubbleFavorites;
     }
@@ -55,7 +54,7 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
 
     @Override
     public void onBindViewHolder(@NonNull final AdapterHubbleFavoritesViewHolder holder, int position) {
-        final String url =dataLoadedHubble[position][3];
+        final String url =mHubbleData.get(position).getImage();
         Glide.with(mContext)
                 .load(url)
                 .listener(new RequestListener<Drawable>() {
@@ -88,14 +87,26 @@ public class AdapterHubbleFavorites extends RecyclerView.Adapter<AdapterHubbleFa
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .override(800,800))
                 .into(holder.iv_hubble);
-        holder.tv_title_hubble.setText(dataLoadedHubble[position][0]);
-        String creditsTemp = String.valueOf(Html.fromHtml(dataLoadedHubble[position][2]));
+        holder.tv_title_hubble.setText(mHubbleData.get(position).getName());
+        String creditsTemp = String.valueOf(Html.fromHtml(mHubbleData.get(position).getCredits()));
         holder.tv_credits.setText(creditsTemp);
     }
 
     @Override
     public int getItemCount() {
-        return hubbleArrayList.size();
+        if (mHubbleData== null){
+            return 0;
+        }
+        return mHubbleData.size();
+    }
+
+
+    public List<HubbleEntry> getHubbleData(){
+        return mHubbleData;
+    }
+    public void setHubbleData(List<HubbleEntry> hubbleEntries){
+        mHubbleData = hubbleEntries;
+        notifyDataSetChanged();
     }
 
     public interface ItemClickListenerHubbleFavorites{

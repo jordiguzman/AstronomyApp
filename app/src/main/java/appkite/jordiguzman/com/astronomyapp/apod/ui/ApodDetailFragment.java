@@ -1,11 +1,8 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -29,21 +26,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract;
+import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
+import appkite.jordiguzman.com.astronomyapp.apod.data.ApodEntry;
+import appkite.jordiguzman.com.astronomyapp.apod.data.AppDatabase;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_COPYRIGHT;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_DATE;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_EXPLANATION;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_HURL;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_ID;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_TITLE;
-import static appkite.jordiguzman.com.astronomyapp.apod.data.ApodContract.ApodEntry.COLUMN_URL;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.itemPosition;
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodData;
+import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDataMain;
 
 
 public class ApodDetailFragment extends Fragment implements View.OnClickListener {
@@ -53,6 +46,8 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private int mMutedColor;
     private View linearLayout;
     private ApodPageAdapter apodPageAdapter = new ApodPageAdapter();
+    private AppDatabase mDb;
+    public static ArrayList<String> dates = new ArrayList<>();
 
 
     @Nullable
@@ -99,23 +94,13 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
     }
     private boolean isFavorited(){
-        Cursor cursor = mContext.getContentResolver().query(ApodContract.ApodEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                COLUMN_ID);
-
-        if (cursor != null){
-            while (cursor.moveToNext()){
-                String idApod = cursor.getString(1);
-                String idApodActual = mApodData.get(itemPosition).getDate();
-
-                if (idApod.equals(idApodActual)){
-                    return false;
-                }
+        String idItem = AdapterApod.mApodData.get(itemPosition).getDate();
+        for (int i=0; i < dates.size(); i++){
+            String idItemFavorites = dates.get(i);
+            if (idItem.equals(idItemFavorites)){
+                return false;
             }
         }
-        cursor.close();
         return true;
     }
     @Override
@@ -123,12 +108,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         switch (v.getId()){
            case R.id.fb_favorites:
                 if (isFavorited()){
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            saveApodData();
-                        }
-                    });
+                    saveDataApod();
                 }else {
                     caseSnackBar=1;
                     showSnackBar();
@@ -136,12 +116,35 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 break;
         }
     }
+    public void saveDataApod(){
+        mDb = AppDatabase.getInstance(getContext());
+        String copyright = mApodDataMain.get(itemPosition).getCopyright();
+        String title = mApodDataMain.get(itemPosition).getTitle();
+        String date = mApodDataMain.get(itemPosition).getDate();
+        String explanation = mApodDataMain.get(itemPosition).getExplanation();
+        String url = mApodDataMain.get(itemPosition).getUrl();
+        final ApodEntry apodEntry = new ApodEntry(copyright, title, date,
+                explanation, url);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.apodDao().insertApod(apodEntry);
+                dates.add(mApodDataMain.get(itemPosition).getDate());
+
+            }
+        });
+        caseSnackBar = 0;
+        showSnackBar();
+    }
+
+
+
 
     class ApodPageAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {
-            return mApodData.size();
+            return mApodDataMain.size();
         }
 
         @Override
@@ -163,20 +166,20 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.alfa_slab_one);
             tv_title_pager_item.setTypeface(typeface);
-            tv_title_pager_item.setText(mApodData.get(position).getTitle());
+            tv_title_pager_item.setText(mApodDataMain.get(position).getTitle());
 
             TextView tv_date_pager_item = view.findViewById(R.id.tv_date_pager_item);
-            tv_date_pager_item.setText(String.format("%s\n", mApodData.get(position).getDate()));
+            tv_date_pager_item.setText(String.format("%s\n", mApodDataMain.get(position).getDate()));
 
             TextView tv_explanation_pager_item = view.findViewById(R.id.tv_explanation_pager_item);
-            tv_explanation_pager_item.setText(mApodData.get(position).getExplanation());
+            tv_explanation_pager_item.setText(mApodDataMain.get(position).getExplanation());
 
             TextView tv_copyright_pager_item = view.findViewById(R.id.tv_copyright_pager_item);
 
-            if (mApodData.get(position).getCopyright() == null) {
+            if (mApodDataMain.get(position).getCopyright() == null) {
                 tv_copyright_pager_item.setText(String.format("%s\n", getString(R.string.no_data)));
             } else {
-                tv_copyright_pager_item.setText(String.format("%s\n", mApodData.get(position).getCopyright()));
+                tv_copyright_pager_item.setText(String.format("%s\n", mApodDataMain.get(position).getCopyright()));
             }
             linearLayout = view.findViewById(R.id.linearLayout_apod_detail);
 
@@ -184,14 +187,14 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
             String url_base_youtube_video = "http://img.youtube.com/vi/";
             String url_base_embed = "https://www.youtube.com/embed/";
-            String url = mApodData.get(position).getUrl();
+            String url = mApodDataMain.get(position).getUrl();
             int length = url.length();
             String result = url.substring(length - 3, length);
             if (result.equals("jpg") || result.equals("peg")
                     || result.equals("gif") || result.equals("png")){
-                if (!mApodData.get(position).getUrl().isEmpty())setColorLinearlayout(mApodData.get(position).getUrl());
+                if (!mApodDataMain.get(position).getUrl().isEmpty())setColorLinearlayout(mApodDataMain.get(position).getUrl());
                 Glide.with(mContext)
-                        .load(mApodData.get(position).getUrl())
+                        .load(mApodDataMain.get(position).getUrl())
                         .into(iv_photo_apod_detail);
 
 
@@ -253,35 +256,15 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             container.removeView((View) object);
         }
     }
-    public void saveApodData() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_ID, mApodData.get(itemPosition).getDate());
-        contentValues.put(COLUMN_TITLE, mApodData.get(itemPosition).getTitle());
-        contentValues.put(COLUMN_DATE, mApodData.get(itemPosition).getDate());
-        contentValues.put(COLUMN_EXPLANATION, mApodData.get(itemPosition).getExplanation());
-        if (mApodData.get(itemPosition).getCopyright()==null){
-            mApodData.get(itemPosition).setCopyright("No data");
-        }
-        contentValues.put(COLUMN_COPYRIGHT,mApodData.get(itemPosition).getCopyright());
-        contentValues.put(COLUMN_URL, mApodData.get(itemPosition).getUrl());
-        if (mApodData.get(itemPosition).getHdurl()==null){
-            mApodData.get(itemPosition).setHdurl("No data");
-        }
-        contentValues.put(COLUMN_HURL, mApodData.get(itemPosition).getHdurl());
-        ContentResolver resolver = mContext.getContentResolver();
-        resolver.insert(ApodContract.ApodEntry.CONTENT_URI, contentValues);
-        caseSnackBar=0;
-        showSnackBar();
 
-    }
     public void showSnackBar(){
         Snackbar snackbar = null;
         switch (caseSnackBar){
             case 0:
-                 snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_LONG );
+                 snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_SHORT );
                  break;
             case 1:
-                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_LONG );
+                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_SHORT);
                 break;
         }
         View snackbarView = snackbar.getView();

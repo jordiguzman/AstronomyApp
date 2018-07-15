@@ -1,10 +1,10 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
-import android.content.ContentResolver;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -19,14 +19,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.hubble.adapter.AdapterHubbleFavorites;
-import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.AppDatabaseHubble;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleEntry;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.MainViewModelHubble;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleDetailFragment.names;
 
 public class FavoritesHubbleActivity extends AppCompatActivity implements AdapterHubbleFavorites.ItemClickListenerHubbleFavorites {
 
@@ -42,9 +47,11 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
     CoordinatorLayout mCoordinatorLayout;
     private RecyclerView mRecyclerView;
     public static int itemPositionFavoritesHubble;
+    public static List<HubbleEntry> mHubbleDataList;
+    private AdapterHubbleFavorites adapterHubbleFavorites;
+    private AppDatabaseHubble mDb;
 
-    public static ArrayList<String[]> hubbleArrayList = new ArrayList<>();
-    public static String [][] dataLoadedHubble;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +61,12 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         mRecyclerView = findViewById(R.id.rv_hubble);
         ib_menu.setVisibility(View.INVISIBLE);
         tv_title_hubble.setText(R.string.favorites);
-
+        mDb = AppDatabaseHubble.getInstance(this);
+        setupViewModelHubble();
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[4])
                 .into(iv_hubble);
-        loadData();
+
         populateRecyclerView();
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -67,14 +75,31 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-                 deleteItem(position);
-                 reloadAfterDelete();
-                 snackBarDelete();
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<HubbleEntry> hubbleEntries = adapterHubbleFavorites.getHubbleData();
+                        mDb.hubbleDao().deleteHubble(hubbleEntries.get(position));
+                        names.remove(position);
+                        snackBarDelete();
+                    }
+                });
 
             }
         }).attachToRecyclerView(mRecyclerView);
+    }
+
+    private void setupViewModelHubble(){
+        MainViewModelHubble viewModelHubble = ViewModelProviders.of(this).get(MainViewModelHubble.class);
+        viewModelHubble.getHubbleData().observe(this, new Observer<List<HubbleEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<HubbleEntry> hubbleEntries) {
+                mHubbleDataList = hubbleEntries;
+                adapterHubbleFavorites.setHubbleData(hubbleEntries);
+            }
+        });
     }
     private void snackBarDelete() {
         Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
@@ -84,50 +109,20 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
         snackbar.show();
     }
-    public void deleteItem(int position){
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri = HubbleContract.HubbleEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(dataLoadedHubble[position][5]).build();
-        contentResolver.delete(uri, null, null);
-        populateRecyclerView();
-    }
+
 
     private void populateRecyclerView() {
-        if (hubbleArrayList.isEmpty()){
-            tv_nodata.setVisibility(View.VISIBLE);
-        }else{
-            tv_nodata.setVisibility(View.INVISIBLE);
-        }
-        AdapterHubbleFavorites adapterHubbleFavorites = new AdapterHubbleFavorites(hubbleArrayList, this, FavoritesHubbleActivity.this);
+        adapterHubbleFavorites = new AdapterHubbleFavorites(mHubbleDataList, this, FavoritesHubbleActivity.this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(adapterHubbleFavorites);
+        mRecyclerView.swapAdapter(adapterHubbleFavorites, true);
+        adapterHubbleFavorites.notifyDataSetChanged();
     }
 
-    private void loadData() {
-        hubbleArrayList.clear();
-        dataLoadedHubble = null;
-        Cursor cursor = getContentResolver().query(HubbleContract.HubbleEntry.CONTENT_URI, null,
-                null,  null,
-                HubbleContract.HubbleEntry._ID);
-        if (cursor != null){
-            while (cursor.moveToNext()){
-                hubbleArrayList.add(new String[]{
 
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry.COLUMN_NAME)),
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry.COLUMN_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry.COLUMN_CREDITS)),
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry.COLUMN_IMAGE)),
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry.COLUMN_ID)),
-                        cursor.getString(cursor.getColumnIndex(HubbleContract.HubbleEntry._ID))});
-            }
-            dataLoadedHubble = hubbleArrayList.toArray(new String[hubbleArrayList.size()][5]);
-            cursor.close();
-        }
-
-    }
     public void reloadAfterDelete(){
-        loadData();
+
         populateRecyclerView();
     }
 

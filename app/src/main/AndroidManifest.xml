@@ -63,15 +63,6 @@
             android:launchMode="singleTask" />
         <activity android:name=".apod.ui.ImageApodActivity" />
 
-        <provider
-            android:name=".apod.data.ApodContentProvider"
-            android:authorities="appkite.jordiguzman.com.astronomyapp"
-            android:exported="false" />
-        <provider
-            android:name=".hubble.data.HubbleContentProvider"
-            android:authorities="appkite.jordiguzman.com.astronomyapp.hubble"
-            android:exported="false" />
-
 
         <activity android:name=".planets.ui.SolarSystemDetailActivity" />
         <activity android:name=".hubble.ui.HubbleDetailActivity" />

@@ -1,11 +1,8 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -21,6 +18,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +27,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.AppDatabaseHubble;
+import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleEntry;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 
-import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_CREDITS;
-import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_DESCRIPTION;
-import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_ID;
-import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_IMAGE;
-import static appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleContract.HubbleEntry.COLUMN_NAME;
-import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.dataImages;
+import static appkite.jordiguzman.com.astronomyapp.hubble.adapter.AdapterHubble.mDataImagesDetail;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.dataImagesDetail;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity.itemPositionHubble;
 
@@ -51,6 +46,8 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
     private int mMutedColor;
     private View linearLayout;
     private HubbleAdapter hubbleAdapter = new HubbleAdapter();
+    private AppDatabaseHubble mDb;
+    public static ArrayList<String> names = new ArrayList<>();
 
     @Nullable
     @Override
@@ -96,21 +93,16 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
     }
 
     private boolean isFavoritedHubble(){
-        Cursor cursor = mContext.getContentResolver().query(HubbleContract.HubbleEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                HubbleContract.HubbleEntry._ID);
-        if (cursor != null){
-            while (cursor.moveToNext()){
-                String idHubble = String.valueOf(cursor.getInt(1));
-                String idHubbleActual = dataImages.get(itemPositionHubble).getId();
-                if (idHubble.equals(idHubbleActual)){
-                    return false;
-                }
+        String idItem = mDataImagesDetail.get(itemPositionHubble).getName();
+        Log.i("ideItem", mDataImagesDetail.get(itemPositionHubble).getName());
+        for (int i= 0; i < names.size(); i++){
+            String idItemFavorites = names.get(i);
+            Log.i("idItemFavorites", names.get(i));
+            if (idItem.equals(idItemFavorites)){
+                Log.i("idItemFavorites", idItemFavorites);
+                return false;
             }
         }
-        cursor.close();
         return true;
     }
     @Override
@@ -118,12 +110,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         switch (v.getId()){
             case R.id.fb_favorites_hubble:
                 if (isFavoritedHubble()){
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            saveHubbleData();
-                        }
-                    });
+                     saveDataHubble();
 
                 }else {
                     caseSnackBar = 1;
@@ -132,6 +119,24 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                 break;
 
         }
+    }
+    public void saveDataHubble(){
+        mDb = AppDatabaseHubble.getInstance(getContext());
+        String name = dataImagesDetail.get(itemPositionHubble).getName();
+        String description = dataImagesDetail.get(itemPositionHubble).getDescription();
+        String credits = dataImagesDetail.get(itemPositionHubble).getCredits();
+        String image = dataImagesDetail.get(itemPositionHubble).getImage();
+        final HubbleEntry hubbleEntry = new HubbleEntry(name, description, credits,
+                image);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.hubbleDao().insertHubble(hubbleEntry);
+                names.add(dataImagesDetail.get(itemPositionHubble).getName());
+            }
+        });
+        caseSnackBar = 0;
+        showSnackBarHubble();
     }
 
 
@@ -229,26 +234,13 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
             container.removeView((View) object);
         }
     }
-    public void saveHubbleData(){
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_ID, HubbleActivity.dataImages.get(itemPositionHubble).getId());
-        contentValues.put(COLUMN_NAME, dataImagesDetail.get(itemPositionHubble).getName());
-        contentValues.put(COLUMN_DESCRIPTION, dataImagesDetail.get(itemPositionHubble).getDescription());
-        contentValues.put(COLUMN_CREDITS, dataImagesDetail.get(itemPositionHubble).getCredits());
-        contentValues.put(COLUMN_IMAGE, dataImagesDetail.get(itemPositionHubble).getImage());
-        ContentResolver resolver = mContext.getContentResolver();
-        resolver.insert(HubbleContract.HubbleEntry.CONTENT_URI, contentValues);
-        caseSnackBar = 0;
-        showSnackBarHubble();
-
-    }
 
     private void showSnackBarHubble() {
         Snackbar snackbarHubble;
         switch (caseSnackBar){
             case 0:
-                snackbarHubble = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.data_saved, Snackbar.LENGTH_LONG );
+                snackbarHubble = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.data_saved, Snackbar.LENGTH_SHORT );
                 View snackbarView = snackbarHubble.getView();
                 int snackbarTextId = android.support.design.R.id.snackbar_text;
                 TextView textView = snackbarView.findViewById(snackbarTextId);
@@ -256,7 +248,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                 snackbarHubble.show();
                 break;
             case 1:
-                snackbarHubble = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.is_favorited, Snackbar.LENGTH_LONG );
+                snackbarHubble = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.is_favorited, Snackbar.LENGTH_SHORT );
                 View snackbarView1 = snackbarHubble.getView();
                 int snackbarTextId1 = android.support.design.R.id.snackbar_text;
                 TextView textView1 = snackbarView1.findViewById(snackbarTextId1);

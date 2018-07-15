@@ -25,12 +25,12 @@ public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodVie
 
 
     private final Context mContext;
-    private final ArrayList<Apod> mApodData;
+    public static ArrayList<Apod> mApodData = new ArrayList<>();
     private final ItemClickListenerApod mItemClickListenerApod;
 
 
     public AdapterApod(ArrayList<Apod> apods, Context context, ItemClickListenerApod itemClickListenerApod) {
-        this.mApodData = apods;
+        mApodData = apods;
         this.mContext = context;
         this.mItemClickListenerApod = itemClickListenerApod;
     }
@@ -81,6 +81,9 @@ public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodVie
 
     @Override
     public int getItemCount() {
+        if (mApodData == null){
+            return 0;
+        }
         return mApodData.size();
     }
 
