@@ -66,7 +66,7 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[4])
                 .into(iv_hubble);
-
+        checkApodArrayIsEmpty();
         populateRecyclerView();
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -120,7 +120,13 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         adapterHubbleFavorites.notifyDataSetChanged();
     }
 
-
+    public void checkApodArrayIsEmpty() {
+        if (names.isEmpty()){
+            tv_nodata.setVisibility(View.VISIBLE);
+        }else {
+            tv_nodata.setVisibility(View.INVISIBLE);
+        }
+    }
     public void reloadAfterDelete(){
 
         populateRecyclerView();
@@ -136,6 +142,7 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        checkApodArrayIsEmpty();
         reloadAfterDelete();
     }
 }

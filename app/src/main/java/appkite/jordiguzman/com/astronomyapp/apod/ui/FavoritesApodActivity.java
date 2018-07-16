@@ -92,7 +92,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                         mDb.apodDao().deleteApod(apodEntries.get(position));
                         dates.remove(position);
                         snackBarDelete();
-                        //checkApodArrayIsEmpty();
+
                     }
                 });
 
@@ -134,10 +134,8 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
     public void checkApodArrayIsEmpty() {
         if (dates.isEmpty()){
-            Log.i("Dates isEmpty", String.valueOf(dates.size()));
             tv_nodata_favorites.setVisibility(View.VISIBLE);
         }else {
-            Log.i("Dates noEmpty", String.valueOf(dates.size()));
             tv_nodata_favorites.setVisibility(View.INVISIBLE);
         }
     }
@@ -154,6 +152,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        checkApodArrayIsEmpty();
         populateRecyclerView();
     }
 
