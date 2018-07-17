@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -90,11 +89,13 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                         int position = viewHolder.getAdapterPosition();
                         List<ApodEntry> apodEntries = adapterApodFavorites.getApodData();
                         mDb.apodDao().deleteApod(apodEntries.get(position));
-                        dates.remove(position);
+                        if (!dates.isEmpty()) dates.remove(position);
                         snackBarDelete();
 
                     }
                 });
+
+
 
             }
         }).attachToRecyclerView(mRecyclerView);

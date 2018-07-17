@@ -22,8 +22,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:contentDescription="@string/app_name"
         android:elevation="@dimen/fab_elevation"
-        android:src="@drawable/ic_favorite_black_24dp"
-        android:stateListAnimator="@animator/fab_state_list_anim"
+        android:src="@drawable/ic_favorite_border_black_24dp"
         tools:targetApi="lollipop" />
 
 </FrameLayout>

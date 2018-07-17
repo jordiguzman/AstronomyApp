@@ -48,7 +48,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
     private HubbleAdapter hubbleAdapter = new HubbleAdapter();
     private AppDatabaseHubble mDb;
     public static ArrayList<String> names = new ArrayList<>();
-
+    private FloatingActionButton fb_favorites;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         ViewPager mViewPager = view.findViewById(R.id.pager_hubble);
         mViewPager.setAdapter(new HubbleAdapter());
         mViewPager.setCurrentItem(itemPositionHubble);
-        FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites_hubble);
+         fb_favorites = view.findViewById(R.id.fb_favorites_hubble);
         fb_favorites.setOnClickListener(this);
         hubbleAdapter.notifyDataSetChanged();
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -75,6 +75,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 itemPositionHubble = position;
+                changeIconFavorites();
             }
 
             @Override
@@ -135,6 +136,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                 names.add(dataImagesDetail.get(itemPositionHubble).getName());
             }
         });
+        fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
         caseSnackBar = 0;
         showSnackBarHubble();
     }
@@ -215,8 +217,11 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                                  .get();
                          if (bitmap !=null){
                              Palette p = Palette.from(bitmap).generate();
-                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                             linearLayout.setBackgroundColor(mMutedColor);
+                             if (isAdded()){
+                                 mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                 linearLayout.setBackgroundColor(mMutedColor);
+                             }
+
                          }
                      } catch (InterruptedException e) {
                          e.printStackTrace();
@@ -258,5 +263,17 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeIconFavorites();
+    }
 
+    private void changeIconFavorites() {
+        if (isFavoritedHubble()){
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+        }else {
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+        }
+    }
 }

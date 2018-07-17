@@ -36,6 +36,7 @@ import appkite.jordiguzman.com.astronomyapp.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity.earthArrayList;
 import static appkite.jordiguzman.com.astronomyapp.earth.ui.EarthDetailActivity.dateApi;
 
@@ -137,7 +138,8 @@ public class ImageActivityEarth extends AppCompatActivity {
      public static Uri getLocalBitmapUri(Bitmap bmp, Context context) {
         Uri bmpUri = null;
         try {
-            File file =  new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
+            File file =  new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "share_image_" + System.currentTimeMillis() + ".png");
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.close();
@@ -147,6 +149,7 @@ public class ImageActivityEarth extends AppCompatActivity {
         }
         return bmpUri;
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void hideNavigation() {
         View decorView = getWindow().getDecorView();
 
@@ -156,7 +159,7 @@ public class ImageActivityEarth extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                        | SYSTEM_UI_FLAG_IMMERSIVE);
     }
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void showNavigation() {
@@ -170,6 +173,6 @@ public class ImageActivityEarth extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                        | SYSTEM_UI_FLAG_IMMERSIVE);
     }
 }

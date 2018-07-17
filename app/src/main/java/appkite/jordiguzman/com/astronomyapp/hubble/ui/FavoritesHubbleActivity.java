@@ -82,7 +82,7 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
                         int position = viewHolder.getAdapterPosition();
                         List<HubbleEntry> hubbleEntries = adapterHubbleFavorites.getHubbleData();
                         mDb.hubbleDao().deleteHubble(hubbleEntries.get(position));
-                        names.remove(position);
+                        if (!names.isEmpty())names.remove(position);
                         snackBarDelete();
                     }
                 });

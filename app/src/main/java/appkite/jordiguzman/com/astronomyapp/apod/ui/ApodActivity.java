@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,6 +46,7 @@ import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -76,7 +76,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     private static LocalDate dateOld;
     public static int datesToShow;
     private RecyclerView mRecyclerView;
-    private AsynctTaskApod asynctTaskApod;
+
 
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -87,8 +87,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         ButterKnife.bind(this);
         iv_apod = findViewById(R.id.iv_item_apod);
         mRecyclerView = findViewById(R.id.rv_apod);
-
-
         /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
@@ -99,22 +97,17 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         saveNumberItems();
         readSharedPreferences();
 
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             today = LocalDate.now(ZoneId.of("US/Michigan"));
         }else {
-
             today = LocalDate.now();
-
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             datesToShow();
         }
-
-
-        asynctTaskApod = new AsynctTaskApod();
-
+        preLoadHdurl();
+        getData();
 
         if (!mApodDataMain.isEmpty()){
              runOnUiThread(new Runnable() {
@@ -123,16 +116,21 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                      populateImage(getApplicationContext());
                  }
              });
-
-
-
         }else {
             pb_apod_activity.setVisibility(View.VISIBLE);
-            asynctTaskApod.execute();
+            getData();
         }
 
+    }
 
+    public void getData(){
+        AppExecutors.getInstance().networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                getDataApod(getApplicationContext());
 
+            }
+        });
     }
 
     private void readSharedPreferences() {
@@ -140,17 +138,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         datesToShow = sharedPreferences.getInt("number", 0);
     }
 
-
-    @SuppressLint("StaticFieldLeak")
-    public class AsynctTaskApod extends AsyncTask<Void, Void, Void>{
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            getDataApod(getApplicationContext());
-            preLoadHdurl();
-            return null;
-        }
-    }
 
     public void getDataApod(final Context context){
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
@@ -160,31 +147,30 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
             @Override
             public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
-                switch (response.code()){
-                    case 200:
-                        mApodDataMain = (ArrayList<Apod>) response.body();
-
-                        if (mApodDataMain != null){
-                            Collections.reverse(mApodDataMain);
-                            populateImage(context);
-                            urlToWidget = mApodDataMain.get(0).getUrl();
-                        }
-                        break;
-                    default:
-                        Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
+                if (response !=null){
+                    switch (response.code()){
+                        case 200:
+                            mApodDataMain = (ArrayList<Apod>) response.body();
+                            if (mApodDataMain != null){
+                                Collections.reverse(mApodDataMain);
+                                populateImage(context);
+                                urlToWidget = mApodDataMain.get(0).getUrl();
+                            }
+                            break;
+                        default:
+                            Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
+                    }
+                }else {
+                    getData();
                 }
+
             }
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
                 Log.e("OnFailure", t.getMessage());
                 snackBar();
-                asynctTaskApod.cancel(true);
-
-
-
+                getData();
             }
-
-
         });
     }
 
@@ -196,8 +182,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                     .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            asynctTaskApod.cancel(true);
-                            asynctTaskApod.execute();
+                            getData();
                         }
                     });
             mSnackbar.setActionTextColor(Color.RED);
@@ -207,10 +192,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
             mSnackbar.show();
     }
 
-
-
     public static void datesToShow(){
-
         for (int i = 0; i < datesToShow; i++) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 dateOld = today.minusDays(i);
@@ -226,7 +208,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                     .preload();
         }
     }
-
 
     public void populateImage(Context context){
         String url_base_youtube_video= "http://img.youtube.com/vi/";
@@ -302,7 +283,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     public void menuActions(){
         saveNumberItems();
         datesToShow();
-        asynctTaskApod.cancel(true);
+        getData();
         getDataApod(getApplicationContext());
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mCoordinatorLayout.setAnimation(shake);

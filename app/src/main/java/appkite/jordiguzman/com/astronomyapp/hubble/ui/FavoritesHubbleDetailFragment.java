@@ -179,8 +179,10 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
                             Bitmap bitmap = imageContainer.getBitmap();
                             if (bitmap !=null){
                                 Palette p = Palette.from(bitmap).generate();
-                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                                linearLayout.setBackgroundColor(mMutedColor);
+                                if (isAdded()){
+                                    mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                    linearLayout.setBackgroundColor(mMutedColor);
+                                }
                             }
                         }
                         @Override

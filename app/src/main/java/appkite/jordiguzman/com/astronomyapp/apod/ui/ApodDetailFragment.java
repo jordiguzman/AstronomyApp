@@ -48,6 +48,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private ApodPageAdapter apodPageAdapter = new ApodPageAdapter();
     private AppDatabase mDb;
     public static ArrayList<String> dates = new ArrayList<>();
+    private FloatingActionButton fb_favorites;
 
 
     @Nullable
@@ -63,7 +64,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
         mViewPager.setAdapter(new ApodPageAdapter());
         mViewPager.setCurrentItem(itemPosition);
-        FloatingActionButton fb_favorites = view.findViewById(R.id.fb_favorites);
+         fb_favorites = view.findViewById(R.id.fb_favorites);
         apodPageAdapter.notifyDataSetChanged();
         fb_favorites.setOnClickListener(this);
 
@@ -76,6 +77,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             @Override
             public void onPageSelected(int position) {
                 itemPosition = position;
+                changeIconFavorites();
             }
 
             @Override
@@ -133,6 +135,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
             }
         });
+        fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
         caseSnackBar = 0;
         showSnackBar();
     }
@@ -277,6 +280,17 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeIconFavorites();
+    }
 
-
+    private void changeIconFavorites() {
+        if (isFavorited()){
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+        }else {
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+        }
+    }
 }

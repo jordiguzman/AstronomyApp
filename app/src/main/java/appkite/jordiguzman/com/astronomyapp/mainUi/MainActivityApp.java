@@ -64,6 +64,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     @SuppressLint("StaticFieldLeak")
     public static TextView text;
     private static String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
+    public static GetHttpAsyncTaskApodForWidget getHttpAsyncTaskApodForWidget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
 
 
-        new GetHttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
+       getHttpAsyncTaskApodForWidget = (GetHttpAsyncTaskApodForWidget)
+               new GetHttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
 
     }
 
@@ -167,6 +169,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                     e.printStackTrace();
                 }
             }else {
+                getHttpAsyncTaskApodForWidget.cancel(true);
                 new GetHttpAsyncTaskApodForWidget(mContext).execute(urlApi + API_KEY);
             }
 
