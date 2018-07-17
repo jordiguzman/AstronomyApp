@@ -63,8 +63,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     public static String urlToWidget;
     @SuppressLint("StaticFieldLeak")
     public static TextView text;
-    private Snackbar mSnackbarExit;
-
+    private static String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +105,8 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
              }
          });
 
-        String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
+
+
         new GetHttpAsyncTaskApodForWidget(this).execute(urlApi + API_KEY);
 
     }
@@ -152,19 +152,24 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
 
         @Override
         protected void onPostExecute(String result) {
-            try {
-                JSONObject jsonObject = new JSONObject(result);
-                name = jsonObject.getString("title");
-                url = jsonObject.getString("url");
-                SharedPreferences sharedPreferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("name", name);
-                editor.putString("url", url);
-                editor.apply();
+            if (result != null){
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    name = jsonObject.getString("title");
+                    url = jsonObject.getString("url");
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("data", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("name", name);
+                    editor.putString("url", url);
+                    editor.apply();
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                new GetHttpAsyncTaskApodForWidget(mContext).execute(urlApi + API_KEY);
             }
+
         }
     }
 
@@ -271,7 +276,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     }
 
     private void showSnackbarFinish() {
-        mSnackbarExit = Snackbar
+        Snackbar mSnackbarExit = Snackbar
                 .make(mCoordinatorLayout, getResources().getString(R.string.finish), 5000)
                 .setAction(getResources().getString(R.string.exit), new View.OnClickListener() {
                     @Override
@@ -279,7 +284,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                         deleteCache(getApplicationContext());
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             finishAndRemoveTask();
-                        }else {
+                        } else {
                             finish();
                         }
 

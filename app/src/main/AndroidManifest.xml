@@ -47,8 +47,10 @@
         <activity
             android:name=".iss.ui.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".earth.ui.EarthActivity" />
-        <activity android:name=".hubble.ui.HubbleActivity" />
+        <activity android:name=".earth.ui.EarthActivity"
+            android:parentActivityName=".mainUi.MainActivityApp"/>
+        <activity android:name=".hubble.ui.HubbleActivity"
+            android:parentActivityName=".mainUi.MainActivityApp"/>
         <activity
             android:name=".mainUi.Splash"
             android:theme="@style/AppTheme.NoActionBar">
@@ -60,7 +62,7 @@
         </activity>
         <activity
             android:name=".apod.ui.ApodDetailActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"/>
         <activity android:name=".apod.ui.ImageApodActivity" />
 
 

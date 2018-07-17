@@ -88,6 +88,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         iv_apod = findViewById(R.id.iv_item_apod);
         mRecyclerView = findViewById(R.id.rv_apod);
 
+
         /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
