@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +71,8 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
     RecyclerView recyclerView;
     @BindView(R.id.collapsing_hubble)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.tv_swipe)
+    TextView tv_swipe;
 
 
     @Override
@@ -78,7 +80,7 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hubble);
         ButterKnife.bind(this);
-
+        tv_swipe.setVisibility(View.INVISIBLE);
         imageCollapsingToolBar();
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[4])
@@ -152,8 +154,6 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                 if (responseCode == HttpURLConnection.HTTP_OK){
                     serverResponse = converInputStreamToString(urlConnection.getInputStream());
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }

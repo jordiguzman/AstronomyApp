@@ -3,12 +3,12 @@ package appkite.jordiguzman.com.astronomyapp.apod.ui;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,6 +58,9 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     private AppDatabase mDb;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +75,11 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
                 .load(AdapterMain.URL_MAIN[0])
                 .into(iv_apod);
         mDb = AppDatabase.getInstance(this);
+
         setupViewModel();
         checkApodArrayIsEmpty();
         populateRecyclerView();
+
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -84,45 +89,36 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void run() {
                         int position = viewHolder.getAdapterPosition();
                         List<ApodEntry> apodEntries = adapterApodFavorites.getApodData();
                         mDb.apodDao().deleteApod(apodEntries.get(position));
                         if (!dates.isEmpty()) dates.remove(position);
-                        snackBarDelete();
+                        finish();
+                        overridePendingTransition(0,0);
+                        startActivity(getIntent());
+                        overridePendingTransition(0,0);
 
                     }
                 });
-
-
-
             }
         }).attachToRecyclerView(mRecyclerView);
-
     }
 
-    private void setupViewModel() {
+    public void setupViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getApodData().observe(this, new Observer<List<ApodEntry>>() {
             @Override
             public void onChanged(@Nullable List<ApodEntry> apodEntries) {
                 mApodDataList = apodEntries;
                 adapterApodFavorites.setApodData(apodEntries);
-
             }
         });
 
     }
 
-    private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
-        View snackbarView = snackbar.getView();
-        int snackbarTextId = android.support.design.R.id.snackbar_text;
-        TextView textView = snackbarView.findViewById(snackbarTextId);
-        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
-        snackbar.show();
-    }
     private void populateRecyclerView() {
         adapterApodFavorites= new AdapterApodFavorites(mApodDataList, this, FavoritesApodActivity.this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
@@ -132,6 +128,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
         adapterApodFavorites.notifyDataSetChanged();
 
     }
+
 
     public void checkApodArrayIsEmpty() {
         if (dates.isEmpty()){
@@ -151,12 +148,13 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
         checkApodArrayIsEmpty();
         populateRecyclerView();
-    }
 
+
+    }
 
 
 }

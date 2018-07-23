@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
@@ -85,6 +86,9 @@ public class AdapterApod extends RecyclerView.Adapter<AdapterApod.AdapterApodVie
             return 0;
         }
         return mApodData.size();
+    }
+    public List<Apod> getApodData(){
+        return mApodData;
     }
 
     public interface ItemClickListenerApod {

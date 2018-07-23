@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import java.util.concurrent.ExecutionException;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.PLANETS;
 import static appkite.jordiguzman.com.astronomyapp.planets.data.Urls.URL_PLANETS;
@@ -152,7 +153,7 @@ public class SolarSystemDetailFragment extends Fragment{
         }
 
         private void setColorLinearlayout(final String url){
-            Thread thread = new Thread(new Runnable() {
+            AppExecutors.getInstance().networkIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -166,14 +167,13 @@ public class SolarSystemDetailFragment extends Fragment{
                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
                             linearLayout.setBackgroundColor(mMutedColor);
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }
             });
-            thread.start();
+
+
         }
 
 

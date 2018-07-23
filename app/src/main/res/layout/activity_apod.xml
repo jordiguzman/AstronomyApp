@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/coordinator_list_activity">
 
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
@@ -14,18 +15,27 @@
         android:theme="@style/AppTheme"
         tools:targetApi="lollipop">
 
+
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_apod"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
             <ImageView
                 android:id="@+id/iv_item_apod"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/tv_swipe"
+                style="@style/TextViewModelSubTitle"
+                android:layout_gravity="bottom"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="@dimen/model_margin_16"
+                android:text="@string/swipe_delete" />
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -49,7 +59,7 @@
                         android:fontFamily="@font/alfa_slab_one"
                         android:text="@string/apod"
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/model_text_size_title"
+                        android:textSize="@dimen/model_text_size_24"
                         app:layout_collapseMode="parallax"
                         app:layout_collapseParallaxMultiplier="0.5"
                         app:layout_constraintStart_toStartOf="parent"
@@ -65,12 +75,13 @@
                         android:src="@drawable/ic_menu_black_24dp"
                         android:onClick="clickMenuApod"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginRight="@dimen/model_margin_8" />
+                        app:layout_constraintTop_toTopOf="parent" />
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.Toolbar>
+
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 
 

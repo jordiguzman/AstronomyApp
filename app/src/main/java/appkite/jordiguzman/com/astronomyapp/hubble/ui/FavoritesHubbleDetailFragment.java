@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,25 +26,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.hubble.adapter.AdapterHubbleFavorites;
-import appkite.jordiguzman.com.astronomyapp.hubble.data.AppDatabaseHubble;
-import appkite.jordiguzman.com.astronomyapp.hubble.data.HubbleEntry;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.itemPositionFavoritesHubble;
 import static appkite.jordiguzman.com.astronomyapp.hubble.ui.FavoritesHubbleActivity.mHubbleDataList;
 
-public class FavoritesHubbleDetailFragment extends Fragment implements View.OnClickListener {
+public class FavoritesHubbleDetailFragment extends Fragment  {
 
     private Context mContext;
     private int mMutedColor;
     private View linearLayout;
-    private AdapterHubbleFavorites adapterHubbleFavorites;
-    private AppDatabaseHubble mDb;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,13 +49,10 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_hubble);
-        mDb = AppDatabaseHubble.getInstance(getContext());
-        adapterHubbleFavorites = new AdapterHubbleFavorites(mHubbleDataList, mContext, null);
         mViewPager.setAdapter(new FavoritesHubblePageAdapter());
         mViewPager.setCurrentItem(itemPositionFavoritesHubble);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites_hubble);
-        mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
-        mFloatingActionButton.setOnClickListener(this);
+        mFloatingActionButton.setVisibility(View.INVISIBLE);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -90,29 +78,6 @@ public class FavoritesHubbleDetailFragment extends Fragment implements View.OnCl
                 page.setScaleY(normalizedposition / 2 + 0.5f);
             }
         });
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<HubbleEntry> hubbleEntries = adapterHubbleFavorites.getHubbleData();
-                mDb.hubbleDao().deleteHubble(hubbleEntries.get(itemPositionFavoritesHubble));
-                snackBarDelete();
-            }
-        });
-
-    }
-
-    private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_hubble), R.string.data_deleted, Snackbar.LENGTH_SHORT );
-        View snackbarView = snackbar.getView();
-        int snackbarTextId = android.support.design.R.id.snackbar_text;
-        TextView textView = snackbarView.findViewById(snackbarTextId);
-        textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
-        snackbar.show();
     }
 
     class FavoritesHubblePageAdapter extends PagerAdapter{

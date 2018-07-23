@@ -72,10 +72,13 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.ib_menu_acticity_apod)
     ImageButton ib_menu_apod;
+    @BindView(R.id.tv_swipe)
+    TextView tv_swipe;
     private static LocalDate today;
     private static LocalDate dateOld;
     public static int datesToShow;
     private RecyclerView mRecyclerView;
+
 
 
 
@@ -87,6 +90,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         ButterKnife.bind(this);
         iv_apod = findViewById(R.id.iv_item_apod);
         mRecyclerView = findViewById(R.id.rv_apod);
+        tv_swipe.setVisibility(View.INVISIBLE);
         /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
@@ -160,10 +164,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                         default:
                             Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
                     }
-                }else {
-                    getData();
                 }
-
             }
             @Override
             public void onFailure(@NonNull Call<List<Apod>> call, @NonNull Throwable t) {
@@ -178,7 +179,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     private void snackBar() {
             Snackbar mSnackbar = Snackbar
-                    .make(mCoordinatorLayout, getResources().getString(R.string.no_api), Snackbar.LENGTH_INDEFINITE)
+                    .make(mCoordinatorLayout, getResources().getString(R.string.no_api), Snackbar.LENGTH_SHORT)
                     .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

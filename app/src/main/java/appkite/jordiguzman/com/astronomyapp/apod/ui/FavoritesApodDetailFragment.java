@@ -9,10 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -27,27 +25,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import appkite.jordiguzman.com.astronomyapp.R;
-import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApodFavorites;
-import appkite.jordiguzman.com.astronomyapp.apod.data.ApodEntry;
-import appkite.jordiguzman.com.astronomyapp.apod.data.AppDatabase;
-import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.ImageLoaderHelper;
 
-import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.itemPositionFavorites;
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.FavoritesApodActivity.mApodDataList;
 
-public class FavoritesApodDetailFragment extends Fragment implements View.OnClickListener {
+public class FavoritesApodDetailFragment extends Fragment {
 
     private Context mContext;
     private View linearLayout;
     private int mMutedColor;
 
-
-    private AdapterApodFavorites adapterApodFavorites;
-    private AppDatabase mDb;
 
     @Nullable
     @Override
@@ -59,13 +47,12 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
-        mDb = AppDatabase.getInstance(getContext());
-        adapterApodFavorites = new AdapterApodFavorites(mApodDataList, mContext, null);
         mViewPager.setAdapter(new FavoritesApodPageAdapter());
         mViewPager.setCurrentItem(FavoritesApodActivity.itemPositionFavorites);
         FloatingActionButton mFloatingActionButton = view.findViewById(R.id.fb_favorites);
-        mFloatingActionButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_delete_black_24dp));
-        mFloatingActionButton.setOnClickListener(this);
+        mFloatingActionButton.setVisibility(View.INVISIBLE);
+
+
 
         mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
@@ -77,30 +64,6 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
         });
 
     }
-
-    @Override
-    public void onClick(final View v) {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<ApodEntry> apodEntries = adapterApodFavorites.getApodData();
-                mDb.apodDao().deleteApod(apodEntries.get(itemPositionFavorites));
-                snackBarDelete();
-            }
-        });
-
-    }
-
-    private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_deleted, Snackbar.LENGTH_SHORT );
-        View snackbarView = snackbar.getView();
-        int snackbarTextId = android.support.design.R.id.snackbar_text;
-        TextView textView = snackbarView.findViewById(snackbarTextId);
-        textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
-        snackbar.show();
-    }
-
-
     class FavoritesApodPageAdapter extends PagerAdapter{
 
         @Override
@@ -186,8 +149,11 @@ public class FavoritesApodDetailFragment extends Fragment implements View.OnClic
                             Bitmap bitmap = imageContainer.getBitmap();
                             if (bitmap !=null){
                                 Palette p = Palette.from(bitmap).generate();
-                                mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                                linearLayout.setBackgroundColor(mMutedColor);
+                                if (isAdded()){
+                                    mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                                    linearLayout.setBackgroundColor(mMutedColor);
+                                }
+
                             }
                         }
                         @Override

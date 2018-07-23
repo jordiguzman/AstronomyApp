@@ -27,6 +27,13 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/tv_swipe"
+                style="@style/TextViewModelSubTitle"
+                android:layout_gravity="bottom"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="@dimen/model_margin_16"
+                android:text="@string/swipe_delete" />
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -62,8 +69,7 @@
                         android:src="@drawable/ic_menu_black_24dp"
                         android:onClick="clickMenuHubble"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_marginRight="@dimen/model_margin_8" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </android.support.constraint.ConstraintLayout>
 

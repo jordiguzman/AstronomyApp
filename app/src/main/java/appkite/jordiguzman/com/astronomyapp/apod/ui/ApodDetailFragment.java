@@ -49,6 +49,9 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
     private AppDatabase mDb;
     public static ArrayList<String> dates = new ArrayList<>();
     private FloatingActionButton fb_favorites;
+    private  ApodEntry apodEntry;
+
+
 
 
     @Nullable
@@ -112,8 +115,8 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 if (isFavorited()){
                     saveDataApod();
                 }else {
-                    caseSnackBar=1;
-                    showSnackBar();
+                   caseSnackBar = 1;
+                   showSnackBar();
                 }
                 break;
         }
@@ -125,7 +128,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         String date = mApodDataMain.get(itemPosition).getDate();
         String explanation = mApodDataMain.get(itemPosition).getExplanation();
         String url = mApodDataMain.get(itemPosition).getUrl();
-        final ApodEntry apodEntry = new ApodEntry(copyright, title, date,
+        apodEntry = new ApodEntry(copyright, title, date,
                 explanation, url);
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -133,12 +136,14 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                 mDb.apodDao().insertApod(apodEntry);
                 dates.add(mApodDataMain.get(itemPosition).getDate());
 
+
             }
         });
         fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
         caseSnackBar = 0;
         showSnackBar();
     }
+
 
 
 
@@ -241,9 +246,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
                             linearLayout.setBackgroundColor(mMutedColor);
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }

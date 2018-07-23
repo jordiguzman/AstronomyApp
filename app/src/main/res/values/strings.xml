@@ -79,6 +79,7 @@
     <string name="no_favorites_yet">No favorites yet</string>
     <string name="data_saved">Favorite added</string>
     <string name="data_deleted">Favorite removed</string>
+    <string name="data_yet_deleted">This item is already deleted</string>
     <string name="step_forward">Step Forward</string>
     <string name="fast_forward">Fast Forward</string>
     <string name="picture_of_earth">Picture of Earth</string>

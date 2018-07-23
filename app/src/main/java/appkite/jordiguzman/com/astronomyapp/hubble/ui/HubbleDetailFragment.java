@@ -18,7 +18,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.graphics.Palette;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,12 +94,9 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
 
     private boolean isFavoritedHubble(){
         String idItem = mDataImagesDetail.get(itemPositionHubble).getName();
-        Log.i("ideItem", mDataImagesDetail.get(itemPositionHubble).getName());
         for (int i= 0; i < names.size(); i++){
             String idItemFavorites = names.get(i);
-            Log.i("idItemFavorites", names.get(i));
             if (idItem.equals(idItemFavorites)){
-                Log.i("idItemFavorites", idItemFavorites);
                 return false;
             }
         }
@@ -223,9 +219,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                              }
 
                          }
-                     } catch (InterruptedException e) {
-                         e.printStackTrace();
-                     } catch (ExecutionException e) {
+                     } catch (InterruptedException | ExecutionException e) {
                          e.printStackTrace();
                      }
                  }

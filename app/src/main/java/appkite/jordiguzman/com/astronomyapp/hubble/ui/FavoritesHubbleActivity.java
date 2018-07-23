@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,7 +81,10 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
                         List<HubbleEntry> hubbleEntries = adapterHubbleFavorites.getHubbleData();
                         mDb.hubbleDao().deleteHubble(hubbleEntries.get(position));
                         if (!names.isEmpty())names.remove(position);
-                        snackBarDelete();
+                        finish();
+                        overridePendingTransition(0,0);
+                        startActivity(getIntent());
+                        overridePendingTransition(0,0);
                     }
                 });
 
@@ -101,14 +102,7 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
             }
         });
     }
-    private void snackBarDelete() {
-        Snackbar snackbar = Snackbar.make(mCoordinatorLayout, getResources().getString( R.string.data_deleted), Snackbar.LENGTH_LONG );
-        View snackbarView = snackbar.getView();
-        int snackbarTextId = android.support.design.R.id.snackbar_text;
-        TextView textView = snackbarView.findViewById(snackbarTextId);
-        textView.setTextColor(ContextCompat.getColor(this,  R.color.colorAccent));
-        snackbar.show();
-    }
+
 
 
     private void populateRecyclerView() {

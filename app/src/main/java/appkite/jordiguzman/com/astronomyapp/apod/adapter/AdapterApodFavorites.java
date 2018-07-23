@@ -25,11 +25,11 @@ public class AdapterApodFavorites extends RecyclerView.Adapter<AdapterApodFavori
 
     private final Context mContext;
     private final ItemClickListenerApodFavorites mItemClickListenerApodFavorites;
-    private List<ApodEntry> mApodData;
+    private static List<ApodEntry> mApodData;
 
     public AdapterApodFavorites(List<ApodEntry> apods, Context context,
                                 ItemClickListenerApodFavorites itemClickListenerApodFavorites ){
-        this.mApodData= apods;
+        mApodData= apods;
         this.mContext = context;
         this.mItemClickListenerApodFavorites = itemClickListenerApodFavorites;
     }
