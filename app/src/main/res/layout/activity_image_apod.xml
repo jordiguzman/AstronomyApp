@@ -21,7 +21,8 @@
         android:contentDescription="@string/button_for_share_image"
         android:src="@drawable/ic_share_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_image_apod"

@@ -105,5 +105,6 @@
     <string name="image_pager_item_hubble">Hubble Picture</string>
     <string name="image_pager_item_system">Solar System Picture</string>
     <string name="swipe_delete">Swipe to remove from Favorites</string>
+    <string name="logo_kick">Logo Kick</string>
 
 </resources>

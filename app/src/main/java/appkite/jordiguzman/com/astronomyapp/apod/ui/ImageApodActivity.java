@@ -10,6 +10,7 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.view.View;
@@ -18,12 +19,12 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -39,14 +40,14 @@ import butterknife.ButterKnife;
 
 import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDataMain;
 
-public class ImageApodActivity extends YouTubeBaseActivity  {
+public class ImageApodActivity extends YouTubeBaseActivity {
 
     public static final String API_KEY = "AIzaSyBil6N0vhX3-uJRzwPZD2D7Pn3H5Ee-MuI";
 
     private int position;
 
-    @BindView(R.id.iv_image_apod)
-    ImageView iv_apod_image;
+
+    PhotoView iv_apod_image;
     @BindView(R.id.video_view_apod)
     YouTubePlayerView videoView_apod;
     @BindView(R.id.ib_image_apod)
@@ -60,6 +61,7 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
     private ShareImageApod shareImageApod = new ShareImageApod();
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -67,9 +69,14 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_apod);
         ButterKnife.bind(this);
+        iv_apod_image = findViewById(R.id.iv_image_apod);
+
+
+
         constraintLayout = findViewById(R.id.layout_image_apod);
         linearLayout = findViewById(R.id.linearLayout_activity_image);
         showNavigation();
+
 
         if (savedInstanceState!=null){
             currentPositionVideo =savedInstanceState.getInt("current");
@@ -96,31 +103,36 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                         shareImageApod.shareImage(getApplicationContext(), mApodDataMain.get(position).getUrl());
                     }
                 });
-
-
-
             }
         });
-
         iv_apod_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!hideButtonNavigation){
-                    Animation up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
-                    ib_image_apod.startAnimation(up);
-                    ib_image_apod.setVisibility(View.INVISIBLE);
-                    hideNavigation();
-                    hideButtonNavigation = true;
-                }else {
-                    Animation down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_down);
-                    ib_image_apod.startAnimation(down);
-                    ib_image_apod.setVisibility(View.VISIBLE);
-                    showNavigation();
-                    hideButtonNavigation = false;
+                switch(v.getId()){
+                    case R.id.iv_image_apod:
+                        if (!hideButtonNavigation){
+                            Animation up = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up);
+                            ib_image_apod.startAnimation(up);
+                            ib_image_apod.setVisibility(View.INVISIBLE);
+                            hideNavigation();
+                            hideButtonNavigation = true;
+                        }else {
+                            Animation down = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_down);
+                            ib_image_apod.startAnimation(down);
+                            ib_image_apod.setVisibility(View.VISIBLE);
+                            showNavigation();
+                            hideButtonNavigation = false;
+                        }
+                        break;
                 }
             }
         });
+
+
     }
+
+
+
 
     private void preloadPicture() {
         Picasso.get()
@@ -204,12 +216,10 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
                                 .get();
                         if (bitmap !=null){
                             Palette p = Palette.from(bitmap).generate();
-                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+                            mMutedColor = p.getDarkMutedColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
                             linearLayout.setBackgroundColor(mMutedColor);
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }
@@ -261,8 +271,6 @@ public class ImageApodActivity extends YouTubeBaseActivity  {
             bundle.putInt("current", player.getCurrentTimeMillis());
         }
     }
-
-
 
 
 

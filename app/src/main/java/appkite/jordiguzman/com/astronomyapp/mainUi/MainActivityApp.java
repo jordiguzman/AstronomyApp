@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -64,6 +63,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     @SuppressLint("StaticFieldLeak")
     public static TextView text;
     private static String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
+    @SuppressLint("StaticFieldLeak")
     public static GetHttpAsyncTaskApodForWidget getHttpAsyncTaskApodForWidget;
 
     @Override
@@ -285,11 +285,7 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
                     @Override
                     public void onClick(View v) {
                         deleteCache(getApplicationContext());
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            finishAndRemoveTask();
-                        } else {
-                            finish();
-                        }
+                        finishAndRemoveTask();
 
                     }
                 });

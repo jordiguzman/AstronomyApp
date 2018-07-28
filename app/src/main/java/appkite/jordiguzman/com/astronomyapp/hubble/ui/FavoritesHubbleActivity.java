@@ -1,10 +1,12 @@
 package appkite.jordiguzman.com.astronomyapp.hubble.ui;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +45,8 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
     TextView tv_nodata;
     @BindView(R.id.coordinator_list_activity)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.collapsing_hubble)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     private RecyclerView mRecyclerView;
     public static int itemPositionFavoritesHubble;
     public static List<HubbleEntry> mHubbleDataList;
@@ -59,6 +63,7 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         mRecyclerView = findViewById(R.id.rv_hubble);
         ib_menu.setVisibility(View.INVISIBLE);
         tv_title_hubble.setText(R.string.favorites);
+        imageCollapsingToolBar();
         mDb = AppDatabaseHubble.getInstance(this);
         setupViewModelHubble();
         Glide.with(this)
@@ -103,7 +108,12 @@ public class FavoritesHubbleActivity extends AppCompatActivity implements Adapte
         });
     }
 
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
 
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
+    }
 
     private void populateRecyclerView() {
         adapterHubbleFavorites = new AdapterHubbleFavorites(mHubbleDataList, this, FavoritesHubbleActivity.this);

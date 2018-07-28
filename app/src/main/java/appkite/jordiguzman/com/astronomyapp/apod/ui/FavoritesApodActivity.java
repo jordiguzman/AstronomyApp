@@ -1,5 +1,6 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -71,6 +72,7 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
 
         ib_menu.setVisibility(View.INVISIBLE);
         title_apod.setText(R.string.favorites);
+        imageCollapsingToolBar();
         Glide.with(this)
                 .load(AdapterMain.URL_MAIN[0])
                 .into(iv_apod);
@@ -138,7 +140,12 @@ public class FavoritesApodActivity extends AppCompatActivity implements AdapterA
         }
     }
 
+    @SuppressLint("ResourceAsColor")
+    public void imageCollapsingToolBar(){
 
+        mCollapsingToolbarLayout.setContentScrimColor(R.color.primary_text);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
+    }
 
     @Override
     public void onClickItem(int position) {

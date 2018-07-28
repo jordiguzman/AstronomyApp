@@ -27,13 +27,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:scaleType="centerCrop" />
-            <TextView
-                android:id="@+id/tv_swipe"
-                style="@style/TextViewModelSubTitle"
-                android:layout_gravity="bottom"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="@dimen/model_margin_16"
-                android:text="@string/swipe_delete" />
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -45,10 +39,13 @@
                 android:layout_marginRight="@dimen/list_toolbar_side_margin"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 tools:targetApi="lollipop">
+
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
+                        android:id="@+id/tv_title_hubble"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/alfa_slab_one"
@@ -57,8 +54,22 @@
                         android:textSize="@dimen/model_text_size_24"
                         app:layout_collapseMode="parallax"
                         app:layout_collapseParallaxMultiplier="0.5"
-                        android:id="@+id/tv_title_hubble"
                         tools:ignore="RelativeOverlap" />
+
+                    <TextView
+                        android:id="@+id/tv_swipe"
+                        style="@style/TextViewModelSubTitle"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/swipe_delete"
+                        android:textColor="@android:color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_title_hubble" />
+
                     <ImageButton
                         android:id="@+id/ib_menu_activity_hubble"
                         style="@android:style/Widget.Holo.Light.ImageButton"
@@ -66,8 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/model_margin_8"
                         android:contentDescription="@string/menu_button"
-                        android:src="@drawable/ic_menu_black_24dp"
                         android:onClick="clickMenuHubble"
+                        android:src="@drawable/ic_menu_black_24dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
