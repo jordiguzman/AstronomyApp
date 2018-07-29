@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,13 +60,29 @@ public class AdapterAstronaut extends RecyclerView.Adapter<AdapterAstronaut.Adap
         Glide.with(mContext)
                 .load(mAstronautData.get(position).getFlag())
                 .into(holder.iv_flag);
+        String URL_NO_TWITTER = "https://pasalavida30.files.wordpress.com/2018/07/no_twitter.png";
+        String URL_TWITTER = "https://pasalavida30.files.wordpress.com/2018/07/twitter.png";
         if (mAstronautData.get(position).getTwitter().isEmpty()){
-           holder.iv_twitter.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_twitter));
-           holder.iv_twitter.setClickable(false);
+            Glide.with(mContext)
+                    .load(URL_NO_TWITTER)
+                    .into(holder.iv_twitter);
+            holder.iv_twitter.setClickable(false);
+        }else {
+            Glide.with(mContext)
+                    .load(URL_TWITTER)
+                    .into(holder.iv_twitter);
         }
+        String URL_NO_WIKI = "https://pasalavida30.files.wordpress.com/2018/07/no_wiki.png";
+        String URL_WIKI = "https://pasalavida30.files.wordpress.com/2018/07/wiki.png";
         if (mAstronautData.get(position).getBioWiki().isEmpty()){
-            holder.iv_wikipedia.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_wiki));
+             Glide.with(mContext)
+                     .load(URL_NO_WIKI)
+                     .into(holder.iv_wikipedia);
             holder.iv_wikipedia.setClickable(false);
+        }else {
+            Glide.with(mContext)
+                    .load(URL_WIKI)
+                    .into(holder.iv_wikipedia);
         }
         holder.tv_name_astronaut.setText(mAstronautData.get(position).getName());
         holder.tv_title_astronaut.setText(String.format("%s at the ISS", mAstronautData.get(position).getRole()));

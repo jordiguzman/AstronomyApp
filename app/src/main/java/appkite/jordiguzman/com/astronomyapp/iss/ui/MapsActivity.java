@@ -3,6 +3,7 @@ package appkite.jordiguzman.com.astronomyapp.iss.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.icu.text.DecimalFormat;
 import android.icu.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -94,6 +96,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLast;
     private Date currentDate;
     String url= "http://www.howmanypeopleareinspacerightnow.com/peopleinspace.json";
+    private String urlIss = "https://pasalavida30.files.wordpress.com/2018/07/ic_iss.png";
+    private Bitmap bitmap;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +115,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPolyArray = new Polyline[200];
         mCurrentColor = Color.WHITE;
         mCurrentWidth = 5;
+
+
+
+
         new HttpAsyntaskDataAstronauts().execute(url);
 
     }
@@ -172,8 +183,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         }, 0, 3000);
+        //bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_iss);
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_iss);
+        if (Build.VERSION.SDK_INT >= 23){
+            BitmapDescriptor bitmapDescriptor1 = BitmapDescriptorFactory.fromResource(R.mipmap.ic_iss);
+            mMarkerOptions = new MarkerOptions().icon(bitmapDescriptor1);
+        }else {
+            mMarkerOptions = new MarkerOptions().icon(bitmapDescriptor);
+        }
 
-        mMarkerOptions = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_iss));
         mMarkerOptions.anchor(0.5f, 0.5f);
 
     }

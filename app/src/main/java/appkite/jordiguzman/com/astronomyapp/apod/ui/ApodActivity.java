@@ -1,7 +1,6 @@
 package appkite.jordiguzman.com.astronomyapp.apod.ui;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,8 +34,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -82,7 +82,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
 
 
-    @TargetApi(Build.VERSION_CODES.O)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,15 +101,12 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         saveNumberItems();
         readSharedPreferences();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            today = LocalDate.now(ZoneId.of("US/Michigan"));
-        }else {
-            today = LocalDate.now();
-        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            datesToShow();
-        }
+        today = LocalDate.now(DateTimeZone.forID("US/Michigan"));
+
+
+
+        datesToShow();
         preLoadHdurl();
         getData();
 
@@ -147,7 +144,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
         call.enqueue(new Callback<List<Apod>>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
+
 
             @Override
             public void onResponse(@NonNull Call<List<Apod>> call, @NonNull Response<List<Apod>> response) {
@@ -195,10 +192,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
     public static void datesToShow(){
         for (int i = 0; i < datesToShow; i++) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                dateOld = today.minusDays(i);
-            }
-
+            dateOld = today.minusDays(i);
         }
     }
     private void preLoadHdurl() {
@@ -280,7 +274,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
 
         });
     }
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     public void menuActions(){
         saveNumberItems();
         datesToShow();
@@ -348,7 +342,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     @Override
     public void onClickItem(int position) {
         itemPosition = position;

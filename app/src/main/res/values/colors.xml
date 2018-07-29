@@ -16,10 +16,9 @@
     <color name="transparent">#00000000</color>
 
 
-    <color name="blue_nasa">#1a5dad</color>
-    <color name="red_nasa">#ee293d</color>
-    <color name="photo_placeholder">#ccc</color>
-
+    <color name="model_random1">#1a073b</color>
+    <color name="model_random2">#3b2607</color>
+    <color name="photo_placeholder">#a9b8bf</color>
 
 
 </resources>

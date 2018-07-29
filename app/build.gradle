@@ -12,10 +12,10 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "appkite.jordiguzman.com.astronomyapp"
-        minSdkVersion 24
+        minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy'
     }
@@ -67,6 +67,8 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+    implementation 'joda-time:joda-time:2.10'
 
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

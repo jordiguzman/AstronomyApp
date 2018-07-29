@@ -215,7 +215,7 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                              Palette p = Palette.from(bitmap).generate();
                              if (isAdded()){
                                  mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                                 linearLayout.setBackgroundColor(mMutedColor);
+
                              }
 
                          }
@@ -224,7 +224,12 @@ public class HubbleDetailFragment  extends Fragment implements View.OnClickListe
                      }
                  }
              });
-
+            if (mMutedColor==0){
+                mMutedColor = ContextCompat.getColor(mContext, R.color.model_random2);
+                linearLayout.setBackgroundColor(mMutedColor);
+            }else {
+                linearLayout.setBackgroundColor(mMutedColor);
+            }
 
 
         }

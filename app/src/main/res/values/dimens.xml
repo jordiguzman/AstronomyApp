@@ -16,7 +16,7 @@
     <dimen name="model_text_size_title">16sp</dimen>
 
     <dimen name="text_size_title_main">24sp</dimen>
-    <dimen name="text_size_splash">36sp</dimen>
+    <dimen name="text_size_splash">34sp</dimen>
 
 
     <dimen name="fab_elevation">6dp</dimen>

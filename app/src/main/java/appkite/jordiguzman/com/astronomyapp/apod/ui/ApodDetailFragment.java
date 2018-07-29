@@ -41,17 +41,15 @@ import static appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity.mApodDat
 
 public class ApodDetailFragment extends Fragment implements View.OnClickListener {
 
+    public static ArrayList<String> dates = new ArrayList<>();
     private Context mContext;
     private int caseSnackBar;
     private int mMutedColor;
     private View linearLayout;
     private ApodPageAdapter apodPageAdapter = new ApodPageAdapter();
     private AppDatabase mDb;
-    public static ArrayList<String> dates = new ArrayList<>();
     private FloatingActionButton fb_favorites;
-    private  ApodEntry apodEntry;
-
-
+    private ApodEntry apodEntry;
 
 
     @Nullable
@@ -67,7 +65,7 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         ViewPager mViewPager = view.findViewById(R.id.pager_apod);
         mViewPager.setAdapter(new ApodPageAdapter());
         mViewPager.setCurrentItem(itemPosition);
-         fb_favorites = view.findViewById(R.id.fb_favorites);
+        fb_favorites = view.findViewById(R.id.fb_favorites);
         apodPageAdapter.notifyDataSetChanged();
         fb_favorites.setOnClickListener(this);
 
@@ -98,30 +96,33 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         });
 
     }
-    private boolean isFavorited(){
+
+    private boolean isFavorited() {
         String idItem = AdapterApod.mApodData.get(itemPosition).getDate();
-        for (int i=0; i < dates.size(); i++){
+        for (int i = 0; i < dates.size(); i++) {
             String idItemFavorites = dates.get(i);
-            if (idItem.equals(idItemFavorites)){
+            if (idItem.equals(idItemFavorites)) {
                 return false;
             }
         }
         return true;
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-           case R.id.fb_favorites:
-                if (isFavorited()){
+        switch (v.getId()) {
+            case R.id.fb_favorites:
+                if (isFavorited()) {
                     saveDataApod();
-                }else {
-                   caseSnackBar = 1;
-                   showSnackBar();
+                } else {
+                    caseSnackBar = 1;
+                    showSnackBar();
                 }
                 break;
         }
     }
-    public void saveDataApod(){
+
+    public void saveDataApod() {
         mDb = AppDatabase.getInstance(getContext());
         String copyright = mApodDataMain.get(itemPosition).getCopyright();
         String title = mApodDataMain.get(itemPosition).getTitle();
@@ -144,9 +145,39 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         showSnackBar();
     }
 
+    public void showSnackBar() {
+        Snackbar snackbar = null;
+        switch (caseSnackBar) {
+            case 0:
+                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_SHORT);
+                break;
+            case 1:
+                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_SHORT);
+                break;
+        }
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
+        textView.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent));
+        snackbar.show();
 
 
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        changeIconFavorites();
+    }
+
+    private void changeIconFavorites() {
+        if (isFavorited()) {
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
+        } else {
+            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
+        }
+    }
 
     class ApodPageAdapter extends PagerAdapter {
 
@@ -168,7 +199,6 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             final LayoutInflater inflater = LayoutInflater.from(getContext());
             View view = inflater.inflate(R.layout.pager_item_apod, container, false);
             container.addView(view);
-
 
 
             TextView tv_title_pager_item = view.findViewById(R.id.tv_title_pager_item);
@@ -199,17 +229,22 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             int length = url.length();
             String result = url.substring(length - 3, length);
             if (result.equals("jpg") || result.equals("peg")
-                    || result.equals("gif") || result.equals("png")){
-                if (!mApodDataMain.get(position).getUrl().isEmpty())setColorLinearlayout(mApodDataMain.get(position).getUrl());
+                    || result.equals("gif") || result.equals("png")) {
+                if (!mApodDataMain.get(position).getUrl().isEmpty()){
+                    setColorLinearlayout(mApodDataMain.get(position).getUrl());
+                }
+
                 Glide.with(mContext)
                         .load(mApodDataMain.get(position).getUrl())
                         .into(iv_photo_apod_detail);
 
 
-            }else {
+            } else {
                 String key = url.substring(url_base_embed.length(), url.length() - 6);
                 String urlResult = url_base_youtube_video + key + "/maxresdefault.jpg";
-                if (!urlResult.isEmpty())setColorLinearlayout(urlResult);
+                if (!urlResult.isEmpty()) {
+                    setColorLinearlayout(urlResult);
+                }
                 Glide.with(mContext)
                         .load(urlResult)
                         .into(iv_photo_apod_detail);
@@ -231,27 +266,36 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
             });
             return view;
         }
-        private void setColorLinearlayout(final String url){
-            AppExecutors.getInstance().networkIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Bitmap bitmap= Glide.with(mContext)
-                                .asBitmap()
-                                .load(url)
-                                .submit(500,500)
-                                .get();
-                        if (bitmap !=null){
-                            Palette p = Palette.from(bitmap).generate();
-                            mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
-                            linearLayout.setBackgroundColor(mMutedColor);
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-            });
+        private void setColorLinearlayout(final String url) {
+
+             AppExecutors.getInstance().networkIO().execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     try {
+                         Bitmap bitmap = Glide.with(mContext)
+                                 .asBitmap()
+                                 .load(url)
+                                 .submit(500, 500)
+                                 .get();
+
+                         if (bitmap != null) {
+                             Palette p = Palette.from(bitmap).generate();
+                             mMutedColor = p.getDarkMutedColor(getResources().getColor(R.color.colorPrimary));
+
+
+                         }
+                     } catch (InterruptedException | ExecutionException e) {
+                         e.printStackTrace();
+                     }
+                 }
+             });
+            if (mMutedColor==0){
+                mMutedColor = ContextCompat.getColor(mContext, R.color.model_random1);
+                linearLayout.setBackgroundColor(mMutedColor);
+            }else {
+                linearLayout.setBackgroundColor(mMutedColor);
+            }
 
 
         }
@@ -260,40 +304,6 @@ public class ApodDetailFragment extends Fragment implements View.OnClickListener
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);
-        }
-    }
-
-    public void showSnackBar(){
-        Snackbar snackbar = null;
-        switch (caseSnackBar){
-            case 0:
-                 snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.data_saved, Snackbar.LENGTH_SHORT );
-                 break;
-            case 1:
-                snackbar = Snackbar.make(getActivity().findViewById(R.id.card_fragment_apod), R.string.is_favorited, Snackbar.LENGTH_SHORT);
-                break;
-        }
-        View snackbarView = snackbar.getView();
-        int snackbarTextId = android.support.design.R.id.snackbar_text;
-        TextView textView = snackbarView.findViewById(snackbarTextId);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.model_text_size_16));
-        textView.setTextColor(ContextCompat.getColor(mContext,  R.color.colorAccent));
-        snackbar.show();
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        changeIconFavorites();
-    }
-
-    private void changeIconFavorites() {
-        if (isFavorited()){
-            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
-        }else {
-            fb_favorites.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_black_24dp));
         }
     }
 }
