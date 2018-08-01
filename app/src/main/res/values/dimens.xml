@@ -50,6 +50,7 @@
     <dimen name="model_padding_16">16dp</dimen>
     <dimen name="image_widget_width">180dp</dimen>
     <dimen name="image_widget_height">130dp</dimen>
+    <dimen name="spacing_text_explanation">6sp</dimen>
 
 
 </resources>

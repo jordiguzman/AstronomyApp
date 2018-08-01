@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -65,12 +66,13 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     private static String urlApi = "https://api.nasa.gov/planetary/apod?api_key=";
     @SuppressLint("StaticFieldLeak")
     public static GetHttpAsyncTaskApodForWidget getHttpAsyncTaskApodForWidget;
-
+    private boolean isFinish;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_app);
         ButterKnife.bind(this);
+
 
 
          checkOnLIne = new CheckOnLine(this);
@@ -279,13 +281,18 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     }
 
     private void showSnackbarFinish() {
+        isFinish = true;
         Snackbar mSnackbarExit = Snackbar
                 .make(mCoordinatorLayout, getResources().getString(R.string.finish), 5000)
                 .setAction(getResources().getString(R.string.exit), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         deleteCache(getApplicationContext());
-                        finishAndRemoveTask();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            finishAndRemoveTask();
+                        }else {
+                            finish();
+                        }
 
                     }
                 });
@@ -297,7 +304,17 @@ public class MainActivityApp extends AppCompatActivity  implements AdapterMain.I
     }
     @Override
     public void onBackPressed() {
-        showSnackbarFinish();
+        if (!isFinish){
+            showSnackbarFinish();
+        }else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                finishAndRemoveTask();
+            }else {
+                finish();
+            }
+        }
+
+
     }
 
 

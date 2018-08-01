@@ -14,6 +14,25 @@
         android:title="@string/webcam_from_iss"
         android:orderInCategory="100"
         app:showAsAction="never" />
-
+    <item
+        android:id="@+id/from_iss_to_apod"
+        android:title="@string/apod"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/from_iss_to_earth"
+        android:title="@string/earth"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/from_iss_to_solar"
+        android:title="@string/solar_system"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/from_iss_to_hubble"
+        android:title="@string/hubble"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
 
 </menu>

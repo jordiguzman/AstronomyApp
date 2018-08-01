@@ -29,9 +29,12 @@ public class ShareImageApod {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.setType("image/*");
                         intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
-                        context.startActivity(Intent.createChooser(intent, "Share Image"));
+                        Intent chooserIntent = Intent.createChooser(intent, "Share Image");
+                        chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(chooserIntent);
                     }
 
                     @Override

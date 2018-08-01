@@ -40,12 +40,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
+import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
 import appkite.jordiguzman.com.astronomyapp.hubble.adapter.AdapterHubble;
 import appkite.jordiguzman.com.astronomyapp.hubble.model.Images;
 import appkite.jordiguzman.com.astronomyapp.hubble.model.ImagesDetail;
 import appkite.jordiguzman.com.astronomyapp.hubble.service.ApiClientHubbleImages;
 import appkite.jordiguzman.com.astronomyapp.hubble.service.ApiInterfaceHubbleImages;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -216,11 +220,28 @@ public class HubbleActivity extends AppCompatActivity implements AdapterHubble.I
                     case R.id.menu_favorites:
                         goToFavoritesHubble();
                         break;
+                    case R.id.from_hubble_to_apod:
+                        gotoActivity(ApodActivity.class);
+                        break;
+                    case R.id.from_hubble_to_earth:
+                        gotoActivity(EarthActivity.class);
+                        break;
+                    case R.id.from_hubble_to_solar:
+                        gotoActivity(SolarSystemActivity.class);
+                        break;
+                    case R.id.from_hubble_to_iss:
+                        gotoActivity(MapsActivity.class);
+                        break;
                 }
                 return true;
             }
 
         });
+    }
+    public void gotoActivity(Class toClass){
+        Intent intent = new Intent(this, toClass);
+        startActivity(intent);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
     }
 
     private void goToFavoritesHubble() {

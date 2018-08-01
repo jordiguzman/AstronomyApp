@@ -18,8 +18,8 @@
     <string name="hubble_sub">Pictures of the Space Telescope</string>
     <string name="iss">ISS</string>
     <string name="loading">Loading…</string>
-    <string name="finish">Are you shure to exit app?</string>
-    <string name="exit">EXIT</string>
+    <string name="finish">Are you sure you want to close the app?</string>
+    <string name="exit">CLOSE</string>
     <!--                           -->
 
     <!--         APOD              -->
@@ -106,5 +106,6 @@
     <string name="image_pager_item_system">Solar System Picture</string>
     <string name="swipe_delete">Swipe to remove from Favorites</string>
     <string name="logo_kick">Logo Kick</string>
+    <string name="show_days">Show days</string>
 
 </resources>

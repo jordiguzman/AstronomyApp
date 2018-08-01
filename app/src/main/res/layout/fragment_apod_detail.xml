@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -25,7 +26,8 @@
             app:fabSize="auto"
             android:src="@drawable/ic_favorite_border_black_24dp"
             android:stateListAnimator="@animator/fab_state_list_anim"
-            tools:targetApi="lollipop" />
+            tools:targetApi="lollipop"
+            android:layout_marginRight="@dimen/fab_margin" />
 
 
     </FrameLayout>

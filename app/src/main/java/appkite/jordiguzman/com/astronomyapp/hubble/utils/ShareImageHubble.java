@@ -33,7 +33,9 @@ public class ShareImageHubble {
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("image/*");
                         i.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
-                        context.startActivity(Intent.createChooser(i, "Share Image"));
+                        Intent chooserIntent = Intent.createChooser(i, "Share Image");
+                        chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(chooserIntent);
 
                     }
 

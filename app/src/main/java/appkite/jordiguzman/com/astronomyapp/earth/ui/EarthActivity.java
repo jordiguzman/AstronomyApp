@@ -1,6 +1,7 @@
 package appkite.jordiguzman.com.astronomyapp.earth.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
 
@@ -17,11 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
 import appkite.jordiguzman.com.astronomyapp.earth.adapter.AdapterEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.model.Earth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiClientEarth;
 import appkite.jordiguzman.com.astronomyapp.earth.service.ApiInterfaceEarth;
+import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -39,6 +49,8 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
     ImageView iv_earth;
     @BindView(R.id.collapsing_earth)
     CollapsingToolbarLayout mCollapsingToolbarLayout;
+
+
     @SuppressLint("StaticFieldLeak")
     private static RecyclerView mRecyclerView;
 
@@ -124,7 +136,39 @@ public class EarthActivity extends AppCompatActivity implements AdapterEarth.Ite
         adapterEarth.notifyDataSetChanged();
     }
 
+    public void clickMenuEarth(View view){
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popupMenu = new PopupMenu(wrapper, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_earth, popupMenu.getMenu());
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.from_earth_to_apod:
+                        gotoActivity(ApodActivity.class);
+                        break;
+                    case R.id.from_earth_to_solar:
+                        gotoActivity(SolarSystemActivity.class);
+                        break;
+                    case R.id.from_earth_to_iss:
+                        gotoActivity(MapsActivity.class);
+                        break;
+                    case R.id.from_earth_to_hubble:
+                        gotoActivity(HubbleActivity.class);
+                        break;
+                }
+                return true;
+            }
 
+        });
+    }
+    public void gotoActivity(Class toClass){
+        Intent intent = new Intent(this, toClass);
+        startActivity(intent);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
+    }
 
     @SuppressLint("ResourceAsColor")
     public void imageCollapsingToolBar(){

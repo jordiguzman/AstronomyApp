@@ -53,6 +53,21 @@
                         android:id="@+id/tv_title_hubble"
                         tools:ignore="RelativeOverlap" />
 
+                    <ImageButton
+                        android:id="@+id/ib_menu_activity_earth"
+                        style="@android:style/Widget.Holo.Light.ImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/tv_title_hubble"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginRight="12dp"
+                        android:contentDescription="@string/menu_button"
+                        android:onClick="clickMenuEarth"
+                        android:src="@drawable/ic_menu_black_24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </RelativeLayout>
 

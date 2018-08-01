@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_favorites"
-        android:title="@string/view_favorites"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
+
 
     <item
-        android:id="@+id/from_hubble_to_apod"
+        android:id="@+id/from_solar_to_apod"
         android:title="@string/apod"
         android:orderInCategory="100"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/from_hubble_to_earth"
+        android:id="@+id/from_solar_to_earth"
         android:title="@string/earth"
         android:orderInCategory="100"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/from_hubble_to_solar"
-        android:title="@string/solar_system"
+        android:id="@+id/from_solar_to_iss"
+        android:title="@string/iss"
         android:orderInCategory="100"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/from_hubble_to_iss"
-        android:title="@string/iss"
+        android:id="@+id/from_solar_to_hubble"
+        android:title="@string/hubble"
         android:orderInCategory="100"
         app:showAsAction="never"/>
 

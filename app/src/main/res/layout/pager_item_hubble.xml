@@ -87,7 +87,8 @@
                     style="@style/TextAppearance.AppCompat.Subhead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item" />
+                    android:layout_marginBottom="@dimen/model_margin_bottom_text_page_item"
+                    android:lineSpacingExtra="@dimen/spacing_text_explanation"/>
 
                 </LinearLayout>
 

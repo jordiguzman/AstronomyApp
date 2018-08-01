@@ -71,7 +71,8 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_title_apod" />
+                        app:layout_constraintTop_toBottomOf="@+id/tv_title_apod"
+                        android:layout_marginRight="8dp" />
                     <ImageButton
                         android:id="@+id/ib_menu_acticity_apod"
                         style="@android:style/Widget.Holo.Light.ImageButton"
@@ -82,7 +83,8 @@
                         android:src="@drawable/ic_menu_black_24dp"
                         android:onClick="clickMenuApod"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginRight="@dimen/model_margin_8" />
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.Toolbar>

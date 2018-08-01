@@ -52,6 +52,21 @@
                         android:id="@+id/tv_title_hubble"
                         tools:ignore="RelativeOverlap" />
 
+                         <ImageButton
+                             android:id="@+id/ib_menu_activity_solar"
+                             style="@android:style/Widget.Holo.Light.ImageButton"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_alignParentEnd="true"
+                             android:layout_alignParentRight="true"
+                             android:layout_alignParentTop="true"
+                             android:layout_marginEnd="13dp"
+                             android:layout_marginRight="13dp"
+                             android:contentDescription="@string/menu_button"
+                             android:onClick="clickMenuSolar"
+                             android:src="@drawable/ic_menu_black_24dp"
+                             app:layout_constraintEnd_toEndOf="parent"
+                             app:layout_constraintTop_toTopOf="parent" />
 
                     </RelativeLayout>
 

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.concurrent.ExecutionException;
 
@@ -47,7 +48,7 @@ public class ImageHubbleActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         showNavigation();
         linearLayout = findViewById(R.id.linearLayout_activity_image_hubble);
-
+        preloadPicture();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             position = bundle.getInt("position");
@@ -85,11 +86,18 @@ public class ImageHubbleActivity extends AppCompatActivity {
         });
     }
 
+    private void preloadPicture() {
+        Picasso.get()
+                .load(dataImagesDetail.get(position).getImage())
+                .fetch();
+    }
+
+
     public void populateImage(){
         if (isfavorited){
-            setBackground(HubbleActivity.dataImagesDetail.get(position).getImage());
+            setBackground(dataImagesDetail.get(position).getImage());
             Glide.with(this)
-                    .load(HubbleActivity.dataImagesDetail.get(position).getImage())
+                    .load(dataImagesDetail.get(position).getImage())
                     .into(iv_apod_image);
         }else {
             setBackground(dataImagesDetail.get(position).getImage());
@@ -100,7 +108,7 @@ public class ImageHubbleActivity extends AppCompatActivity {
 
     }
     private void setBackground(final String url){
-        final Thread thread = new Thread(new Runnable() {
+       new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -121,7 +129,8 @@ public class ImageHubbleActivity extends AppCompatActivity {
                 }
             }
         });
-        thread.start();
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)

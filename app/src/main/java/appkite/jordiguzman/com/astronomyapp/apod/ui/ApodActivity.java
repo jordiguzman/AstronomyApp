@@ -46,7 +46,11 @@ import appkite.jordiguzman.com.astronomyapp.apod.adapter.AdapterApod;
 import appkite.jordiguzman.com.astronomyapp.apod.model.Apod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiClientApod;
 import appkite.jordiguzman.com.astronomyapp.apod.service.ApiIntefaceApod;
+import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.utils.AppExecutors;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -268,11 +272,28 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                         datesToShow = 60;
                         menuActions();
                         break;
+                    case R.id.from_apod_to_earth:
+                        gotoActivity(EarthActivity.class);
+                        break;
+                    case R.id.from_apod_to_solar:
+                        gotoActivity(SolarSystemActivity.class);
+                        break;
+                    case R.id.from_apod_to_iss:
+                        gotoActivity(MapsActivity.class);
+                        break;
+                    case R.id.from_apod_to_hubble:
+                        gotoActivity(HubbleActivity.class);
+                        break;
                 }
                 return true;
             }
 
         });
+    }
+    public void gotoActivity(Class toClass){
+        Intent intent1 = new Intent(getApplicationContext(), toClass);
+        startActivity(intent1);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
     }
 
     public void menuActions(){

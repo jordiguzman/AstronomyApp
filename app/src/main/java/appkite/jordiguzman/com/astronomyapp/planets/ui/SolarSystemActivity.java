@@ -1,6 +1,7 @@
 package appkite.jordiguzman.com.astronomyapp.planets.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +12,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
 
@@ -28,6 +34,10 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
+import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
+import appkite.jordiguzman.com.astronomyapp.iss.ui.MapsActivity;
 import appkite.jordiguzman.com.astronomyapp.mainUi.adapter.AdapterMain;
 import appkite.jordiguzman.com.astronomyapp.planets.adapter.AdapterSolarSystem;
 import butterknife.BindView;
@@ -67,12 +77,6 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
                 wikiApiText();
             }
         });
-
-
-
-
-
-
 
     }
     public void setupRecyclerView(){
@@ -122,6 +126,40 @@ public class SolarSystemActivity extends AppCompatActivity implements AdapterSol
         mCollapsingToolbarLayout.setStatusBarScrimColor(R.color.colorPrimaryLight);
     }
 
+    public void clickMenuSolar(View view){
+        Context wrapper = new ContextThemeWrapper(this, R.style.PopupMenu);
+        PopupMenu popupMenu = new PopupMenu(wrapper, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_solar, popupMenu.getMenu());
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+
+                    case R.id.from_solar_to_apod:
+                        gotoActivity(ApodActivity.class);
+                        break;
+                    case R.id.from_solar_to_earth:
+                        gotoActivity(EarthActivity.class);
+                        break;
+                    case R.id.from_solar_to_iss:
+                        gotoActivity(MapsActivity.class);
+                        break;
+                    case R.id.from_solar_to_hubble:
+                        gotoActivity(HubbleActivity.class);
+                        break;
+                }
+                return true;
+            }
+
+        });
+    }
+    public void gotoActivity(Class toClass){
+        Intent intent = new Intent(this, toClass);
+        startActivity(intent);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
+    }
 
 
     @SuppressLint("StaticFieldLeak")

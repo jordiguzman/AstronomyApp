@@ -129,14 +129,16 @@ public class ImageApodActivity extends YouTubeBaseActivity {
         });
 
 
+
     }
+
 
 
 
 
     private void preloadPicture() {
         Picasso.get()
-                .load(mApodDataMain.get(position).getHdurl())
+                .load(mApodDataMain.get(position).getUrl())
                 .fetch();
     }
 
@@ -160,13 +162,14 @@ public class ImageApodActivity extends YouTubeBaseActivity {
                 setBackground(FavoritesApodActivity.mApodDataList.get(position).getUrl());
                 Glide.with(this)
                         .load(FavoritesApodActivity.mApodDataList.get(position).getUrl())
+
                         .into(iv_apod_image);
 
 
             }else {
                 setBackground(mApodDataMain.get(position).getUrl());
                 Glide.with(this)
-                        .load(mApodDataMain.get(position).getHdurl())
+                        .load(mApodDataMain.get(position).getUrl())
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                         .into(iv_apod_image);
 

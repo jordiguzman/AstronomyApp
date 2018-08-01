@@ -3,10 +3,7 @@ package appkite.jordiguzman.com.astronomyapp.iss.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.icu.text.DecimalFormat;
-import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +48,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -58,7 +57,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import appkite.jordiguzman.com.astronomyapp.R;
+import appkite.jordiguzman.com.astronomyapp.apod.ui.ApodActivity;
+import appkite.jordiguzman.com.astronomyapp.earth.ui.EarthActivity;
+import appkite.jordiguzman.com.astronomyapp.hubble.ui.HubbleActivity;
 import appkite.jordiguzman.com.astronomyapp.iss.model.Astronaut;
+import appkite.jordiguzman.com.astronomyapp.planets.ui.SolarSystemActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -96,8 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLast;
     private Date currentDate;
     String url= "http://www.howmanypeopleareinspacerightnow.com/peopleinspace.json";
-    private String urlIss = "https://pasalavida30.files.wordpress.com/2018/07/ic_iss.png";
-    private Bitmap bitmap;
+
 
 
 
@@ -146,6 +148,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent intent1 = new Intent(getApplicationContext(), WebCamActivity.class);
                         startActivity(intent1);
                         break;
+                    case R.id.from_iss_to_apod:
+                        gotoActivity(ApodActivity.class);
+                        break;
+                    case R.id.from_iss_to_earth:
+                        gotoActivity(EarthActivity.class);
+                        break;
+                    case R.id.from_iss_to_solar:
+                        gotoActivity(SolarSystemActivity.class);
+                        break;
+                    case R.id.from_iss_to_hubble:
+                        gotoActivity(HubbleActivity.class);
+                        break;
                 }
                 return true;
             }
@@ -153,6 +167,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    public void gotoActivity(Class toClass){
+        Intent intent = new Intent(this, toClass);
+        startActivity(intent);
+        overridePendingTransition(R.anim.left_in, R.anim.left_out);
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -183,9 +202,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         }, 0, 3000);
-        //bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_iss);
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_iss);
-        if (Build.VERSION.SDK_INT >= 23){
+        if (Build.VERSION.SDK_INT >= 22){
             BitmapDescriptor bitmapDescriptor1 = BitmapDescriptorFactory.fromResource(R.mipmap.ic_iss);
             mMarkerOptions = new MarkerOptions().icon(bitmapDescriptor1);
         }else {
@@ -337,7 +355,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final String dateFormated= new SimpleDateFormat("hh:mm:ss").format(date);
 
                     ISS = new LatLng(latitude, longitude);
-                    decimalFormat = new DecimalFormat("0.00");
+                    decimalFormat = new DecimalFormat("#.##");
 
                     runOnUiThread(new Runnable() {
                         @Override
