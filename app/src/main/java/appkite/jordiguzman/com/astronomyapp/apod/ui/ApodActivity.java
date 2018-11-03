@@ -101,7 +101,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
         LeakCanary.install(getApplication());*/
         imageCollapsingToolBar();
 
-        datesToShow= 30;
+        datesToShow= 15;
         saveNumberItems();
         readSharedPreferences();
 
@@ -147,6 +147,8 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
     public void getDataApod(final Context context){
         final ApiIntefaceApod mApiInteface = ApiClientApod.getClient().create(ApiIntefaceApod.class);
         Call<List<Apod>> call = mApiInteface.getData(ApiClientApod.API_KEY, String.valueOf(dateOld), String.valueOf(today));
+        Log.d("Call","https://api.nasa.gov/planetary/apod?api_key=" + ApiClientApod.API_KEY + "&start_date=" +
+                String.valueOf(dateOld) + "&end_date=" + String.valueOf(today));
         call.enqueue(new Callback<List<Apod>>() {
 
 
@@ -163,6 +165,7 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                             }
                             break;
                         default:
+                            Log.d("Call", "" + response.code());
                             Toast.makeText(context, "Error api", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -259,18 +262,6 @@ public class ApodActivity extends AppCompatActivity implements AdapterApod.ItemC
                 switch (item.getItemId()){
                     case R.id.menu_favorites:
                         goToFavoritesApod();
-                        break;
-                    case R.id.menu_numer_items_30:
-                        datesToShow= 30;
-                        menuActions();
-                        break;
-                    case R.id.menu_numer_items_40:
-                        datesToShow= 40;
-                        menuActions();
-                        break;
-                    case R.id.menu_numer_items_60:
-                        datesToShow = 60;
-                        menuActions();
                         break;
                     case R.id.from_apod_to_earth:
                         gotoActivity(EarthActivity.class);

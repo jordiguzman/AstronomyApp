@@ -5,28 +5,6 @@
         android:title="@string/view_favorites"
         android:orderInCategory="100"
         app:showAsAction="never" />
-
-    <item android:title="@string/show_days"
-        app:showAsAction="never">
-        <menu>
-            <item
-                android:id="@+id/menu_numer_items_30"
-                android:title="@string/number_of_days_30"
-                android:orderInCategory="100"
-                app:showAsAction="never"/>
-            <item
-                android:id="@+id/menu_numer_items_40"
-                android:title="@string/number_of_days_40"
-                android:orderInCategory="100"
-                app:showAsAction="never"/>
-            <item
-                android:id="@+id/menu_numer_items_60"
-                android:title="@string/number_of_days_60"
-                android:orderInCategory="100"
-                app:showAsAction="never"/>
-        </menu>
-    </item>
-
     <item
         android:id="@+id/from_apod_to_earth"
         android:title="@string/earth"
